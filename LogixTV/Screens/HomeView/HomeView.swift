@@ -23,9 +23,7 @@ struct HomeView: View {
     
     var body: some View {
         ZStack {
-            Image("mission_bg")
-                .resizable()
-                .scaledToFill()
+            Color.white
                 .ignoresSafeArea()
             
             LinearGradient(

@@ -11,6 +11,7 @@ struct SideMenuView: View {
     @Binding var isSidebarExpanded: Bool
     @Binding var selectedIndex: Int
     @FocusState.Binding var focusedField: FocusTarget?
+    @StateObject private var viewModel = SideMenuViewModel()
     let menuItems: [MenuItem]
     
     var body: some View {
@@ -72,7 +73,11 @@ struct SideMenuView: View {
         .frame(maxHeight: .infinity)
         .animation(.easeInOut(duration: 0.3), value: focusedField)
         .focusSection()
+        .task {
+            await viewModel.loadMenu()
+        }
     }
+    
 }
 
 #Preview {
