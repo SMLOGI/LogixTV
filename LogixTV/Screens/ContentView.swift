@@ -15,6 +15,7 @@ struct MenuItem {
 enum FocusTarget: Hashable {
     case menu(Int)
     case pageDot(Int)
+    case playButton
     case carouselItem(UUID)
     case mainContent
 }
