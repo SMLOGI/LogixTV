@@ -34,6 +34,7 @@ struct HomeView: View {
             .ignoresSafeArea()
             
             VStack(alignment: .leading, spacing: 40) {
+                // MARK: - Header Section
                 HStack(alignment: .center, spacing: 40) {
                     VStack(alignment: .leading, spacing: 20) {
                         Text("Mission Impossible")
@@ -52,7 +53,6 @@ struct HomeView: View {
                                 Text("Play")
                                     .bold()
                             }
-                            .focusable(true)
                             .foregroundColor(.white)
                             .padding()
                             .background(Color.purple)
@@ -66,14 +66,13 @@ struct HomeView: View {
                 }
                 .padding(.top, 100)
                 
-                // Page Dots
-                HStack(spacing: 12) {
+                // MARK: - Page Dots (Own Section ✅)
+               /* HStack(spacing: 12) {
                     ForEach(0..<7, id: \.self) { index in
                         Circle()
                             .fill(index == selectedIndex ? Color.white : Color.gray)
                             .frame(width: 12, height: 12)
                             .scaleEffect(focusedItem == .pageDot(index) ? 1.5 : 1.0)
-                            .focusable(true)
                             .focused($focusedItem, equals: .pageDot(index))
                             .onTapGesture {
                                 selectedIndex = index
@@ -81,9 +80,9 @@ struct HomeView: View {
                     }
                 }
                 .frame(maxWidth: .infinity)
-                .focusSection()
+                .focusSection() // ✅ isolated section for dots*/
                 
-                // Bollywood Movies
+                // MARK: - Bollywood Movies (Own Section ✅)
                 VStack(alignment: .leading, spacing: 20) {
                     Text("Bollywood Movies")
                         .font(.title2)
@@ -112,17 +111,17 @@ struct HomeView: View {
                                         .foregroundColor(.white)
                                         .font(.caption)
                                 }
-                                .focusable(true)
-                                .focused($focusedItem, equals: .carouselItem(item.id))
+                            .focused($focusedItem, equals: .carouselItem(item.id))
                             }
                         }
                         .padding(.horizontal, 60)
                     }
+                    .focusSection() // ✅ isolated section for carousel
                 }
             }
             .padding(.bottom, 60)
         }
-        .focusSection()
+        .focusSection() // root fallback section
     }
 }
 

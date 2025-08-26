@@ -36,13 +36,21 @@ struct Datum: Codable {
 }
 
 // MARK: - Menu
-struct Menu: Codable {
+struct Menu: Codable, Hashable {
     let id: Int
     let name: String
     let toVersion, fromVersion: Int
     let displayType, navigationType: DisplayTypeClass
     let details: Details
     let subMenu: JSONNull?
+    
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(id)   // uniqueness only by id
+    }
+    
+    static func == (lhs: Menu, rhs: Menu) -> Bool {
+        lhs.id == rhs.id
+    }
 }
 
 // MARK: - Details

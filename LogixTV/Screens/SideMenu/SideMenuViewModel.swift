@@ -17,7 +17,7 @@ final class SideMenuViewModel: ObservableObject {
     func loadMenu() async {
         do {
             let sideMenu = try await NetworkManager.shared.request(
-                baseURL: .main, path: "menu/android-mobile",
+                baseURL: .main, path: "menu/tv",
                 method: .GET
             ) as SideMenu
             

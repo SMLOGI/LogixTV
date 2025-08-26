@@ -24,11 +24,8 @@ struct ContentView: View {
     @State private var isSidebarExpanded: Bool = false
     @FocusState private var focusedField: FocusTarget?
     
-    private var menuItems: [MenuItem]
-    
     init() {
         // Placeholder; replaced later in body where we have $focusedField
-        self.menuItems = []
     }
     
     var body: some View {
@@ -48,6 +45,14 @@ struct ContentView: View {
                         .tag(index)
                         .frame(maxWidth: .infinity, maxHeight: .infinity)
                         .background(Color(.darkGray))
+                        .focused($focusedField, equals: .mainContent)
+                        .focusSection()
+                        .onMoveCommand { dir in
+                            if dir == .left {
+                                // go back to sidebar
+                                focusedField = .menu(selectedIndex)
+                            }
+                        }
                 }
             }
             .tabViewStyle(.page(indexDisplayMode: .never))
@@ -57,7 +62,6 @@ struct ContentView: View {
                 isSidebarExpanded: $isSidebarExpanded,
                 selectedIndex: $selectedIndex,
                 focusedField: $focusedField,
-                menuItems: dynamicMenuItems
             )
             .ignoresSafeArea()
             .frame(width: 250)
