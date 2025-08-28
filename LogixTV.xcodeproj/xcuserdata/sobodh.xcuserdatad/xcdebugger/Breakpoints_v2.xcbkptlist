@@ -135,32 +135,32 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "A1F637A9-E5E9-47E2-A96C-FF82E185131C"
+            uuid = "E954ECFD-D3AA-477C-89C2-2A648A4C0784"
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "LogixTV/Screens/SideMenu/SideMenuViewModel.swift"
+            filePath = "LogixTV/Screens/HomeView/HomeViewModel.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "24"
-            endingLineNumber = "24"
-            landmarkName = "loadMenu()"
+            startingLineNumber = "31"
+            endingLineNumber = "31"
+            landmarkName = "loadCarouselGroup()"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "B39996A3-86FA-47D0-97E8-DB47AE3CB06E"
+            uuid = "F80D9EA8-4C55-4306-AE81-C9ACADC93B3F"
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "LogixTV/Screens/SideMenu/SideMenuViewModel.swift"
+            filePath = "LogixTV/Screens/HomeView/HomeViewModel.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "28"
-            endingLineNumber = "28"
-            landmarkName = "loadMenu()"
+            startingLineNumber = "33"
+            endingLineNumber = "33"
+            landmarkName = "loadCarouselGroup()"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
