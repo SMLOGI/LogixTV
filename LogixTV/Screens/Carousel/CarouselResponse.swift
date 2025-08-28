@@ -23,7 +23,7 @@ struct CarouselResponse: Codable {
 
 // MARK: - Content
 struct CarouselContent: Codable {
-    let id: Int?
+    let id: Int
     let contentId: String?
     let title: String?
     let tagline: String?

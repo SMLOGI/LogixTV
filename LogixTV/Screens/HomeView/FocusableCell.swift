@@ -7,7 +7,7 @@
 
 import Foundation
 import SwiftUI
-
+/*
 struct FocusableCell: View {
     let item: CarouselItem
     @FocusState.Binding var focusedItem: FocusTarget?
@@ -41,3 +41,4 @@ struct FocusableCell: View {
         .padding()
     }
 }
+*/

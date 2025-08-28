@@ -7,45 +7,28 @@
 
 import SwiftUI
 
-// MARK: - Model
-struct CarouselItem: Identifiable {
-    let id = UUID()
-    let title: String
-    let imageName: String
-}
-
 struct HomeView: View {
-    let items: [CarouselItem] = (1...10).map {
-        CarouselItem(title: "Movie \($0)", imageName: "film")
-    }
+
     
     @FocusState.Binding var focusedItem: FocusTarget?
     
     var body: some View {
-        VStack(alignment: .leading, spacing: 20) {
+        ZStack {
             
-            HomeHeaderView(focusedItem: $focusedItem, title: "Featured Movies")
-                .focusSection()
-                .onMoveCommand { direction in
-                        if direction == .down {
-                            focusedItem = .carouselItem(items.first!.id) // 👈 force focus to first grid item
-                        }
-                    }
+            HomeHeaderView(focusedItem: $focusedItem)
+
             ScrollView(.horizontal) {
                 LazyHGrid(rows: [GridItem(.fixed(160), spacing: 20)]) {
-                    ForEach(items) { item in
-                        FocusableCell(
-                            item: item,
-                            focusedItem: $focusedItem
-                        ) {
-                            print("Tapped \(item.title)")
-                        }
+                    VStack(alignment: .leading) {
+                        Rectangle()
+                            .frame(width: 320, height: 160)
                     }
                 }
                 .padding()
             }
             .focusSection()
         }
+        .background(Color.red)
     }
 }
 

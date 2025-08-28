@@ -10,7 +10,7 @@ import SwiftUI
 
 @MainActor
 final class CarouselViewModel: ObservableObject {
-    @Published var menuGroups: [Datum] = []
+    @Published var contentList: [CarouselContent] = []
     @Published var errorMessage: String?
     
     
@@ -21,7 +21,7 @@ final class CarouselViewModel: ObservableObject {
                 method: .GET
             ) as CarouselResponse
             
-            
+            contentList = corosalResponse.data ?? []
             print("✅ CarouselResponse:", corosalResponse.totalCount)
         } catch {
             errorMessage = error.localizedDescription
