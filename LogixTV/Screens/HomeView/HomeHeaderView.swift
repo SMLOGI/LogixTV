@@ -11,6 +11,8 @@ import SwiftUI
 struct HomeHeaderView: View {
     // pass binding from parent: HomeHeaderView(focusedItem: $focusedItem)
     @FocusState.Binding var focusedItem: FocusTarget?
+    
+    @StateObject private var viewModel = CarouselViewModel()
 
     // Optional content you might want to expose
     var title: String = "Mission Impossible"
@@ -53,5 +55,9 @@ struct HomeHeaderView: View {
             Spacer()
         }
         .padding(.top, 100)
+        .background(Color.red)
+        .task {
+            await viewModel.loadCarousel()
+        }
     }
 }

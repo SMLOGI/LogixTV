@@ -25,6 +25,12 @@ struct HomeView: View {
         VStack(alignment: .leading, spacing: 20) {
             
             HomeHeaderView(focusedItem: $focusedItem, title: "Featured Movies")
+                .focusSection()
+                .onMoveCommand { direction in
+                        if direction == .down {
+                            focusedItem = .carouselItem(items.first!.id) // 👈 force focus to first grid item
+                        }
+                    }
             ScrollView(.horizontal) {
                 LazyHGrid(rows: [GridItem(.fixed(160), spacing: 20)]) {
                     ForEach(items) { item in
@@ -38,6 +44,7 @@ struct HomeView: View {
                 }
                 .padding()
             }
+            .focusSection()
         }
     }
 }
