@@ -35,6 +35,7 @@ struct HomeHeaderView: View {
                                 currentPage: $currentPage
                             )
                             .id(index) // important for scrollTo
+                            .frame(width: UIScreen.main.bounds.width ) // full-screen card
                         }
                     }
                     .padding(.horizontal, 30)
@@ -113,27 +114,36 @@ struct FeaturedMovieView: View {
     @FocusState.Binding var focusedItem: FocusTarget?
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 16) {
-            Text(content.title ?? "")
-                .font(.largeTitle)
-                .bold()
-                .foregroundColor(.white)
-            
-            if let description = content.description {
-                Text(description)
-                    .font(.callout)
-                    .foregroundColor(.white.opacity(0.8))
-                    .frame(maxWidth: 600, alignment: .leading)
+        HStack {
+            VStack(alignment: .leading, spacing: 16) {
+                Text(content.title ?? "")
+                    .font(.largeTitle)
+                    .bold()
+                    .foregroundColor(.white)
+                
+                if let description = content.description {
+                    Text(description)
+                        .font(.callout)
+                        .foregroundColor(.white.opacity(0.8))
+                        .frame(maxWidth: 600, alignment: .leading)
+                }
+                
+                PlayButton(focusedItem: $focusedItem)
+                    .onMoveCommand { dir in
+                        if dir == .right {
+                            focusedItem = .pageDot(0)
+                        }
+                    }
+                
             }
-            
-            PlayButton(focusedItem: $focusedItem)
+            .frame(maxHeight: .infinity)
+            .padding(.leading, 60)
 
+            Spacer()
         }
-        .frame(maxHeight: .infinity)
-        .padding(.leading, 60)
         .background(
             LinearGradient(
-                gradient: Gradient(colors: [Color.black.opacity(1.0), Color.black.opacity(0.1)]),
+                gradient: Gradient(colors: [Color.black.opacity(1.0), Color.black.opacity(0.0)]),
                 startPoint: .leading,
                 endPoint: .trailing
             )

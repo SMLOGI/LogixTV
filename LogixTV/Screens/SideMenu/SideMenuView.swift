@@ -71,14 +71,13 @@ struct SideMenuView: View {
                 .focusSection()
                 .onMoveCommand { dir in
                     if dir == .right {
-                        focusedField = .mainContent
+                        focusedField = .playButton
                     }
                 }
             }
             
             Spacer()
         }
-        .background(Color.black.opacity(0.5))
         .task {
             await viewModel.loadMenu()
         }
