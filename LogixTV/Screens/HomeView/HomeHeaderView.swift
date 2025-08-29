@@ -24,31 +24,56 @@ struct HomeHeaderView: View {
     var body: some View {
         ZStack(alignment: .bottom) {
             
-            // MARK: Horizontal Grid Carousel
-            ScrollView(.horizontal, showsIndicators: false) {
-                LazyHGrid(rows: rows, spacing: 30) {
-                    ForEach(viewModel.contentList, id: \.self.id) { content in
-                        CarouselItemView(
-                            content: content,
-                            viewModel: viewModel,
-                            focusedItem: $focusedItem,
-                            currentPage: $currentPage
-                        )
-                        .background(Color.yellow)
+            ScrollViewReader { proxy in
+                ScrollView(.horizontal, showsIndicators: false) {
+                    LazyHGrid(rows: rows, spacing: 0) {
+                        ForEach(Array(viewModel.contentList.enumerated()), id: \.1.id) { (index, content) in
+                            CarouselItemView(
+                                content: content,
+                                viewModel: viewModel,
+                                focusedItem: $focusedItem,
+                                currentPage: $currentPage
+                            )
+                            .id(index) // important for scrollTo
+                            .frame(width: UIScreen.main.bounds.width) // full-screen card
+                        }
+                    }
+                    .padding(.horizontal, 30)
+                }
+                .onChange(of: currentPage) { newPage in
+                    // Scroll to the selected page when currentPage changes (tap or focus)
+                    withAnimation {
+                        proxy.scrollTo(newPage, anchor: .center)
                     }
                 }
-                .padding(.horizontal, 60)
             }
             
             // MARK: Pager Dots
-            HStack(spacing: 8) {
+             HStack(spacing: 12) {
                 ForEach(viewModel.contentList.indices, id: \.self) { index in
                     Circle()
-                        .fill(index == currentPage ? Color.white : Color.gray.opacity(0.5))
-                        .frame(width: 10, height: 10)
+                        .fill(focusedItem == .pageDot(index) ? Color.white : (index == currentPage ? Color.white : Color.gray.opacity(0.5)))
+                        .frame(width: 20, height: 20)
+                        .focusable(true)
+                        .focused($focusedItem, equals: .pageDot(index)) // each dot individually focusable
+                        .onChange(of: focusedItem) { newFocus in
+                            // Scroll carousel when a dot receives focus
+                            if newFocus == .pageDot(index) {
+                                withAnimation {
+                                    currentPage = index
+                                }
+                            }
+                        }
+                        .onTapGesture {
+                            withAnimation {
+                                currentPage = index
+                            }
+                        }
                 }
             }
-            .padding(.leading, 60)
+            .focusSection() // optional: marks the whole HStack as a section
+
+            .padding(.bottom, 200)
             
             // MARK: Error Message
             if let errorMessage = viewModel.errorMessage {
@@ -58,7 +83,6 @@ struct HomeHeaderView: View {
             }
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .background(Color.blue)
         .task {
             await viewModel.loadCarousel()
         }
@@ -85,6 +109,7 @@ struct CarouselItemView: View {
                     viewModel: viewModel
                 ))
         }
+        .focusSection()
     }
 }
 
@@ -109,14 +134,15 @@ struct FeaturedMovieView: View {
             PlayButton()
         }
         .frame(maxHeight: .infinity)
+        .padding(.leading, 60)
         .background(
             LinearGradient(
-                gradient: Gradient(colors: [Color.black.opacity(1.0), Color.black.opacity(0.8)]),
+                gradient: Gradient(colors: [Color.black.opacity(1.0), Color.black.opacity(0.1)]),
                 startPoint: .leading,
                 endPoint: .trailing
             )
         )
-        .padding(.leading, 70)
+        .focusSection()
     }
 }
 
