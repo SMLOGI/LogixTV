@@ -35,10 +35,10 @@ struct HomeHeaderView: View {
                                 currentPage: $currentPage
                             )
                             .id(index) // important for scrollTo
-                            .frame(width: UIScreen.main.bounds.width) // full-screen card
                         }
                     }
                     .padding(.horizontal, 30)
+                    .focusSection()
                 }
                 .onChange(of: currentPage) { newPage in
                     // Scroll to the selected page when currentPage changes (tap or focus)
@@ -101,13 +101,7 @@ struct CarouselItemView: View {
             CarouselCardView(content: content)
                 .ignoresSafeArea()
             
-            FeaturedMovieView(content: content)
-                .modifier(FocusWrapper(
-                    contentID: content.id,
-                    focusedItem: $focusedItem,
-                    currentPage: $currentPage,
-                    viewModel: viewModel
-                ))
+            FeaturedMovieView(content: content, focusedItem: $focusedItem)
         }
         .focusSection()
     }
@@ -116,7 +110,8 @@ struct CarouselItemView: View {
 // MARK: - Featured Movie Section
 struct FeaturedMovieView: View {
     let content: CarouselContent
-    
+    @FocusState.Binding var focusedItem: FocusTarget?
+
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
             Text(content.title ?? "")
@@ -131,7 +126,8 @@ struct FeaturedMovieView: View {
                     .frame(maxWidth: 600, alignment: .leading)
             }
             
-            PlayButton()
+            PlayButton(focusedItem: $focusedItem)
+
         }
         .frame(maxHeight: .infinity)
         .padding(.leading, 60)
@@ -148,21 +144,31 @@ struct FeaturedMovieView: View {
 
 // MARK: - Play Button
 struct PlayButton: View {
+    @FocusState.Binding var focusedItem: FocusTarget?
     var body: some View {
         Button(action: {
             print("Play tapped")
         }) {
-            HStack {
+            HStack(spacing: 10.0) {
                 Image(systemName: "play.fill")
                 Text("Play")
             }
-            .font(.title2)
+            .frame(width: 160, height: 35)
+            .font(focusedItem == .playButton ? .caption.bold() : .caption)
             .padding()
-            .background(Color.purple)
+            .background(Color.appPurple)
             .foregroundColor(.white)
             .cornerRadius(12)
         }
-        .buttonStyle(.card) // tvOS focus bounce
+        .buttonStyle(.plain) // tvOS focus bounce
+        .overlay(
+            RoundedRectangle(cornerRadius: 12)
+                .stroke(Color.white, lineWidth: focusedItem == .playButton ? 4 : 0)
+        )
+        .scaleEffect(focusedItem == .playButton ? 1.05 : 1.0)
+        .focusable(true)
+        .focused($focusedItem, equals: .playButton)
+        .animation(.easeInOut(duration: 0.2), value: focusedItem)
     }
 }
 
@@ -183,5 +189,26 @@ struct FocusWrapper: ViewModifier {
                     currentPage = idx
                 }
             }
+    }
+}
+extension Color {
+    static let appPurple = Color(hex: "#590DE5")
+    
+    init(hex: String) {
+        let hex = hex.trimmingCharacters(in: CharacterSet.alphanumerics.inverted)
+        var int: UInt64 = 0
+        Scanner(string: hex).scanHexInt64(&int)
+        let r, g, b: UInt64
+        switch hex.count {
+        case 6: // RGB (24-bit)
+            (r, g, b) = ((int >> 16) & 0xFF, (int >> 8) & 0xFF, int & 0xFF)
+        default:
+            (r, g, b) = (0, 0, 0)
+        }
+        self.init(
+            red: Double(r)/255,
+            green: Double(g)/255,
+            blue: Double(b)/255
+        )
     }
 }
