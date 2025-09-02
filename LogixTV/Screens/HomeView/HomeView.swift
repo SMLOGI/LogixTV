@@ -31,47 +31,32 @@ struct HomeView: View {
                 
                 // MARK: Transparent Content
                 LazyVStack(alignment: .leading, spacing: 20) {
-                    ForEach(viewModel.carouselDisplayNameList, id: \.self) { displayName in
+                    ForEach(viewModel.carouselGroups, id: \.name) { group in
                         VStack(alignment: .leading, spacing: 8) {
-                            Text(displayName)
+                            Text(group.displayName)
                                 .font(.title2)
                                 .foregroundColor(.white)
                                 .padding(.horizontal)
                             
                             ScrollView(.horizontal, showsIndicators: false) {
-                                LazyHGrid(rows: [GridItem(.fixed(160), spacing: 20)]) {
-                                    ForEach(0..<10, id: \.self) { _ in
-                                        Button {
-                                            // action
-                                        } label: {
-                                            VStack {
-                                                Image(systemName: "movieclapper")
-                                                    .resizable()
-                                                    .scaledToFit()
-                                                    .frame(width: 80, height: 80)
-                                                    .padding()
-                                                
-                                                Text("Movie")
-                                                    .foregroundColor(.white)
-                                            }
-                                            .frame(width: 120, height: 160)
-                                            .background(
-                                                Color.black.opacity(0.4) // only cell bg
-                                                    .cornerRadius(12)
-                                            )
+                                HStack(spacing: 20) {
+                                    if let items = viewModel.carousels[group.name] {
+                                        ForEach(items, id: \.id) { item in
+                                            CarouselCardButtonView(item: item)
                                         }
-                                        .buttonStyle(.plain)
                                     }
                                 }
                                 .padding(.horizontal)
                             }
                         }
                         .padding(.top, 16)
+                        .focusSection()
                     }
                 }
                 .padding(.top, headerHeight - 200) // aligns first section at bottom of header
                 .task {
                     await viewModel.loadCarouselGroup()
+                    await viewModel.loadCarouselContents()
                 }
             }
         }
@@ -79,6 +64,44 @@ struct HomeView: View {
     }
 }
 
+struct CarouselCardButtonView: View {
+    let item: CarouselContent
+    
+    var body: some View {
+        Button(action: {
+            // handle card tap
+        }) {
+            VStack(alignment: .leading) {
+                if let images = item.images {
+                    let imageUrl = images.count > 1 ? images[1].imageLink : images.first?.imageLink
+                    if let imageUrl, let url = URL(string: imageUrl) {
+                        AsyncImage(url: url) { image in
+                            image
+                                .resizable()
+                                .aspectRatio(3/4, contentMode: .fit)
+                        } placeholder: {
+                            ProgressView()
+                        }
+                        .frame(width: 200)
+                        .cornerRadius(12)
+                    } else {
+                        Rectangle()
+                            .fill(Color.gray)
+                            .frame(width: 200)
+                            .cornerRadius(12)
+                    }
+                } else {
+                    Rectangle()
+                        .fill(Color.gray)
+                        .frame(width: 200)
+                        .cornerRadius(12)
+                }
+            }
+        }
+        .frame(width: 200)
+        .buttonStyle(.plain)
+    }
+}
 
 #Preview {
     //HomeView()

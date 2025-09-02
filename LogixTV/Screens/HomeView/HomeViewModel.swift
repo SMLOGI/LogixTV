@@ -11,6 +11,7 @@ import SwiftUI
 @MainActor
 final class HomeViewModel: ObservableObject {
     @Published var carouselGroups: [CarouselGroupData] = []
+    @Published var carousels: [String: [CarouselContent]] = [:]
     @Published var errorMessage: String?
     
     var carouselNameList: [String] {
@@ -34,5 +35,24 @@ final class HomeViewModel: ObservableObject {
         } catch {
             errorMessage = error.localizedDescription
         }
+    }
+    
+    func loadCarouselContents() async {
+        for name in carouselNameList {
+            do {
+                let response = try await NetworkManager.shared.request(
+                    baseURL: .main,
+                    path: "content/\(name)?page=1&count=10",
+                    method: .GET
+                ) as CarouselResponse
+                
+                if let data = response.data {
+                    carousels[name] = data
+                }
+            } catch {
+                errorMessage = error.localizedDescription
+            }
+        }
+        print(carousels)
     }
 }
