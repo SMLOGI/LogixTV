@@ -11,11 +11,11 @@ struct SideMenuView: View {
     @Binding var isSidebarExpanded: Bool
     @Binding var selectedIndex: Int
     @FocusState.Binding var focusedField: FocusTarget?
-    @StateObject private var viewModel = SideMenuViewModel()
+    @ObservedObject var viewModel: SideMenuViewModel
         
     var body: some View {
         VStack(alignment: .leading, spacing: 40) {
-            if let logoItem = viewModel.menuGroups.first?.menu.filter({ $0.name == "logo" }).first {
+            if let logoItem = viewModel.logo {
                 if let url = URL(string: logoItem.details.unselectedImageLink) {
                     AsyncImage(url: url) { image in
                         image.resizable()
@@ -29,7 +29,7 @@ struct SideMenuView: View {
                 }
                 
             }
-            if let menuItems = viewModel.menuGroups.first?.menu.filter({ $0.displayType.name == "bottom-menu" }).sorted(by: { $0.details.ordering < $1.details.ordering }) {
+            let menuItems = viewModel.menuList
                 VStack(alignment: .leading, spacing: 20) {
                     ForEach(menuItems.indices, id: \.self) { index in
                         let isFocused = focusedField == .menu(index)
@@ -74,8 +74,6 @@ struct SideMenuView: View {
                         focusedField = .playButton
                     }
                 }
-            }
-            
             Spacer()
         }
         .task {

@@ -10,7 +10,8 @@ import SwiftUI
 
 @MainActor
 final class SideMenuViewModel: ObservableObject {
-    @Published var menuGroups: [Datum] = []
+    @Published var logo: Menu?
+    @Published var menuList: [Menu] = []
     @Published var errorMessage: String?
     
     
@@ -20,11 +21,10 @@ final class SideMenuViewModel: ObservableObject {
                 baseURL: .main, path: "menu/tv",
                 method: .GET
             ) as SideMenu
+            self.logo = sideMenu.data.first?.menu.filter({ $0.name == "logo" }).first
+            self.menuList = sideMenu.data.first?.menu.filter({ $0.displayType.name == "bottom-menu" }).sorted(by: { $0.details.ordering < $1.details.ordering }) ?? []
             
-            menuGroups = sideMenu.data
-            
-            print("✅ Side menu loaded:", menuGroups)
-        } catch {
+            } catch {
             errorMessage = error.localizedDescription
         }
     }

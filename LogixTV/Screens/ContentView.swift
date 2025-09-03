@@ -5,11 +5,15 @@
 //  Created by Subodh  on 04/08/25.
 //
 
+
 import SwiftUI
+
+enum MenuTypeName: String {
+    case home, listen, watch, sports, shows, unknown
+}
 
 struct MenuItem {
     let title: String
-    let icon: String
     let view: AnyView
 }
 enum FocusTarget: Hashable {
@@ -24,19 +28,19 @@ struct ContentView: View {
     @State private var selectedIndex: Int = 0
     @State private var isSidebarExpanded: Bool = false
     @FocusState private var focusedField: FocusTarget?
-    
+    @StateObject private var viewModel = SideMenuViewModel()
+    @State private var dynamicMenuItems: [MenuItem] = []
     init() {
         // Placeholder; replaced later in body where we have $focusedField
     }
     
     var body: some View {
-        let dynamicMenuItems: [MenuItem] = [
-            MenuItem(title: "Home", icon: "house", view: AnyView(HomeView(focusedItem: $focusedField))),
-            MenuItem(title: "Listen", icon: "headphones", view: AnyView(ListenView())),
-            MenuItem(title: "Sports", icon: "sportscourt", view: AnyView(SportsView())),
-            MenuItem(title: "Watch", icon: "play.tv", view: AnyView(WatchView())),
-            MenuItem(title: "Shows", icon: "tv", view: AnyView(ShowsView()))
-        ]
+        let homeView = AnyView(HomeView(focusedItem: $focusedField))
+        let listenView = AnyView(ListenView())
+        let sportsView = AnyView(SportsView())
+        let watchView = AnyView(WatchView())
+        let showsView = AnyView(ShowsView())
+        
         
         ZStack(alignment: .leading) {
             // Main Content Area using TabView
@@ -45,7 +49,7 @@ struct ContentView: View {
                     dynamicMenuItems[index].view
                         .tag(index)
                         .frame(maxWidth: .infinity, maxHeight: .infinity)
-                        .background(Color(.darkGray))
+                        .background(Color(.black))
                         .focused($focusedField, equals: .mainContent)
                         .focusSection()
                         .onMoveCommand { dir in
@@ -62,7 +66,7 @@ struct ContentView: View {
             SideMenuView(
                 isSidebarExpanded: $isSidebarExpanded,
                 selectedIndex: $selectedIndex,
-                focusedField: $focusedField,
+                focusedField: $focusedField, viewModel: viewModel,
             )
             .ignoresSafeArea()
             .frame(width: 250)
@@ -78,6 +82,27 @@ struct ContentView: View {
             }
         }
         .ignoresSafeArea()
+        .task {
+            await viewModel.loadMenu()
+            for menu in viewModel.menuList {
+                let type = MenuTypeName(rawValue: menu.name) ?? .unknown
+                
+                let destination: AnyView
+                switch type {
+                case .home:
+                    destination = homeView
+                case .listen:
+                    destination = listenView
+                case .watch:
+                    destination = watchView
+                case .sports:
+                    destination = sportsView
+                case .shows, .unknown:
+                    destination = showsView
+                }
+                dynamicMenuItems.append(MenuItem(title: menu.name, view: destination))
+            }
+        }
     }
 }
 
