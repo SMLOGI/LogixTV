@@ -55,11 +55,11 @@ struct SideMenuView: View {
                             }
                             .padding(.horizontal, 12)
                             .padding(.vertical, 10)
-                            .background(
+                            /*.background(
                                 RoundedRectangle(cornerRadius: 10)
                                     .fill(isFocused ? Color.white.opacity(0.2) : .clear)
                             )
-                            .scaleEffect(isFocused ? 1.15 : 1.0)
+                            .scaleEffect(isFocused ? 1.15 : 1.0)*/
                         }
                         .buttonStyle(.plain)
                         .contentShape(Rectangle())
@@ -71,11 +71,12 @@ struct SideMenuView: View {
                 .focusSection()
                 .onMoveCommand { dir in
                     if dir == .right {
-                        focusedField = .playButton
+                        focusedField = .mainContent
                     }
                 }
             Spacer()
         }
+        .background(Color.black)
         .task {
             await viewModel.loadMenu()
         }

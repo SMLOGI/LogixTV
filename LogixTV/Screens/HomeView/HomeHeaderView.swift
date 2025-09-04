@@ -28,7 +28,7 @@ struct HomeHeaderView: View {
                 ScrollView(.horizontal, showsIndicators: false) {
                     LazyHGrid(rows: rows, spacing: 0) {
                         ForEach(Array(viewModel.contentList.enumerated()), id: \.1.id) { (index, content) in
-                            CarouselItemView(
+                            BannerCarouselView(
                                 content: content,
                                 viewModel: viewModel,
                                 focusedItem: $focusedItem,
@@ -50,13 +50,18 @@ struct HomeHeaderView: View {
             }
             
             // MARK: Pager Dots
-             HStack(spacing: 12) {
+            HStack(spacing: 12) {
                 ForEach(viewModel.contentList.indices, id: \.self) { index in
                     Circle()
                         .fill(focusedItem == .pageDot(index) ? Color.white : (index == currentPage ? Color.white : Color.gray.opacity(0.5)))
                         .frame(width: 20, height: 20)
-                        .focusable(true)
                         .focused($focusedItem, equals: .pageDot(index)) // each dot individually focusable
+                        .onMoveCommand { dir in
+                            if dir == .left {
+                                // go back to sidebar
+                                focusedItem = .menu(0)
+                            }
+                        }
                         .onChange(of: focusedItem) { newFocus in
                             // Scroll carousel when a dot receives focus
                             if newFocus == .pageDot(index) {
@@ -73,7 +78,7 @@ struct HomeHeaderView: View {
                 }
             }
             .focusSection() // optional: marks the whole HStack as a section
-
+            
             .padding(.bottom, 200)
             
             // MARK: Error Message
@@ -91,7 +96,7 @@ struct HomeHeaderView: View {
 }
 
 // MARK: - Extracted Subview
-struct CarouselItemView: View {
+struct BannerCarouselView: View {
     let content: CarouselContent
     let viewModel: CarouselViewModel
     @FocusState.Binding var focusedItem: FocusTarget?
@@ -99,17 +104,18 @@ struct CarouselItemView: View {
     
     var body: some View {
         ZStack(alignment: .leading) {
-            CarouselCardView(content: content)
+            BannerImageView(content: content)
                 .ignoresSafeArea()
             
-            FeaturedMovieView(content: content, focusedItem: $focusedItem)
+            BannerDetailView(content: content, focusedItem: $focusedItem)
         }
+        .focused($focusedItem, equals: .mainContent)
         .focusSection()
     }
 }
 
 // MARK: - Featured Movie Section
-struct FeaturedMovieView: View {
+struct BannerDetailView: View {
     let content: CarouselContent
     @FocusState.Binding var focusedItem: FocusTarget?
 
@@ -133,11 +139,15 @@ struct FeaturedMovieView: View {
                         if dir == .right {
                             focusedItem = .pageDot(0)
                         }
+                        if dir == .left {
+                            // go back to sidebar
+                            focusedItem = .menu(0)
+                        }
                     }
                 
             }
             .frame(maxHeight: .infinity)
-            .padding(.leading, 60)
+            .padding(.leading, 0)
 
             Spacer()
         }
@@ -176,31 +186,11 @@ struct PlayButton: View {
                 .stroke(Color.white, lineWidth: focusedItem == .playButton ? 4 : 0)
         )
         .scaleEffect(focusedItem == .playButton ? 1.05 : 1.0)
-        .focusable(true)
         .focused($focusedItem, equals: .playButton)
         .animation(.easeInOut(duration: 0.2), value: focusedItem)
     }
 }
 
-// MARK: - Focus Wrapper Modifier
-struct FocusWrapper: ViewModifier {
-    let contentID: Int
-    @FocusState.Binding var focusedItem: FocusTarget?
-    @Binding var currentPage: Int
-    let viewModel: CarouselViewModel
-    
-    func body(content: Content) -> some View {
-        content
-            .focusable(true)
-            .focused($focusedItem, equals: .carouselItem(contentID))
-            .onChange(of: focusedItem) { newFocus in
-                guard case let .carouselItem(id) = newFocus else { return }
-                if let idx = viewModel.contentList.firstIndex(where: { $0.id == id }) {
-                    currentPage = idx
-                }
-            }
-    }
-}
 extension Color {
     static let appPurple = Color(hex: "#590DE5")
     

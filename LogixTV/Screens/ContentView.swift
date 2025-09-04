@@ -43,6 +43,7 @@ struct ContentView: View {
         
         
         ZStack(alignment: .leading) {
+            
             // Main Content Area using TabView
             TabView(selection: $selectedIndex) {
                 ForEach(dynamicMenuItems.indices, id: \.self) { index in
@@ -54,13 +55,15 @@ struct ContentView: View {
                         .focusSection()
                         .onMoveCommand { dir in
                             if dir == .left {
-                                // go back to sidebar
                                 focusedField = .menu(selectedIndex)
                             }
                         }
                 }
             }
             .tabViewStyle(.page(indexDisplayMode: .never))
+            .padding(.leading, 100.0)
+            .padding(.top, 0)
+            .focusSection()
             
             // Sidebar
             SideMenuView(
@@ -68,8 +71,8 @@ struct ContentView: View {
                 selectedIndex: $selectedIndex,
                 focusedField: $focusedField, viewModel: viewModel,
             )
-            .ignoresSafeArea()
-            .frame(width: 250)
+            .focusSection()
+            //.frame(width: 250)
             .onChange(of: focusedField) { newFocus in
                 withAnimation {
                     switch newFocus {

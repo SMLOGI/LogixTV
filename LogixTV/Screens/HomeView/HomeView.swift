@@ -51,6 +51,12 @@ struct HomeView: View {
                         }
                         .padding(.top, 16)
                         .focusSection()
+                        .onMoveCommand { dir in
+                            if dir == .left {
+                                // go back to sidebar
+                                focusedItem = .menu(0)
+                            }
+                        }
                     }
                 }
                 .padding(.top, headerHeight - 200) // aligns first section at bottom of header
