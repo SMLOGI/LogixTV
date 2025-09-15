@@ -60,6 +60,7 @@ struct HomeView: View {
                     }
                 }
                 .padding(.top, headerHeight - 320) // aligns first section at bottom of header
+                .padding(.leading, 60)
                 .task {
                     await viewModel.loadCarouselGroup()
                     await viewModel.loadCarouselContents()

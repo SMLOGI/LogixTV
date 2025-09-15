@@ -25,11 +25,9 @@ struct HomeHeaderView: View {
         ZStack(alignment: .bottom) {
             
             ScrollViewReader { proxy in
-                ScrollView(.horizontal, showsIndicators: false) {
-                    LazyHGrid(rows: rows, spacing: 0) {
-                        
+                    TabView(selection: $currentPage) {
                         ForEach(Array(viewModel.contentList.enumerated()), id: \.1.id) { (index, content) in
-                            BannerCarouselView(
+                            HeroBannerCarouselView(
                                 content: content,
                                 viewModel: viewModel,
                                 focusedItem: $focusedItem,
@@ -39,16 +37,11 @@ struct HomeHeaderView: View {
                             .frame(width: UIScreen.main.bounds.width - 60) // full-screen card
                         }
                     }
-                    .padding(.horizontal, 30)
-                    .focusSection()
+                    .tabViewStyle(PageTabViewStyle(indexDisplayMode: .never))
                 }
                 .onChange(of: currentPage) { newPage in
                     // Scroll to the selected page when currentPage changes (tap or focus)
-                    withAnimation {
-                        proxy.scrollTo(newPage, anchor: .center)
-                    }
                 }
-            }
             
             // MARK: Pager Dots
             HStack(spacing: 12) {
@@ -58,12 +51,12 @@ struct HomeHeaderView: View {
                         .frame(width: 20, height: 20)
                         .focusable(true)
                         .focused($focusedItem, equals: .pageDot(index)) // each dot individually focusable
-                        /*.onMoveCommand { dir in
-                            if dir == .left {
-                                // go back to sidebar
-                                focusedItem = .menu(0)
-                            }
-                        }*/
+                    /*.onMoveCommand { dir in
+                     if dir == .left {
+                     // go back to sidebar
+                     focusedItem = .menu(0)
+                     }
+                     }*/
                         .onChange(of: focusedItem) { oldFocus, newFocus in
                             // Scroll carousel when a dot receives focus
                             if newFocus == .pageDot(index) {
@@ -84,7 +77,7 @@ struct HomeHeaderView: View {
             .focusSection() // optional: marks the whole HStack as a section
             .padding(.bottom, 340)
             .padding(.leading, 60.0)
-
+            
             // MARK: Error Message
             if let errorMessage = viewModel.errorMessage {
                 Text(errorMessage)
@@ -99,116 +92,6 @@ struct HomeHeaderView: View {
     }
 }
 
-// MARK: - Extracted Subview
-struct BannerCarouselView: View {
-    let content: CarouselContent
-    let viewModel: CarouselViewModel
-    @FocusState.Binding var focusedItem: FocusTarget?
-    @Binding var currentPage: Int
-    
-    var body: some View {
-        ZStack(alignment: .leading) {
-            BannerImageView(content: content)
-                .ignoresSafeArea()
-                .overlay(
-                    LinearGradient(
-                        gradient: Gradient(colors: [Color.black.opacity(1.0), Color.black.opacity(0.0)]),
-                        startPoint: .bottom,
-                        endPoint: .top
-                    )
-                )
-            
-            BannerDetailView(content: content, focusedItem: $focusedItem)
-                .frame(height: 300)
-        }
-        //.focused($focusedItem, equals: .mainContent)
-        //.focusSection()
-    }
-}
-
-// MARK: - Featured Movie Section
-struct BannerDetailView: View {
-    let content: CarouselContent
-    @FocusState.Binding var focusedItem: FocusTarget?
-
-    var body: some View {
-        HStack {
-            VStack(alignment: .leading, spacing: 16) {
-                Text(content.title ?? "")
-                    .font(.largeTitle)
-                    .bold()
-                    .foregroundColor(.white)
-                
-                if let description = content.description {
-                    Text(description)
-                        .font(.callout)
-                        .foregroundColor(.white.opacity(0.8))
-                        .frame(maxWidth: 600, alignment: .leading)
-                }
-                //RoundedRectButton(title: "WATCH NOW", focusedItem: $focusedItem) {}
-                    //.focused($focusedItem, equals: .playButton)
-
-            PlayButton(focusedItem: $focusedItem)
-                    /*.onMoveCommand { dir in
-                        if dir == .right {
-                            focusedItem = .pageDot(0)
-                        }
-                        if dir == .left {
-                            // go back to sidebar
-                            focusedItem = .menu(0)
-                        }
-                    }*/
-                 
-            }
-            .frame(maxHeight: .infinity)
-            .padding(.leading, 0)
-
-            Spacer()
-        }
-        .padding(.leading, 50)
-        .background(.clear)
-        .focusSection()
-    }
-}
-
-/// MARK: - Play Button
-struct PlayButton: View {
-    @FocusState.Binding var focusedItem: FocusTarget?
-
-    var body: some View {
-        Button {
-            print("play")
-        } label: {
-            HStack(spacing: 10) {
-                Image(systemName: "play.fill")
-                    .font(.subheadline)
-                Text("PLAY")
-                    .font(.caption)
-            }
-            .padding(10)
-            .frame(width: 120, height: 32)
-        }
-        .background(Color.appPurple)
-        .cornerRadius(12)
-        .focused($focusedItem, equals: .playButton)
-        /*
-        .buttonStyle(.borderless)
-        .background(Color.appPurple)
-        .cornerRadius(12)
-        .overlay(
-            RoundedRectangle(cornerRadius: 12)
-                .stroke(Color.white, lineWidth: focusedItem == .playButton ? 3 : 0)
-        )
-        .scaleEffect(focusedItem == .playButton ? 1.05 : 1.0)
-        .animation(.easeInOut(duration: 0.2), value: focusedItem)
-        .focused($focusedItem, equals: .playButton)
-        .onChange(of: focusedItem) { oldValue, newValue in
-            print("Focused item changed to: \(String(describing: newValue))")
-        }*/
-    }
-}
-
- 
 
 /*
 struct RoundedRectButton: View {
