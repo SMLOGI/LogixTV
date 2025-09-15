@@ -27,6 +27,8 @@ struct HomeHeaderView: View {
             ScrollViewReader { proxy in
                 ScrollView(.horizontal, showsIndicators: false) {
                     LazyHGrid(rows: rows, spacing: 0) {
+                        
+                        Text(focusedItem?.description ?? "No Focus")
                         ForEach(Array(viewModel.contentList.enumerated()), id: \.1.id) { (index, content) in
                             BannerCarouselView(
                                 content: content,
@@ -53,7 +55,7 @@ struct HomeHeaderView: View {
             HStack(spacing: 12) {
                 ForEach(viewModel.contentList.indices, id: \.self) { index in
                     Circle()
-                        .fill(focusedItem == .pageDot(index) ? Color.white : (index == currentPage ? Color.white : Color.gray.opacity(0.5)))
+                        .fill(currentPage == index ? Color.white : Color.gray.opacity(0.5))
                         .frame(width: 20, height: 20)
                         .focusable(true)
                         .focused($focusedItem, equals: .pageDot(index)) // each dot individually focusable
@@ -63,7 +65,7 @@ struct HomeHeaderView: View {
                                 focusedItem = .menu(0)
                             }
                         }*/
-                        .onChange(of: focusedItem) { newFocus in
+                        .onChange(of: focusedItem) { oldFocus, newFocus in
                             // Scroll carousel when a dot receives focus
                             if newFocus == .pageDot(index) {
                                 withAnimation {
@@ -169,42 +171,47 @@ struct BannerDetailView: View {
         .focusSection()
     }
 }
-/*
+
 /// MARK: - Play Button
 struct PlayButton: View {
     @FocusState.Binding var focusedItem: FocusTarget?
+
     var body: some View {
         Button {
             print("play")
         } label: {
-            
-            HStack(spacing: 10.0) {
+            HStack(spacing: 10) {
                 Image(systemName: "play.fill")
-                    .foregroundColor(.white)
+                    .font(.subheadline)
                 Text("PLAY")
-                    .font(focusedItem == .playButton ? .caption.bold() : .caption)
-                    .foregroundColor(.white)
+                    .font(.caption)
             }
+            .padding(10)
+            .frame(width: 120, height: 32)
         }
+        .background(Color.appPurple)
+        .cornerRadius(12)
+        .focused($focusedItem, equals: .playButton)
+        /*
         .buttonStyle(.borderless)
-        .padding()
-        .frame(width: 160, height: 35)
-        .padding()
         .background(Color.appPurple)
         .cornerRadius(12)
         .overlay(
             RoundedRectangle(cornerRadius: 12)
-                .stroke(Color.white, lineWidth: focusedItem == .playButton ? 4 : 0)
+                .stroke(Color.white, lineWidth: focusedItem == .playButton ? 3 : 0)
         )
         .scaleEffect(focusedItem == .playButton ? 1.05 : 1.0)
-        .focused($focusedItem, equals: .playButton)
         .animation(.easeInOut(duration: 0.2), value: focusedItem)
+        .focused($focusedItem, equals: .playButton)
         .onChange(of: focusedItem) { oldValue, newValue in
-            print(newValue)
-        }
+            print("Focused item changed to: \(String(describing: newValue))")
+        }*/
     }
 }
- */
+
+ 
+
+/*
 struct RoundedRectButton: View {
     let title: String
     @FocusState.Binding var focusedItem: FocusTarget?
@@ -254,7 +261,9 @@ struct RoundedRectButton: View {
             }
     }
 }
+*/
 
+/*
 struct PlayButton: View {
     @FocusState.Binding var focusedItem: FocusTarget?
 
@@ -305,7 +314,7 @@ struct PlayButton: View {
         }
     }
 
-}
+}*/
 
 
 extension Color {

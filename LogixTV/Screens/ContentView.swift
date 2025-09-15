@@ -50,7 +50,7 @@ struct ContentView: View {
     }
     
     var body: some View {
-        let homeView = AnyView(HomeView(focusedItem: $focusedField))
+        //let homeView = AnyView(HomeView(focusedItem: $focusedField))
         let listenView = AnyView(ListenView())
         let sportsView = AnyView(SportsView())
         let watchView = AnyView(WatchView())
@@ -64,14 +64,23 @@ struct ContentView: View {
             
             // Main Content Area using TabView
             TabView(selection: $selectedIndex) {
-                ForEach(dynamicMenuItems.indices, id: \.self) { index in
-                    dynamicMenuItems[index].view
-                        .tag(index)
-                        .frame(maxWidth: .infinity, maxHeight: .infinity)
-                        .background(Color(.black))
-                       // .focused($focusedField, equals: .mainContent)
+                ForEach(Array(viewModel.menuList.enumerated()), id: \.offset) { index, menu in
+                    let type = MenuTypeName(rawValue: menu.name) ?? .unknown
+                    
+                    switch type {
+                    case .home:
+                        HomeView(focusedItem: $focusedField)
+                            .tag(index) // must match selection binding
+                            .frame(maxWidth: .infinity, maxHeight: .infinity)
+                            .background(Color.black)
+                        
+                    default:
+                        EmptyView()
+                            .tag(index) // still needs a tag to keep indices in sync
+                    }
                 }
             }
+
             .tabViewStyle(.page(indexDisplayMode: .never))
             .padding(.leading, 40.0)
             .padding(.top, 0)
@@ -110,7 +119,7 @@ struct ContentView: View {
                 let destination: AnyView
                 switch type {
                 case .home:
-                    destination = homeView
+                    destination = AnyView(HomeView(focusedItem: $focusedField))
                     dynamicMenuItems.append(MenuItem(title: menu.name, view: destination))
                 default:
                     EmptyView()

@@ -64,6 +64,8 @@ struct HomeView: View {
                     await viewModel.loadCarouselGroup()
                     await viewModel.loadCarouselContents()
                 }
+                Text(focusedItem?.description ?? "No Focus")
+
             }
         }
         .edgesIgnoringSafeArea(.top)
