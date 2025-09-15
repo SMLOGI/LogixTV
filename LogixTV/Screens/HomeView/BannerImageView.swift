@@ -13,8 +13,8 @@ struct BannerImageView: View {
     
     var body: some View {
         VStack {
-            if let imageUrl = content.images?.first?.imageLink, let url = URL(string: imageUrl) {
-                AsyncImage(url: url) { phase in
+            if let imageUrl = content.imageURL(for: .landscape16x9) {
+                AsyncImage(url: imageUrl) { phase in
                     switch phase {
                     case .empty:
                         Color.gray

@@ -59,7 +59,7 @@ struct HomeView: View {
                         .focusSection()
                     }
                 }
-                .padding(.top, headerHeight - 400) // aligns first section at bottom of header
+                .padding(.top, headerHeight - 320) // aligns first section at bottom of header
                 .task {
                     await viewModel.loadCarouselGroup()
                     await viewModel.loadCarouselContents()

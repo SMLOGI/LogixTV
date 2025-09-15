@@ -35,7 +35,7 @@ struct HomeHeaderView: View {
                                 currentPage: $currentPage
                             )
                             .id(index) // important for scrollTo
-                            .frame(width: UIScreen.main.bounds.width ) // full-screen card
+                            .frame(width: UIScreen.main.bounds.width - 60) // full-screen card
                         }
                     }
                     .padding(.horizontal, 30)
@@ -55,6 +55,7 @@ struct HomeHeaderView: View {
                     Circle()
                         .fill(focusedItem == .pageDot(index) ? Color.white : (index == currentPage ? Color.white : Color.gray.opacity(0.5)))
                         .frame(width: 20, height: 20)
+                        .focusable(true)
                         .focused($focusedItem, equals: .pageDot(index)) // each dot individually focusable
                         /*.onMoveCommand { dir in
                             if dir == .left {
@@ -77,13 +78,12 @@ struct HomeHeaderView: View {
                         }
                 }
             }
-            .focusable(true)
             .frame(width: UIScreen.main.bounds.width - 60)
             .background(.blue)
             .focusSection() // optional: marks the whole HStack as a section
-            
-            .padding(.bottom, 200)
-            
+            .padding(.bottom, 340)
+            .padding(.leading, 60.0)
+
             // MARK: Error Message
             if let errorMessage = viewModel.errorMessage {
                 Text(errorMessage)
@@ -109,9 +109,16 @@ struct BannerCarouselView: View {
         ZStack(alignment: .leading) {
             BannerImageView(content: content)
                 .ignoresSafeArea()
+                .overlay(
+                    LinearGradient(
+                        gradient: Gradient(colors: [Color.black.opacity(1.0), Color.black.opacity(0.0)]),
+                        startPoint: .bottom,
+                        endPoint: .top
+                    )
+                )
             
             BannerDetailView(content: content, focusedItem: $focusedItem)
-                .frame(height: 200)
+                .frame(height: 300)
         }
         //.focused($focusedItem, equals: .mainContent)
         //.focusSection()
@@ -157,16 +164,8 @@ struct BannerDetailView: View {
 
             Spacer()
         }
-        /*
-        .background(
-            LinearGradient(
-                gradient: Gradient(colors: [Color.black.opacity(1.0), Color.black.opacity(0.0)]),
-                startPoint: .leading,
-                endPoint: .trailing
-            )
-        )*/
         .padding(.leading, 50)
-        .background(.yellow)
+        .background(.clear)
         .focusSection()
     }
 }
