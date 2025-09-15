@@ -28,7 +28,6 @@ struct HomeHeaderView: View {
                 ScrollView(.horizontal, showsIndicators: false) {
                     LazyHGrid(rows: rows, spacing: 0) {
                         
-                        Text(focusedItem?.description ?? "No Focus")
                         ForEach(Array(viewModel.contentList.enumerated()), id: \.1.id) { (index, content) in
                             BannerCarouselView(
                                 content: content,
@@ -81,7 +80,7 @@ struct HomeHeaderView: View {
                 }
             }
             .frame(width: UIScreen.main.bounds.width - 60)
-            .background(.blue)
+            .background(.clear)
             .focusSection() // optional: marks the whole HStack as a section
             .padding(.bottom, 340)
             .padding(.leading, 60.0)

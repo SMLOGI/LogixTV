@@ -64,41 +64,11 @@ struct HomeView: View {
                     await viewModel.loadCarouselGroup()
                     await viewModel.loadCarouselContents()
                 }
-                Text(focusedItem?.description ?? "No Focus")
 
             }
         }
         .edgesIgnoringSafeArea(.top)
 
-    }
-}
-
-struct CarouselCardButtonView: View {
-    let item: CarouselContent
-    @FocusState.Binding var focusedItem: FocusTarget?
-    var body: some View {
-        Button(action: {
-            // handle card tap
-        }) {
-            VStack(alignment: .leading) {
-                if let imageUrl = item.imageURL(for: .landscape16x9) {
-                        AsyncImage(url: imageUrl) { image in
-                            image
-                                .resizable()
-                                .aspectRatio(16/9, contentMode: .fit)
-                        } placeholder: {
-                            ProgressView()
-                        }
-                } else {
-                    Rectangle()
-                        .fill(Color.gray)
-                }
-            }
-            .frame(height: 150)
-            .cornerRadius(12)
-        }
-        .focused($focusedItem, equals: .carouselItem(item.id))
-        .buttonStyle(.card)
     }
 }
 

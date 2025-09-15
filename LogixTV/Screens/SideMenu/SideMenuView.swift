@@ -75,7 +75,7 @@ struct SideMenuView: View {
                     }
                 }
             Spacer()
-            Text(focusedField?.description ?? "No Focus")
+            //Text(focusedField?.description ?? "No Focus")
         }
         .background {
             if isSidebarExpanded {
@@ -89,7 +89,7 @@ struct SideMenuView: View {
                 )
                // Color.black.opacity(0.9)
             } else {
-                Color.clear
+                Color.black
             }
         }
         .focusSection()

