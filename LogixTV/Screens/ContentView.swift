@@ -16,12 +16,27 @@ struct MenuItem {
     let title: String
     let view: AnyView
 }
-enum FocusTarget: Hashable {
+enum FocusTarget: Hashable , Equatable  {
     case menu(Int)
     case pageDot(Int)
     case playButton
     case carouselItem(Int)
     case mainContent
+    
+    var description: String {
+        switch self {
+        case .menu(let index):
+            return "Menu(\(index))"
+        case .pageDot(let index):
+            return "PageDot(\(index))"
+        case .playButton:
+            return "PlayButton"
+        case .carouselItem(let index):
+            return "CarouselItem(\(index))"
+        case .mainContent:
+            return "MainContent"
+        }
+    }
 }
 
 struct ContentView: View {
@@ -44,6 +59,9 @@ struct ContentView: View {
         
         ZStack(alignment: .leading) {
             
+            Color.black.opacity(1.0)
+                .ignoresSafeArea(edges: .all)
+            
             // Main Content Area using TabView
             TabView(selection: $selectedIndex) {
                 ForEach(dynamicMenuItems.indices, id: \.self) { index in
@@ -51,19 +69,13 @@ struct ContentView: View {
                         .tag(index)
                         .frame(maxWidth: .infinity, maxHeight: .infinity)
                         .background(Color(.black))
-                        .focused($focusedField, equals: .mainContent)
-                        .focusSection()
-                        .onMoveCommand { dir in
-                            if dir == .left {
-                                focusedField = .menu(selectedIndex)
-                            }
-                        }
+                       // .focused($focusedField, equals: .mainContent)
                 }
             }
             .tabViewStyle(.page(indexDisplayMode: .never))
-            .padding(.leading, 100.0)
+            .padding(.leading, 40.0)
             .padding(.top, 0)
-            .focusSection()
+           // .focusSection()
             
             // Sidebar
             SideMenuView(
@@ -83,6 +95,11 @@ struct ContentView: View {
                     }
                 }
             }
+//            .onChange(of: isSidebarExpanded) { oldValue, newValue in
+//                if !newValue {
+//                    focusedField = .pageDot(0)
+//                }
+//            }
         }
         .ignoresSafeArea()
         .task {
@@ -94,16 +111,10 @@ struct ContentView: View {
                 switch type {
                 case .home:
                     destination = homeView
-                case .listen:
-                    destination = listenView
-                case .watch:
-                    destination = watchView
-                case .sports:
-                    destination = sportsView
-                case .shows, .unknown:
-                    destination = showsView
+                    dynamicMenuItems.append(MenuItem(title: menu.name, view: destination))
+                default:
+                    EmptyView()
                 }
-                dynamicMenuItems.append(MenuItem(title: menu.name, view: destination))
             }
         }
     }

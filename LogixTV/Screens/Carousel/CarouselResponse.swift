@@ -20,7 +20,11 @@ struct CarouselResponse: Codable {
         case requestID = "request_id"
     }
 }
-
+enum CarouselImageType: String {
+    case landscape16x9 = "landscape_16x9"
+    case portrait3x4   = "portrait_3x4"
+    case square1x1     = "square_1x1"
+}
 // MARK: - Content
 struct CarouselContent: Codable {
     let id: Int
@@ -62,6 +66,36 @@ struct CarouselContent: Codable {
         case duration, runtime, state, isFree, contentType
         case subContentType = "SubContentType"
         case publishedType, publishedDate, language, parentalRating, rating, images, releaseStatus, genre, productionHouse, studio, displayTags, deeplink, partners, customParameters, seriesMeta, preview, cast, altmeta, keyword, country
+    }
+}
+
+extension CarouselContent {
+    
+    /// Preferred landscape 16:9 image
+    var landscape16x9URL: URL? {
+        imageURL(for: .landscape16x9)
+    }
+    
+    /// Generic accessor by type
+    func imageURL(for type: CarouselImageType) -> URL? {
+        images?
+            .first(where: { $0.type! == type.rawValue })
+            .flatMap { img in
+                guard let link = img.imageLink else { return nil }
+                return URL(string: link)
+            }
+    }
+    
+    /// Returns best available image with fallback order
+    var bestImageURL: URL? {
+        if let url = imageURL(for: .landscape16x9) {
+            return url
+        } else if let url = imageURL(for: .portrait3x4) {
+            return url
+        } else if let url = imageURL(for: .square1x1) {
+            return url
+        }
+        return nil
     }
 }
 

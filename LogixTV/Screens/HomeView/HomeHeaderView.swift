@@ -56,12 +56,12 @@ struct HomeHeaderView: View {
                         .fill(focusedItem == .pageDot(index) ? Color.white : (index == currentPage ? Color.white : Color.gray.opacity(0.5)))
                         .frame(width: 20, height: 20)
                         .focused($focusedItem, equals: .pageDot(index)) // each dot individually focusable
-                        .onMoveCommand { dir in
+                        /*.onMoveCommand { dir in
                             if dir == .left {
                                 // go back to sidebar
                                 focusedItem = .menu(0)
                             }
-                        }
+                        }*/
                         .onChange(of: focusedItem) { newFocus in
                             // Scroll carousel when a dot receives focus
                             if newFocus == .pageDot(index) {
@@ -77,6 +77,9 @@ struct HomeHeaderView: View {
                         }
                 }
             }
+            .focusable(true)
+            .frame(width: UIScreen.main.bounds.width - 60)
+            .background(.blue)
             .focusSection() // optional: marks the whole HStack as a section
             
             .padding(.bottom, 200)
@@ -108,9 +111,10 @@ struct BannerCarouselView: View {
                 .ignoresSafeArea()
             
             BannerDetailView(content: content, focusedItem: $focusedItem)
+                .frame(height: 200)
         }
-        .focused($focusedItem, equals: .mainContent)
-        .focusSection()
+        //.focused($focusedItem, equals: .mainContent)
+        //.focusSection()
     }
 }
 
@@ -133,9 +137,11 @@ struct BannerDetailView: View {
                         .foregroundColor(.white.opacity(0.8))
                         .frame(maxWidth: 600, alignment: .leading)
                 }
-                
-                PlayButton(focusedItem: $focusedItem)
-                    .onMoveCommand { dir in
+                //RoundedRectButton(title: "WATCH NOW", focusedItem: $focusedItem) {}
+                    //.focused($focusedItem, equals: .playButton)
+
+            PlayButton(focusedItem: $focusedItem)
+                    /*.onMoveCommand { dir in
                         if dir == .right {
                             focusedItem = .pageDot(0)
                         }
@@ -143,44 +149,50 @@ struct BannerDetailView: View {
                             // go back to sidebar
                             focusedItem = .menu(0)
                         }
-                    }
-                
+                    }*/
+                 
             }
             .frame(maxHeight: .infinity)
             .padding(.leading, 0)
 
             Spacer()
         }
+        /*
         .background(
             LinearGradient(
                 gradient: Gradient(colors: [Color.black.opacity(1.0), Color.black.opacity(0.0)]),
                 startPoint: .leading,
                 endPoint: .trailing
             )
-        )
+        )*/
+        .padding(.leading, 50)
+        .background(.yellow)
         .focusSection()
     }
 }
-
-// MARK: - Play Button
+/*
+/// MARK: - Play Button
 struct PlayButton: View {
     @FocusState.Binding var focusedItem: FocusTarget?
     var body: some View {
-        Button(action: {
-            print("Play tapped")
-        }) {
+        Button {
+            print("play")
+        } label: {
+            
             HStack(spacing: 10.0) {
                 Image(systemName: "play.fill")
-                Text("Play")
+                    .foregroundColor(.white)
+                Text("PLAY")
+                    .font(focusedItem == .playButton ? .caption.bold() : .caption)
+                    .foregroundColor(.white)
             }
-            .frame(width: 160, height: 35)
-            .font(focusedItem == .playButton ? .caption.bold() : .caption)
-            .padding()
-            .background(Color.appPurple)
-            .foregroundColor(.white)
-            .cornerRadius(12)
         }
-        .buttonStyle(.plain) // tvOS focus bounce
+        .buttonStyle(.borderless)
+        .padding()
+        .frame(width: 160, height: 35)
+        .padding()
+        .background(Color.appPurple)
+        .cornerRadius(12)
         .overlay(
             RoundedRectangle(cornerRadius: 12)
                 .stroke(Color.white, lineWidth: focusedItem == .playButton ? 4 : 0)
@@ -188,8 +200,114 @@ struct PlayButton: View {
         .scaleEffect(focusedItem == .playButton ? 1.05 : 1.0)
         .focused($focusedItem, equals: .playButton)
         .animation(.easeInOut(duration: 0.2), value: focusedItem)
+        .onChange(of: focusedItem) { oldValue, newValue in
+            print(newValue)
+        }
     }
 }
+ */
+struct RoundedRectButton: View {
+    let title: String
+    @FocusState.Binding var focusedItem: FocusTarget?
+
+    let action: () -> Void
+    //@FocusState private var isFocused: Bool
+ 
+    private enum Layout {
+        static let textPadding = EdgeInsets(top: 0, leading: 10, bottom: 0, trailing: 10)
+        static let borderWidth: CGFloat = 1
+        static let focusedBorderWidth: CGFloat = 4
+        static let cornerRadius: CGFloat = 25
+        static let buttonWidth: CGFloat = 154
+        static let buttonHeight: CGFloat = 40
+    }
+ 
+    private enum Colors {
+        static let unfocusedTextColor = Color(hex: "#A7A7A7")
+        static let focusedTextColor = Color.white
+        static let backgroundColor = Color.black
+        static let focusedBackgroundColor = Color(hex: "#EE1D24")
+        static let borderColor = Color(hex: "#575757")
+        static let focusedBorderColor = Color.white
+    }
+ 
+    var body: some View {
+        
+        Text(title)
+            .font(.custom(focusedItem == .playButton ? "Roboto-Bold" : "Roboto-Regular", size: 18))
+            .padding(Layout.textPadding)
+            .foregroundColor(focusedItem == .playButton ? Colors.focusedTextColor : Colors.unfocusedTextColor)
+            .frame(width: Layout.buttonWidth, height: Layout.buttonHeight)
+            .background(focusedItem == .playButton ? Colors.focusedBackgroundColor : Colors.backgroundColor)
+            .overlay(
+                RoundedRectangle(cornerRadius: Layout.cornerRadius)
+                    .stroke(focusedItem == .playButton ? Colors.focusedBorderColor : Colors.borderColor,
+                            lineWidth: focusedItem == .playButton ? Layout.focusedBorderWidth : Layout.borderWidth)
+            )
+            .cornerRadius(Layout.cornerRadius)
+            .focusable(true)
+            .focused($focusedItem ,equals: .playButton)
+            .onTapGesture {
+                action()
+            }
+            .onChange(of: focusedItem) { oldValue, newValue in
+                print(newValue,"newValue")
+            }
+    }
+}
+
+struct PlayButton: View {
+    @FocusState.Binding var focusedItem: FocusTarget?
+
+    var body: some View {
+        HStack(spacing: 10.0) {
+            Image(systemName: "play.fill")
+            Text("Play")
+        }
+        .frame(width: 160, height: 35)
+        .font(focusedItem == .playButton ? .caption.bold() : .caption)
+        .padding()
+        .background(focusedItem == .playButton ? Color.appPurple : Color.red)
+        .foregroundColor(.white)
+        .cornerRadius(12)
+        .overlay(
+            RoundedRectangle(cornerRadius: 12)
+                .stroke(Color.white, lineWidth: focusedItem == .playButton ? 4 : 0)
+        )
+        .scaleEffect(focusedItem == .playButton ? 1.05 : 1.0)
+        .focusable(true)                  // ✅ enables tvOS focus engine (parallax)
+        .focused($focusedItem, equals: .playButton)
+        .onChange(of: focusedItem) { oldValue ,newValue in
+            debugFocusedItem(newValue)
+        }
+        .onTapGesture {
+            print("Play tapped")          // custom tap action
+        }
+        .animation(.easeInOut(duration: 0.2), value: focusedItem)
+    }
+    
+    func debugFocusedItem(_ item: FocusTarget?) {
+        guard let item = item else {
+            print("👉 No item focused")
+            return
+        }
+
+        switch item {
+        case .menu(let index):
+            print("👉 Focus on Menu item \(index)")
+        case .pageDot(let index):
+            print("👉 Focus on PageDot \(index)")
+        case .playButton:
+            print("👉 Focus on Play Button")
+        case .carouselItem(let index):
+            print("👉 Focus on Carousel item \(index)")
+        case .mainContent:
+            print("👉 Focus on Main Content")
+        }
+    }
+
+}
+
 
 extension Color {
     static let appPurple = Color(hex: "#590DE5")

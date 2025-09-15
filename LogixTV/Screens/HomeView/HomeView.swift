@@ -33,33 +33,33 @@ struct HomeView: View {
                 LazyVStack(alignment: .leading, spacing: 20) {
                     ForEach(viewModel.carouselGroups, id: \.name) { group in
                         VStack(alignment: .leading, spacing: 8) {
-                            Text(group.displayName)
-                                .font(.title2)
-                                .foregroundColor(.white)
-                                .padding(.horizontal)
-                            
-                            ScrollView(.horizontal, showsIndicators: false) {
-                                HStack(spacing: 20) {
-                                    if let items = viewModel.carousels[group.name] {
-                                        ForEach(items, id: \.id) { item in
-                                            CarouselCardButtonView(item: item)
+                            Section(group.displayName) {
+                                ScrollView(.horizontal, showsIndicators: false) {
+                                    HStack(spacing: .zero) {
+                                        if let items = viewModel.carousels[group.name] {
+                                            ForEach(items, id: \.id) { item in
+                                                HStack(spacing: 0) {
+                                                    CarouselCardButtonView(item: item, focusedItem: $focusedItem)
+                                                }
+                                                .padding(20)
+                                            }
                                         }
+                                        
                                     }
-                                }
-                                .padding(.horizontal)
+                                    .padding(.horizontal)
                             }
+                            .padding()
+ 
+                            }
+                            .font(.title2)
+                            .foregroundColor(.white)
+                            .padding(.horizontal)
                         }
                         .padding(.top, 16)
                         .focusSection()
-                        .onMoveCommand { dir in
-                            if dir == .left {
-                                // go back to sidebar
-                                focusedItem = .menu(0)
-                            }
-                        }
                     }
                 }
-                .padding(.top, headerHeight - 200) // aligns first section at bottom of header
+                .padding(.top, headerHeight - 400) // aligns first section at bottom of header
                 .task {
                     await viewModel.loadCarouselGroup()
                     await viewModel.loadCarouselContents()
@@ -67,45 +67,36 @@ struct HomeView: View {
             }
         }
         .edgesIgnoringSafeArea(.top)
+
     }
 }
 
 struct CarouselCardButtonView: View {
     let item: CarouselContent
-    
+    @FocusState.Binding var focusedItem: FocusTarget?
     var body: some View {
         Button(action: {
             // handle card tap
         }) {
             VStack(alignment: .leading) {
-                if let images = item.images {
-                    let imageUrl = images.count > 1 ? images[1].imageLink : images.first?.imageLink
-                    if let imageUrl, let url = URL(string: imageUrl) {
-                        AsyncImage(url: url) { image in
+                if let imageUrl = item.imageURL(for: .landscape16x9) {
+                        AsyncImage(url: imageUrl) { image in
                             image
                                 .resizable()
-                                .aspectRatio(3/4, contentMode: .fit)
+                                .aspectRatio(16/9, contentMode: .fit)
                         } placeholder: {
                             ProgressView()
                         }
-                        .frame(width: 200)
-                        .cornerRadius(12)
-                    } else {
-                        Rectangle()
-                            .fill(Color.gray)
-                            .frame(width: 200)
-                            .cornerRadius(12)
-                    }
                 } else {
                     Rectangle()
                         .fill(Color.gray)
-                        .frame(width: 200)
-                        .cornerRadius(12)
                 }
             }
+            .frame(height: 150)
+            .cornerRadius(12)
         }
-        .frame(width: 200)
-        .buttonStyle(.plain)
+        .focused($focusedItem, equals: .carouselItem(item.id))
+        .buttonStyle(.card)
     }
 }
 

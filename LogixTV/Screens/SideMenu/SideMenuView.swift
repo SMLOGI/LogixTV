@@ -39,7 +39,7 @@ struct SideMenuView: View {
                             focusedField = .menu(index)
                         } label: {
                             HStack(spacing: 12) {
-                                if let url = URL(string: isFocused ?  menuItems[index].details.unselectedImageLink : menuItems[index].details.unselectedImageLink) {
+                                if let url = URL(string: isFocused ?  menuItems[index].details.focusImageLink : menuItems[index].details.unselectedImageLink) {
                                     AsyncImage(url: url) { image in
                                         image.resizable()
                                     } placeholder: {
@@ -55,28 +55,45 @@ struct SideMenuView: View {
                             }
                             .padding(.horizontal, 12)
                             .padding(.vertical, 10)
-                            /*.background(
+                            .background(
                                 RoundedRectangle(cornerRadius: 10)
                                     .fill(isFocused ? Color.white.opacity(0.2) : .clear)
                             )
-                            .scaleEffect(isFocused ? 1.15 : 1.0)*/
+                            .scaleEffect(isFocused ? 1.15 : 1.0)
                         }
-                        .buttonStyle(.plain)
-                        .contentShape(Rectangle())
+                        .buttonStyle(.borderless)
+                        //.contentShape(Rectangle())
                         .focused($focusedField, equals: .menu(index))
                         .padding()
                         .animation(.easeInOut(duration: 0.2), value: focusedField)
                     }
                 }
-                .focusSection()
                 .onMoveCommand { dir in
                     if dir == .right {
-                        focusedField = .mainContent
+                        isSidebarExpanded = false
+                        focusedField = .playButton
                     }
                 }
             Spacer()
+            Text(focusedField?.description ?? "No Focus")
         }
-        .background(Color.black)
+        .background {
+            if isSidebarExpanded {
+                LinearGradient(
+                    gradient: Gradient(colors: [
+                        Color.black.opacity(1.0),
+                        Color.black.opacity(0.5)
+                    ]),
+                    startPoint: .leading,
+                    endPoint: .trailing
+                )
+               // Color.black.opacity(0.9)
+            } else {
+                Color.clear
+            }
+        }
+        .focusSection()
+
         .task {
             await viewModel.loadMenu()
         }
