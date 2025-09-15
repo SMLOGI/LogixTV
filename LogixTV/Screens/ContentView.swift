@@ -18,7 +18,7 @@ struct MenuItem {
 }
 enum FocusTarget: Hashable , Equatable  {
     case menu(Int)
-    case pageDot(Int)
+    case pageDot
     case playButton
     case carouselItem(Int)
     case mainContent
@@ -27,8 +27,8 @@ enum FocusTarget: Hashable , Equatable  {
         switch self {
         case .menu(let index):
             return "Menu(\(index))"
-        case .pageDot(let index):
-            return "PageDot(\(index))"
+        case .pageDot:
+            return "PageDot"
         case .playButton:
             return "PlayButton"
         case .carouselItem(let index):
@@ -50,8 +50,6 @@ struct ContentView: View {
     }
     
     var body: some View {
-        //let homeView = AnyView(HomeView(focusedItem: $focusedField))
-        let listenView = AnyView(ListenView())
         let sportsView = AnyView(SportsView())
         let watchView = AnyView(WatchView())
         let showsView = AnyView(ShowsView())
@@ -73,7 +71,26 @@ struct ContentView: View {
                             .tag(index) // must match selection binding
                             .frame(maxWidth: .infinity, maxHeight: .infinity)
                             .background(Color.black)
-                        
+                    case .sports:
+                        SportsView()
+                            .tag(index) // must match selection binding
+                            .frame(maxWidth: .infinity, maxHeight: .infinity)
+                            .background(Color.black)
+                    case .listen:
+                        ListenView()
+                            .tag(index) // must match selection binding
+                            .frame(maxWidth: .infinity, maxHeight: .infinity)
+                            .background(Color.black)
+                    case .shows:
+                        ShowsView()
+                            .tag(index) // must match selection binding
+                            .frame(maxWidth: .infinity, maxHeight: .infinity)
+                            .background(Color.black)
+                    case .watch:
+                        WatchView()
+                            .tag(index) // must match selection binding
+                            .frame(maxWidth: .infinity, maxHeight: .infinity)
+                            .background(Color.black)
                     default:
                         EmptyView()
                             .tag(index) // still needs a tag to keep indices in sync
@@ -93,22 +110,6 @@ struct ContentView: View {
                 focusedField: $focusedField, viewModel: viewModel,
             )
             .focusSection()
-            //.frame(width: 250)
-            .onChange(of: focusedField) { newFocus in
-                withAnimation {
-                    switch newFocus {
-                    case .menu:
-                        isSidebarExpanded = true
-                    default:
-                        isSidebarExpanded = false
-                    }
-                }
-            }
-//            .onChange(of: isSidebarExpanded) { oldValue, newValue in
-//                if !newValue {
-//                    focusedField = .pageDot(0)
-//                }
-//            }
         }
         .ignoresSafeArea()
         .task {

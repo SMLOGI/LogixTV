@@ -76,13 +76,15 @@ struct SideMenuView: View {
                 }
             Spacer()
             Text(focusedField?.description ?? "No Focus")
+                .font(.system(size: 20))
+                .frame(width: 60)
         }
         .background {
             if isSidebarExpanded {
                 LinearGradient(
                     gradient: Gradient(colors: [
                         Color.black.opacity(1.0),
-                        Color.black.opacity(0.5)
+                        Color.black.opacity(0.8)
                     ]),
                     startPoint: .leading,
                     endPoint: .trailing

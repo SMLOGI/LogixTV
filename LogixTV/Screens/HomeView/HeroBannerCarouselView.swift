@@ -26,6 +26,13 @@ struct HeroBannerCarouselView: View {
                         endPoint: .top
                     )
                 )
+                .overlay(
+                    LinearGradient(
+                        gradient: Gradient(colors: [Color.black.opacity(0.7), Color.black.opacity(0.0)]),
+                        startPoint: .leading,
+                        endPoint: .trailing
+                    )
+                )
             
             BannerDetailView(content: content, focusedItem: $focusedItem)
                 .frame(height: 400)
@@ -55,19 +62,17 @@ struct BannerDetailView: View {
                         .foregroundColor(.white.opacity(0.8))
                         .frame(maxWidth: 600, alignment: .leading)
                 }
-                //RoundedRectButton(title: "WATCH NOW", focusedItem: $focusedItem) {}
-                    //.focused($focusedItem, equals: .playButton)
 
             PlayButton(focusedItem: $focusedItem)
-                    /*.onMoveCommand { dir in
+                    .onMoveCommand { dir in
                         if dir == .right {
-                            focusedItem = .pageDot(0)
+                            focusedItem = .pageDot
                         }
                         if dir == .left {
                             // go back to sidebar
                             focusedItem = .menu(0)
                         }
-                    }*/
+                    }
                  
             }
             .frame(maxHeight: .infinity)

@@ -35,12 +35,14 @@ struct HomeHeaderView: View {
                             )
                             .id(index) // important for scrollTo
                             .frame(width: UIScreen.main.bounds.width - 60) // full-screen card
+                            .tag(index)
                         }
                     }
                     .tabViewStyle(PageTabViewStyle(indexDisplayMode: .never))
                 }
                 .onChange(of: currentPage) { newPage in
                     // Scroll to the selected page when currentPage changes (tap or focus)
+                    
                 }
             
             // MARK: Pager Dots
@@ -49,32 +51,39 @@ struct HomeHeaderView: View {
                     Circle()
                         .fill(currentPage == index ? Color.white : Color.gray.opacity(0.5))
                         .frame(width: 20, height: 20)
-                        .focusable(true)
-                        .focused($focusedItem, equals: .pageDot(index)) // each dot individually focusable
-                    /*.onMoveCommand { dir in
-                     if dir == .left {
-                     // go back to sidebar
-                     focusedItem = .menu(0)
-                     }
-                     }*/
-                        .onChange(of: focusedItem) { oldFocus, newFocus in
-                            // Scroll carousel when a dot receives focus
-                            if newFocus == .pageDot(index) {
-                                withAnimation {
-                                    currentPage = index
-                                }
-                            }
-                        }
                         .onTapGesture {
                             withAnimation {
                                 currentPage = index
                             }
                         }
                 }
+
             }
             .frame(width: UIScreen.main.bounds.width - 60)
             .background(.clear)
+            .focusable(true)
+            .focused($focusedItem, equals: .pageDot) // each dot individually focusable
             .focusSection() // optional: marks the whole HStack as a section
+            .onMoveCommand { dir in
+                if dir == .left {
+                    // go back to sidebar
+                    if currentPage == 0 {
+                        focusedItem = .playButton
+                    } else {
+                        currentPage = (currentPage - 1)
+                        focusedItem = .pageDot
+                    }
+                } else if dir == .down {
+                    focusedItem = .carouselItem(0)
+                } else if dir == .right {
+                    if currentPage < viewModel.contentList.count - 1 {
+                        currentPage = currentPage + 1
+                        focusedItem = .pageDot
+                    } else {
+                        focusedItem = .carouselItem(0)
+                    }
+                }
+            }
             .padding(.bottom, 340)
             .padding(.leading, 60.0)
             
