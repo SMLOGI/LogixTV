@@ -17,23 +17,29 @@ struct HeroBannerCarouselView: View {
     
     var body: some View {
         ZStack(alignment: .leading) {
-            BannerImageView(content: content)
-                .ignoresSafeArea()
-                .overlay(
-                    LinearGradient(
-                        gradient: Gradient(colors: [Color.black.opacity(1.0), Color.black.opacity(0.0)]),
-                        startPoint: .bottom,
-                        endPoint: .top
+            //BannerImageView(content: content)
+            if let imageUrl = content.imageURL(for: .landscape16x9) {
+                CachedAsyncImage(url: imageUrl)
+                    .ignoresSafeArea()
+                    .overlay(
+                        LinearGradient(
+                            gradient: Gradient(colors: [Color.black.opacity(1.0), Color.black.opacity(0.0)]),
+                            startPoint: .bottom,
+                            endPoint: .top
+                        )
                     )
-                )
-                .overlay(
-                    LinearGradient(
-                        gradient: Gradient(colors: [Color.black.opacity(0.7), Color.black.opacity(0.0)]),
-                        startPoint: .leading,
-                        endPoint: .trailing
+                    .overlay(
+                        LinearGradient(
+                            gradient: Gradient(colors: [Color.black.opacity(0.7), Color.black.opacity(0.0)]),
+                            startPoint: .leading,
+                            endPoint: .trailing
+                        )
                     )
-                )
-            
+            }  else {
+                Rectangle()
+                    .fill(Color.gray)
+                    .ignoresSafeArea()
+            }
             BannerDetailView(content: content, focusedItem: $focusedItem)
                 .frame(height: 400)
                 .padding(.bottom, 200)

@@ -16,13 +16,9 @@ struct CarouselCardButtonView: View {
         }) {
             VStack(alignment: .leading) {
                 if let imageUrl = item.imageURL(for: .landscape16x9) {
-                        AsyncImage(url: imageUrl) { image in
-                            image
-                                .resizable()
-                                .aspectRatio(16/9, contentMode: .fit)
-                        } placeholder: {
-                            ProgressView()
-                        }
+                    CachedAsyncImage(url: imageUrl)
+                        .aspectRatio(16/9, contentMode: .fit)
+
                 } else {
                     Rectangle()
                         .fill(Color.gray)

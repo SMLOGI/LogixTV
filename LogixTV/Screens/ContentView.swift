@@ -61,47 +61,33 @@ struct ContentView: View {
                 .ignoresSafeArea(edges: .all)
             
             // Main Content Area using TabView
-            TabView(selection: $selectedIndex) {
+            ZStack {
                 ForEach(Array(viewModel.menuList.enumerated()), id: \.offset) { index, menu in
                     let type = MenuTypeName(rawValue: menu.name) ?? .unknown
-                    
-                    switch type {
-                    case .home:
-                        HomeView(focusedItem: $focusedField)
-                            .tag(index) // must match selection binding
-                            .frame(maxWidth: .infinity, maxHeight: .infinity)
-                            .background(Color.black)
-                    case .sports:
-                        SportsView()
-                            .tag(index) // must match selection binding
-                            .frame(maxWidth: .infinity, maxHeight: .infinity)
-                            .background(Color.black)
-                    case .listen:
-                        ListenView()
-                            .tag(index) // must match selection binding
-                            .frame(maxWidth: .infinity, maxHeight: .infinity)
-                            .background(Color.black)
-                    case .shows:
-                        ShowsView()
-                            .tag(index) // must match selection binding
-                            .frame(maxWidth: .infinity, maxHeight: .infinity)
-                            .background(Color.black)
-                    case .watch:
-                        WatchView()
-                            .tag(index) // must match selection binding
-                            .frame(maxWidth: .infinity, maxHeight: .infinity)
-                            .background(Color.black)
-                    default:
-                        EmptyView()
-                            .tag(index) // still needs a tag to keep indices in sync
+
+                    Group {
+                        switch type {
+                        case .home:
+                            HomeView(focusedItem: $focusedField)
+                        case .sports:
+                            SportsView()
+                        case .listen:
+                            ListenView()
+                        case .shows:
+                            ShowsView()
+                        case .watch:
+                            WatchView()
+                        default:
+                            EmptyView()
+                        }
                     }
+                    .opacity(selectedIndex == index ? 1 : 0)           // only selected visible
+                    .allowsHitTesting(selectedIndex == index)          // block focus for hidden ones
                 }
             }
-
-            .tabViewStyle(.page(indexDisplayMode: .never))
             .padding(.leading, 40.0)
             .padding(.top, 0)
-           // .focusSection()
+            .focusSection()
             
             // Sidebar
             SideMenuView(
@@ -114,18 +100,6 @@ struct ContentView: View {
         .ignoresSafeArea()
         .task {
             await viewModel.loadMenu()
-            for menu in viewModel.menuList {
-                let type = MenuTypeName(rawValue: menu.name) ?? .unknown
-                
-                let destination: AnyView
-                switch type {
-                case .home:
-                    destination = AnyView(HomeView(focusedItem: $focusedField))
-                    dynamicMenuItems.append(MenuItem(title: menu.name, view: destination))
-                default:
-                    EmptyView()
-                }
-            }
         }
     }
 }

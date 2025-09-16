@@ -65,22 +65,24 @@ struct HomeHeaderView: View {
             .focused($focusedItem, equals: .pageDot) // each dot individually focusable
             .focusSection() // optional: marks the whole HStack as a section
             .onMoveCommand { dir in
-                if dir == .left {
-                    // go back to sidebar
-                    if currentPage == 0 {
-                        focusedItem = .playButton
-                    } else {
-                        currentPage = (currentPage - 1)
-                        focusedItem = .pageDot
-                    }
-                } else if dir == .down {
-                    focusedItem = .carouselItem(0)
-                } else if dir == .right {
-                    if currentPage < viewModel.contentList.count - 1 {
-                        currentPage = currentPage + 1
-                        focusedItem = .pageDot
-                    } else {
+                withAnimation {
+                    if dir == .left {
+                        // go back to sidebar
+                        if currentPage == 0 {
+                            focusedItem = .menu(0)
+                        } else {
+                            currentPage = (currentPage - 1)
+                            focusedItem = .pageDot
+                        }
+                    } else if dir == .down {
                         focusedItem = .carouselItem(0)
+                    } else if dir == .right {
+                        if currentPage < viewModel.contentList.count - 1 {
+                            currentPage = currentPage + 1
+                            focusedItem = .pageDot
+                        } else {
+                            focusedItem = .carouselItem(0)
+                        }
                     }
                 }
             }

@@ -17,11 +17,7 @@ struct SideMenuView: View {
         VStack(alignment: .leading, spacing: 40) {
             if let logoItem = viewModel.logo {
                 if let url = URL(string: logoItem.details.unselectedImageLink) {
-                    AsyncImage(url: url) { image in
-                        image.resizable()
-                    } placeholder: {
-                        ProgressView()
-                    }
+                    CachedAsyncImage(url: url)
                     .frame(width: 60, height: 60)
                     .padding(.horizontal, 20)
                     .padding(.top, 50)
@@ -69,9 +65,25 @@ struct SideMenuView: View {
                     }
                 }
                 .onMoveCommand { dir in
-                    if dir == .right {
-                        isSidebarExpanded = false
+                    switch dir {
+                    case .right:
+                        // collapse sidebar and move focus to content
+                        withAnimation {
+                            isSidebarExpanded = false
+                        }
                         focusedField = .playButton
+
+                    case .left:
+                        // expand sidebar and restore focus to current/first menu
+                        withAnimation {
+                            isSidebarExpanded = true
+                        }
+                        if focusedField == nil {
+                            focusedField = .menu(0)
+                        }
+
+                    default:
+                        break
                     }
                 }
             Spacer()
@@ -81,15 +93,7 @@ struct SideMenuView: View {
         }
         .background {
             if isSidebarExpanded {
-                LinearGradient(
-                    gradient: Gradient(colors: [
-                        Color.black.opacity(1.0),
-                        Color.black.opacity(0.8)
-                    ]),
-                    startPoint: .leading,
-                    endPoint: .trailing
-                )
-               // Color.black.opacity(0.9)
+                Color.white.opacity(0.2)
             } else {
                 Color.black
             }
@@ -101,7 +105,8 @@ struct SideMenuView: View {
         }
         .onAppear {
             // set initial focus when view appears
-            focusedField = .menu(0)
+            //focusedField = .menu(0)
+            isSidebarExpanded =  true
         }
     }
 }
