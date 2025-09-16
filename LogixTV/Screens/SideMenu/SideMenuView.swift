@@ -27,6 +27,36 @@ struct SideMenuView: View {
             }
             let menuItems = viewModel.menuList
                 VStack(alignment: .leading, spacing: 20) {
+                    
+                    Button {
+                        //selectedIndex = index
+                        //focusedField = .menu(index)
+                    } label: {
+                        HStack(spacing: 12) {
+                            Image(systemName: "magnifyingglass")
+                                .resizable()
+                                .frame(width: 50, height: 50)
+                                .foregroundColor(.white)
+                            
+                            if focusedField == .searchOption {
+                                Text("Search")
+                                    .font(.headline)
+                            }
+                        }
+                        .padding(.horizontal, 12)
+                        .padding(.vertical, 10)
+                        .background(
+                            RoundedRectangle(cornerRadius: 10)
+                                .fill(focusedField == .searchOption ? Color.gray : .clear)
+                        )
+                        .scaleEffect(focusedField == .searchOption ? 1.15 : 1.0)
+                    }
+                    .buttonStyle(.borderless)
+                    //.contentShape(Rectangle())
+                    .focused($focusedField, equals: .searchOption)
+                    .padding()
+                    .animation(.easeInOut(duration: 0.2), value: focusedField)
+                    
                     ForEach(menuItems.indices, id: \.self) { index in
                         let isFocused = focusedField == .menu(index)
                         
@@ -98,6 +128,8 @@ struct SideMenuView: View {
                     focusedField = .menu(0)
                 }
                 print("Menu \(index) focused")
+            case .searchOption:
+                isSidebarExpanded = true
             default:
                 isSidebarExpanded = false
             }
@@ -107,7 +139,7 @@ struct SideMenuView: View {
         }
         .onAppear {
             // set initial focus when view appears
-            //focusedField = .menu(0)
+            focusedField = .menu(0)
             isSidebarExpanded =  true
         }
     }

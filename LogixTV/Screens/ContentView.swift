@@ -17,6 +17,7 @@ struct MenuItem {
     let view: AnyView
 }
 enum FocusTarget: Hashable , Equatable  {
+    case searchOption
     case menu(Int)
     case pageDot
     case playButton
@@ -25,6 +26,8 @@ enum FocusTarget: Hashable , Equatable  {
     
     var description: String {
         switch self {
+        case .searchOption:
+            return "Search"
         case .menu(let index):
             return "Menu(\(index))"
         case .pageDot:
