@@ -36,11 +36,7 @@ struct SideMenuView: View {
                         } label: {
                             HStack(spacing: 12) {
                                 if let url = URL(string: isFocused ?  menuItems[index].details.focusImageLink : menuItems[index].details.unselectedImageLink) {
-                                    AsyncImage(url: url) { image in
-                                        image.resizable()
-                                    } placeholder: {
-                                        ProgressView()
-                                    }
+                                    CachedAsyncImage(url: url)
                                     .frame(width: 50, height: 50)
                                 }
                                 
@@ -53,7 +49,7 @@ struct SideMenuView: View {
                             .padding(.vertical, 10)
                             .background(
                                 RoundedRectangle(cornerRadius: 10)
-                                    .fill(isFocused ? Color.white.opacity(0.2) : .clear)
+                                    .fill(isFocused ? Color.gray : .clear)
                             )
                             .scaleEffect(isFocused ? 1.15 : 1.0)
                         }
@@ -67,21 +63,7 @@ struct SideMenuView: View {
                 .onMoveCommand { dir in
                     switch dir {
                     case .right:
-                        // collapse sidebar and move focus to content
-                        withAnimation {
-                            isSidebarExpanded = false
-                        }
                         focusedField = .playButton
-
-                    case .left:
-                        // expand sidebar and restore focus to current/first menu
-                        withAnimation {
-                            isSidebarExpanded = true
-                        }
-                        if focusedField == nil {
-                            focusedField = .menu(0)
-                        }
-
                     default:
                         break
                     }
@@ -93,13 +75,33 @@ struct SideMenuView: View {
         }
         .background {
             if isSidebarExpanded {
-                Color.white.opacity(0.2)
+                /*LinearGradient(
+                        colors: [Color.white.opacity(0.5), Color.white.opacity(0.1)],
+                        startPoint: .leading,
+                        endPoint: .trailing
+                    )
+                    .blur(radius: 10)*/
+                Color.black.opacity(0.5)
             } else {
                 Color.black
             }
         }
         .focusSection()
-
+        .onChange(of: focusedField) { oldFocus, newFocus in
+            switch newFocus {
+            case .menu(let index):
+                isSidebarExpanded = true
+                
+                if case .menu = oldFocus {
+                    // old focus was already menu → don’t reset
+                } else {
+                    focusedField = .menu(0)
+                }
+                print("Menu \(index) focused")
+            default:
+                isSidebarExpanded = false
+            }
+        }
         .task {
             await viewModel.loadMenu()
         }

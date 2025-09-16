@@ -18,7 +18,6 @@ struct CarouselCardButtonView: View {
                 if let imageUrl = item.imageURL(for: .landscape16x9) {
                     CachedAsyncImage(url: imageUrl)
                         .aspectRatio(16/9, contentMode: .fit)
-
                 } else {
                     Rectangle()
                         .fill(Color.gray)
