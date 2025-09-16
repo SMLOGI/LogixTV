@@ -18,6 +18,7 @@ struct MenuItem {
 }
 enum FocusTarget: Hashable , Equatable  {
     case searchOption
+    case searchItem(String)
     case menu(Int)
     case pageDot
     case playButton
@@ -28,6 +29,8 @@ enum FocusTarget: Hashable , Equatable  {
         switch self {
         case .searchOption:
             return "Search"
+        case .searchItem(let item):
+            return "Search(\(item))"
         case .menu(let index):
             return "Menu(\(index))"
         case .pageDot:
@@ -53,11 +56,6 @@ struct ContentView: View {
     }
     
     var body: some View {
-        let sportsView = AnyView(SportsView())
-        let watchView = AnyView(WatchView())
-        let showsView = AnyView(ShowsView())
-        
-        
         ZStack(alignment: .leading) {
             
             Color.black.opacity(1.0)
@@ -67,7 +65,7 @@ struct ContentView: View {
             ZStack {
                 ForEach(Array(viewModel.menuList.enumerated()), id: \.offset) { index, menu in
                     let type = MenuTypeName(rawValue: menu.name) ?? .unknown
-
+                    
                     Group {
                         switch type {
                         case .home:

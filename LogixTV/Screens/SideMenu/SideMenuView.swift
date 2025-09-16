@@ -12,7 +12,8 @@ struct SideMenuView: View {
     @Binding var selectedIndex: Int
     @FocusState.Binding var focusedField: FocusTarget?
     @ObservedObject var viewModel: SideMenuViewModel
-        
+    @State private var isShowingSearch = false
+
     var body: some View {
         VStack(alignment: .leading, spacing: 40) {
             if let logoItem = viewModel.logo {
@@ -31,6 +32,7 @@ struct SideMenuView: View {
                     Button {
                         //selectedIndex = index
                         //focusedField = .menu(index)
+                        isShowingSearch = true
                     } label: {
                         HStack(spacing: 12) {
                             Image(systemName: "magnifyingglass")
@@ -141,6 +143,9 @@ struct SideMenuView: View {
             // set initial focus when view appears
             focusedField = .menu(0)
             isSidebarExpanded =  true
+        }
+        .sheet(isPresented: $isShowingSearch) {
+            SearchView(focusedField: $focusedField)   // Pass your dataset if needed
         }
     }
 }
