@@ -27,7 +27,7 @@ struct SideMenuView: View {
                 
             }
             let menuItems = viewModel.menuList
-                VStack(alignment: .leading, spacing: 20) {
+                VStack(alignment: .leading, spacing: 10) {
                     
                     Button {
                         //selectedIndex = index
@@ -38,7 +38,7 @@ struct SideMenuView: View {
                             Image(systemName: "magnifyingglass")
                                 .resizable()
                                 .frame(width: 50, height: 50)
-                                .foregroundColor(.white)
+                                .foregroundColor(Color.appPurple)
                             
                             if focusedField == .searchOption {
                                 Text("Search")

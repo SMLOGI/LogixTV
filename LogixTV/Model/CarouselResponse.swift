@@ -59,15 +59,17 @@ struct CarouselContent: Codable {
     let altmeta: [CarouselAltmeta]?
     let keyword: [CarouselKeyword]?
     let country: CarouselCountry?
+    let video: [CarouselContentVideo]?
 
     enum CodingKeys: String, CodingKey {
         case id, contentId, title, tagline, description
         case overView = "OverView"
         case duration, runtime, state, isFree, contentType
         case subContentType = "SubContentType"
-        case publishedType, publishedDate, language, parentalRating, rating, images, releaseStatus, genre, productionHouse, studio, displayTags, deeplink, partners, customParameters, seriesMeta, preview, cast, altmeta, keyword, country
+        case publishedType, publishedDate, language, parentalRating, rating, images, releaseStatus, genre, productionHouse, studio, displayTags, deeplink, partners, customParameters, seriesMeta, preview, cast, altmeta, keyword, country, video
     }
 }
+
 
 extension CarouselContent {
     
@@ -223,6 +225,10 @@ struct CarouselSeriesMeta: Codable {
     let episodeNumber: Int?
     let parentContentId: String?
     let subParentContentId: String?
+}
+
+struct CarouselContentVideo: Codable {
+    let contentUrl: String?
 }
 
 // MARK: - Preview

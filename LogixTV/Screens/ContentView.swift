@@ -45,12 +45,20 @@ enum FocusTarget: Hashable , Equatable  {
     }
 }
 
+class GlobalNavigationState: ObservableObject {
+    @Published var showPlayer: Bool = false
+    @Published var showDetail: Bool = false
+    @Published var contentItem: CarouselContent?
+}
+
 struct ContentView: View {
     @State private var selectedIndex: Int = 0
     @State private var isSidebarExpanded: Bool = false
     @FocusState private var focusedField: FocusTarget?
     @StateObject private var viewModel = SideMenuViewModel()
     @State private var dynamicMenuItems: [MenuItem] = []
+    @StateObject private var globalNavigationState = GlobalNavigationState()
+    
     init() {
         // Placeholder; replaced later in body where we have $focusedField
     }
@@ -97,7 +105,20 @@ struct ContentView: View {
                 focusedField: $focusedField, viewModel: viewModel,
             )
             .focusSection()
+            
+            // Movie → play directly
+            .fullScreenCover(isPresented: $globalNavigationState.showPlayer) {
+                if let videoUrl = URL(string: globalNavigationState.contentItem?.video?.first?.contentUrl ?? "") {
+                    VideoPlayerScreen(videoURL: videoUrl, videoTitle: "temp")
+                }
+            }
+
+            // Series → go to detail screen
+            /*.fullScreenCover(isPresented: $globalNavigationState.showDetails) {
+                //SeriesDetailScreen(series: item)
+            }*/
         }
+        .environmentObject(globalNavigationState)  
         .ignoresSafeArea()
         .task {
             await viewModel.loadMenu()

@@ -69,7 +69,7 @@ struct BannerDetailView: View {
                         .frame(maxWidth: 600, alignment: .leading)
                 }
 
-            PlayButton(focusedItem: $focusedItem)
+                PlayButton(content: content, focusedItem: $focusedItem)
                     .onMoveCommand { dir in
                         if dir == .right {
                             focusedItem = .pageDot
@@ -94,11 +94,14 @@ struct BannerDetailView: View {
 
 /// MARK: - Play Button
 struct PlayButton: View {
+    let content: CarouselContent
     @FocusState.Binding var focusedItem: FocusTarget?
+    @EnvironmentObject var globalNavState: GlobalNavigationState
 
     var body: some View {
         Button {
-            print("play")
+            globalNavState.contentItem = content
+            globalNavState.showPlayer = true
         } label: {
             HStack(spacing: 10) {
                 Image(systemName: "play.fill")
@@ -112,20 +115,6 @@ struct PlayButton: View {
         .background(Color.appPurple)
         .cornerRadius(12)
         .focused($focusedItem, equals: .playButton)
-        /*
-        .buttonStyle(.borderless)
-        .background(Color.appPurple)
-        .cornerRadius(12)
-        .overlay(
-            RoundedRectangle(cornerRadius: 12)
-                .stroke(Color.white, lineWidth: focusedItem == .playButton ? 3 : 0)
-        )
-        .scaleEffect(focusedItem == .playButton ? 1.05 : 1.0)
-        .animation(.easeInOut(duration: 0.2), value: focusedItem)
-        .focused($focusedItem, equals: .playButton)
-        .onChange(of: focusedItem) { oldValue, newValue in
-            print("Focused item changed to: \(String(describing: newValue))")
-        }*/
     }
 }
 

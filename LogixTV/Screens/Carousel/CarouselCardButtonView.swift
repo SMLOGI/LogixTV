@@ -10,9 +10,21 @@ import SwiftUI
 struct CarouselCardButtonView: View {
     let item: CarouselContent
     @FocusState.Binding var focusedItem: FocusTarget?
+    @State private var showPlayer = false
+    @State private var showDetails = false
+    @EnvironmentObject var globalNavState: GlobalNavigationState
+    
     var body: some View {
         Button(action: {
-            // handle card tap
+            if item.subContentType?.name!.lowercased() == "movie" {
+                showPlayer = true
+            } else if item.subContentType?.name!.lowercased() == "episode" {
+                showDetails = true
+            } else {
+                showPlayer = true
+                globalNavState.contentItem = item
+                globalNavState.showPlayer = true
+            }
         }) {
             VStack(alignment: .leading) {
                 if let imageUrl = item.imageURL(for: .landscape16x9) {
@@ -30,4 +42,5 @@ struct CarouselCardButtonView: View {
         .buttonStyle(.card)
     }
 }
+
 
