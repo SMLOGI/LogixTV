@@ -108,8 +108,8 @@ struct ContentView: View {
             
             // Movie → play directly
             .fullScreenCover(isPresented: $globalNavigationState.showPlayer) {
-                if let videoUrl = URL(string: globalNavigationState.contentItem?.video?.first?.contentUrl ?? "") {
-                    VideoPlayerScreen(videoURL: videoUrl, videoTitle: "temp")
+                if let contentItem = globalNavigationState.contentItem, let videoUrl = URL(string: contentItem.video?.first?.contentUrl ?? "") {
+                    VideoPlayerScreen(videoURL: videoUrl, videoTitle: contentItem.title ?? "")
                 }
             }
 

@@ -184,6 +184,7 @@ struct VideoPlayerScreen: View {
         }
         .onAppear {
             showPlaybackControls()
+            print("Playing video: \(videoURL)")
             /*DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
                 controller.requestAds()
             }*/
