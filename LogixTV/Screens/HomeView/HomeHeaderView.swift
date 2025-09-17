@@ -12,7 +12,7 @@ import SwiftUI
 struct HomeHeaderView: View {
     @StateObject private var viewModel = CarouselViewModel()
     @FocusState.Binding var focusedItem: FocusTarget?
-    
+    @ObservedObject var homeViewModel: HomeViewModel
     // Number of rows in horizontal grid
     let rows: [GridItem] = [
         GridItem(.flexible(minimum: 500, maximum: .infinity), spacing: 0)
@@ -48,16 +48,19 @@ struct HomeHeaderView: View {
             // MARK: Pager Dots
             HStack(spacing: 12) {
                 ForEach(viewModel.contentList.indices, id: \.self) { index in
+                    let isSelected = currentPage == index
+                    let isFocused = focusedItem == .pageDot
+                    let size = isFocused && isSelected ? 25.0 : 20.0
                     Circle()
-                        .fill(currentPage == index ? Color.white : Color.gray.opacity(0.5))
-                        .frame(width: 20, height: 20)
+                        .fill(isSelected ? Color.white : Color.gray)
+                        .opacity(isFocused ? 1 : 0.8)
+                        .frame(width: size,height: size)
                         .onTapGesture {
                             withAnimation {
                                 currentPage = index
                             }
                         }
                 }
-
             }
             .frame(width: UIScreen.main.bounds.width - 60)
             .background(.clear)
@@ -75,13 +78,17 @@ struct HomeHeaderView: View {
                             focusedItem = .pageDot
                         }
                     } else if dir == .down {
-                        focusedItem = .carouselItem(0)
+                        if let firstGroup = homeViewModel.carouselGroups.first, let firstItem = homeViewModel.carousels[firstGroup.name]?.first {
+                            focusedItem = .carouselItem(firstGroup.id, firstItem.id)
+                        }
                     } else if dir == .right {
                         if currentPage < viewModel.contentList.count - 1 {
                             currentPage = currentPage + 1
                             focusedItem = .pageDot
                         } else {
-                            focusedItem = .carouselItem(0)
+                            if let firstGroup = homeViewModel.carouselGroups.first, let firstItem = homeViewModel.carousels[firstGroup.name]?.first {
+                                focusedItem = .carouselItem(firstGroup.id, firstItem.id)
+                            }
                         }
                     }
                 }

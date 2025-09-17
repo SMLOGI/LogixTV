@@ -23,7 +23,7 @@ struct HomeView: View {
                 GeometryReader { geo in
                     let offset = geo.frame(in: .global).minY
                     
-                    HomeHeaderView(focusedItem: $focusedItem)
+                    HomeHeaderView(focusedItem: $focusedItem, homeViewModel: viewModel)
                         .frame(height: max(headerHeight, headerHeight + offset)) // expands on pull
                         .offset(y: offset > 0 ? -offset : 0) // parallax scroll
                 }
@@ -39,7 +39,7 @@ struct HomeView: View {
                                         if let items = viewModel.carousels[group.name] {
                                             ForEach(items, id: \.id) { item in
                                                 HStack(spacing: 0) {
-                                                    CarouselCardButtonView(item: item, focusedItem: $focusedItem)
+                                                    CarouselCardButtonView(item: item, group: group, focusedItem: $focusedItem)
                                                 }
                                                 .padding(20)
                                             }

@@ -22,7 +22,7 @@ enum FocusTarget: Hashable , Equatable  {
     case menu(Int)
     case pageDot
     case playButton
-    case carouselItem(Int)
+    case carouselItem(Int, Int)
     case mainContent
     
     var description: String {
@@ -37,8 +37,8 @@ enum FocusTarget: Hashable , Equatable  {
             return "PageDot"
         case .playButton:
             return "PlayButton"
-        case .carouselItem(let index):
-            return "CarouselItem(\(index))"
+        case .carouselItem(let group, let contentId):
+            return "CarouselItem (\(group)): (\(contentId))"
         case .mainContent:
             return "MainContent"
         }

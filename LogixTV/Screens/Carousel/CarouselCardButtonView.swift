@@ -9,6 +9,7 @@ import SwiftUI
 
 struct CarouselCardButtonView: View {
     let item: CarouselContent
+    let group: CarouselGroupData
     @FocusState.Binding var focusedItem: FocusTarget?
     @State private var showPlayer = false
     @State private var showDetails = false
@@ -39,10 +40,10 @@ struct CarouselCardButtonView: View {
             .cornerRadius(12)
             .overlay(
                 RoundedRectangle(cornerRadius: 12)
-                    .stroke(.white, lineWidth: focusedItem == .carouselItem(item.id) ? 5 : 0)
+                    .stroke(.white, lineWidth: focusedItem == .carouselItem(group.id, item.id) ? 5 : 0)
             )
         }
-        .focused($focusedItem, equals: .carouselItem(item.id))
+        .focused($focusedItem, equals: .carouselItem(group.id, item.id))
         .buttonStyle(.card)
     }
 }
