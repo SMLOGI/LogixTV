@@ -34,7 +34,12 @@ struct HomeView: View {
                 LazyVStack(alignment: .leading, spacing: 20) {
                     ForEach(viewModel.carouselGroups, id: \.name) { group in
                         VStack(alignment: .leading, spacing: 8) {
-                            Section(group.displayName) {
+                            Section(
+                                header: Text(group.displayName)
+                                    .font(.headline)            // set font
+                                    .foregroundColor(.gray)     // set color
+                                    .padding(.leading, 40)      // padding
+                            )  {
                                 ScrollView(.horizontal, showsIndicators: false) {
                                     HStack(spacing: .zero) {
                                         if let items = viewModel.carousels[group.name] {
@@ -49,9 +54,9 @@ struct HomeView: View {
                                     }
                                     .padding(.horizontal)
                                     .focusSection()
-                            }
-                            .padding()
- 
+                                }
+                                .padding()
+                                
                             }
                             .font(.title2)
                             .foregroundColor(.white)

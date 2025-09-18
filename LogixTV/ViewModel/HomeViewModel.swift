@@ -39,10 +39,13 @@ final class HomeViewModel: ObservableObject {
     
     func loadCarouselContents() async {
         for name in carouselNameList {
+            let path = "content/\(name)?page=1&count=10"
+            print("➡️ Requesting: \(path)")
+
             do {
                 let response = try await NetworkManager.shared.request(
                     baseURL: .main,
-                    path: "content/\(name)?page=1&count=10",
+                    path: path,
                     method: .GET
                 ) as CarouselResponse
                 
@@ -53,6 +56,6 @@ final class HomeViewModel: ObservableObject {
                 errorMessage = error.localizedDescription
             }
         }
-        print(carousels)
+        print("✅ Carousels:", carousels)
     }
 }
