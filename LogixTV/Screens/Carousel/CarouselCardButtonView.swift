@@ -40,7 +40,7 @@ struct CarouselCardButtonView: View {
             .cornerRadius(12)
             .overlay(
                 RoundedRectangle(cornerRadius: 12)
-                    .stroke(.white, lineWidth: focusedItem == .carouselItem(group.id, item.id) ? 5 : 0)
+                    .stroke(.white, lineWidth: focusedItem == .carouselItem(group.id, item.id) ? 10 : 0)
             )
         }
         .focused($focusedItem, equals: .carouselItem(group.id, item.id))

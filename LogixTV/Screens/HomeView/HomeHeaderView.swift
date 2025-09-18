@@ -92,7 +92,7 @@ struct HomeHeaderView: View {
                         }
                     }
                 }
-            }
+            } 
             .padding(.bottom, 340)
             .padding(.leading, 60.0)
             

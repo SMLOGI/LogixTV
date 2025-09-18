@@ -47,6 +47,7 @@ struct HomeView: View {
                                         
                                     }
                                     .padding(.horizontal)
+                                    .focusSection()
                             }
                             .padding()
  
@@ -61,6 +62,16 @@ struct HomeView: View {
                 }
                 .padding(.top, headerHeight - 320) // aligns first section at bottom of header
                 .padding(.leading, 60)
+                .focusSection()
+                .onMoveCommand { dir in
+                    if dir == .up {
+                        focusedItem = .pageDot
+                    }
+                    if dir == .left {
+                        // go back to sidebar
+                        focusedItem = .menu(0)
+                    }
+                }
                 .task {
                     await viewModel.loadCarouselGroup()
                     await viewModel.loadCarouselContents()
