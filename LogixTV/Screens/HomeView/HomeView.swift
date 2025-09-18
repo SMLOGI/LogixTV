@@ -11,7 +11,8 @@ struct HomeView: View {
     
     @StateObject private var viewModel = HomeViewModel()
     @FocusState.Binding var focusedItem: FocusTarget?
-    
+    @EnvironmentObject var globalNavState: GlobalNavigationState
+
     // Full screen header height
     private let headerHeight: CGFloat = UIScreen.main.bounds.height
     
@@ -65,11 +66,13 @@ struct HomeView: View {
                 .focusSection()
                 .onMoveCommand { dir in
                     if dir == .up {
+                        globalNavState.lastFocus = focusedItem
                         focusedItem = .pageDot
+                        
                     }
                     if dir == .left {
                         // go back to sidebar
-                        focusedItem = .menu(0)
+                       // focusedItem = .menu(0)
                     }
                 }
                 .task {

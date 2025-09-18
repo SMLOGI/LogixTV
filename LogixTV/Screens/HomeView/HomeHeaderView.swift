@@ -13,6 +13,8 @@ struct HomeHeaderView: View {
     @StateObject private var viewModel = CarouselViewModel()
     @FocusState.Binding var focusedItem: FocusTarget?
     @ObservedObject var homeViewModel: HomeViewModel
+    @EnvironmentObject var globalNavState: GlobalNavigationState
+
     // Number of rows in horizontal grid
     let rows: [GridItem] = [
         GridItem(.flexible(minimum: 500, maximum: .infinity), spacing: 0)
@@ -71,14 +73,16 @@ struct HomeHeaderView: View {
                 withAnimation {
                     if dir == .left {
                         // go back to sidebar
-                        if currentPage == 0 {
-                            focusedItem = .menu(0)
-                        } else {
-                            currentPage = (currentPage - 1)
-                            focusedItem = .pageDot
-                        }
+//                        if currentPage == 0 {
+//                            focusedItem = .menu(0)
+//                        } else {
+//                            currentPage = (currentPage - 1)
+//                            focusedItem = .pageDot
+//                        }
                     } else if dir == .down {
-                        if let firstGroup = homeViewModel.carouselGroups.first, let firstItem = homeViewModel.carousels[firstGroup.name]?.first {
+                        if case .carouselItem = globalNavState.lastFocus {
+                            focusedItem = globalNavState.lastFocus
+                        } else if let firstGroup = homeViewModel.carouselGroups.first, let firstItem = homeViewModel.carousels[firstGroup.name]?.first {
                             focusedItem = .carouselItem(firstGroup.id, firstItem.id)
                         }
                     } else if dir == .right {

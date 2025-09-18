@@ -49,6 +49,7 @@ class GlobalNavigationState: ObservableObject {
     @Published var showPlayer: Bool = false
     @Published var showDetail: Bool = false
     @Published var contentItem: CarouselContent?
+    @Published var lastFocus: FocusTarget?
 }
 
 struct ContentView: View {
