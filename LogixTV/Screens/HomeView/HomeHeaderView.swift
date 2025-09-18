@@ -73,12 +73,12 @@ struct HomeHeaderView: View {
                 withAnimation {
                     if dir == .left {
                         // go back to sidebar
-//                        if currentPage == 0 {
-//                            focusedItem = .menu(0)
-//                        } else {
-//                            currentPage = (currentPage - 1)
-//                            focusedItem = .pageDot
-//                        }
+                        if currentPage == 0 {
+                            focusedItem = .playButton
+                        } else {
+                            currentPage = (currentPage - 1)
+                            focusedItem = .pageDot
+                        }
                     } else if dir == .down {
                         if case .carouselItem = globalNavState.lastFocus {
                             focusedItem = globalNavState.lastFocus
