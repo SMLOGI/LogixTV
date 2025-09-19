@@ -46,9 +46,9 @@ final class NetworkManager {
         print("Request URL: \(url.absoluteString)")
         print("HTTP Method: \(method.rawValue)")
         print("Headers: \(request.allHTTPHeaderFields ?? [:])")
-        if let body = body, let bodyString = String(data: body, encoding: .utf8) {
+        /*if let body = body, let bodyString = String(data: body, encoding: .utf8) {
             print("Request Body: \(bodyString)")
-        }
+        }*/
         
         let (data, response) = try await URLSession.shared.data(for: request)
         
@@ -57,9 +57,9 @@ final class NetworkManager {
         }
         
         print("Status Code: \(httpResponse.statusCode)")
-        if let responseString = String(data: data, encoding: .utf8) {
+        /*if let responseString = String(data: data, encoding: .utf8) {
             print("Response Body: \(responseString)")
-        }
+        }*/
         
         guard (200..<300).contains(httpResponse.statusCode) else {
             throw NSError(domain: "HTTPError", code: httpResponse.statusCode, userInfo: [NSLocalizedDescriptionKey: "HTTP error with status code \(httpResponse.statusCode)"])
@@ -73,10 +73,8 @@ final class NetworkManager {
         //        } catch {
         //            throw NSError(domain: "DecodingError", code: 0, userInfo: [NSLocalizedDescriptionKey: "Decoding failed: \(error.localizedDescription)"])
         //        }
+        
         do {
-            if let jsonString = String(data: data, encoding: .utf8) {
-                print("📜 Raw JSON:\n\(jsonString)")
-            }
             return try decoder.decode(T.self, from: data)
         } catch let DecodingError.keyNotFound(key, context) {
             print("❌ Missing key: \(key.stringValue) in JSON: \(context.debugDescription)")

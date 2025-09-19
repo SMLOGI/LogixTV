@@ -59,6 +59,8 @@ struct ContentView: View {
     @StateObject private var viewModel = SideMenuViewModel()
     @State private var dynamicMenuItems: [MenuItem] = []
     @StateObject private var globalNavigationState = GlobalNavigationState()
+    @State private var showVideoErrorAlert = false
+    @State private var videoErrorMessage = ""
     
     init() {
         // Placeholder; replaced later in body where we have $focusedField
@@ -110,8 +112,29 @@ struct ContentView: View {
             // Movie → play directly
             .fullScreenCover(isPresented: $globalNavigationState.showPlayer) {
                 if let contentItem = globalNavigationState.contentItem, let videoUrl = URL(string: contentItem.video?.first?.contentUrl ?? "") {
-                    VideoPlayerScreen(videoURL: videoUrl, videoTitle: contentItem.title ?? "")
+                   // VideoPlayerScreen(videoURL: videoUrl, videoTitle: contentItem.title ?? "")
+                    let videoData = VideoData(type: "vod", profile: "pradip", drmEnabled: false, licenceUrl: "", contentUrl: videoUrl.absoluteString, protocol: "", encryptionType: "hls", adInfo: nil, qualityGroup: .none)
+                    
+                    LogixVideoPlayer(
+                        category:"ccategory", videoData: videoData,
+                        showControls: .constant(true),
+                        mute: .constant(false),
+                        showAds: .constant(true), isPresentingTheScreen: true, onDismiss: {
+                        }
+                    )
+
+                } else {
+                    // Invalid URL, show alert instead
+                    Color.clear
+                        .onAppear {
+                            videoErrorMessage = "Unable to play video. URL is invalid."
+                            showVideoErrorAlert = true
+                            globalNavigationState.showPlayer = false
+                        }
                 }
+            }
+            .alert(videoErrorMessage, isPresented: $showVideoErrorAlert) {
+                Button("OK", role: .cancel) {}
             }
 
             // Series → go to detail screen

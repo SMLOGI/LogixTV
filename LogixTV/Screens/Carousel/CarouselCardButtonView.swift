@@ -17,15 +17,15 @@ struct CarouselCardButtonView: View {
     
     var body: some View {
         Button(action: {
-            if item.subContentType?.name!.lowercased() == "movie" {
-                showPlayer = true
-            } else if item.subContentType?.name!.lowercased() == "episode" {
-                showDetails = true
-            } else {
+//            if item.subContentType?.name!.lowercased() == "movie" {
+//                showPlayer = true
+//            } else if item.subContentType?.name!.lowercased() == "episode" {
+//                showDetails = true
+//            } else {
                 showPlayer = true
                 globalNavState.contentItem = item
                 globalNavState.showPlayer = true
-            }
+           // }
         }) {
             VStack(alignment: .leading) {
                 if let imageUrl = item.imageURL(for: .landscape16x9) {
