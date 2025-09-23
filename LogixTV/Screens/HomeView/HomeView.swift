@@ -12,7 +12,7 @@ struct HomeView: View {
     @StateObject private var viewModel = HomeViewModel()
     @FocusState.Binding var focusedItem: FocusTarget?
     @EnvironmentObject var globalNavState: GlobalNavigationState
-
+    @Binding var isContentLoaded: Bool
     // Full screen header height
     private let headerHeight: CGFloat = UIScreen.main.bounds.height
     
@@ -83,6 +83,8 @@ struct HomeView: View {
                 .task {
                     await viewModel.loadCarouselGroup()
                     await viewModel.loadCarouselContents()
+                    print("**** content loaded")
+                    self.isContentLoaded = true
                 }
 
             }

@@ -36,7 +36,7 @@ struct LogixVideoPlayer: View {
 
     var onExit: (() -> Void)?
     var videoIsStartPlaying: (() -> Void)?
-    var isPresentingTheScreen:Bool
+    @Binding var isPresentingTheScreen: Bool
     var onDismiss: () -> Void
     
     enum FocusSection: Hashable {
@@ -54,28 +54,7 @@ struct LogixVideoPlayer: View {
         ZStack {
             // Make base player view non-focusable when track selection is shown
             videoPlayerView
-                .allowsHitTesting(!showTrackSelectionView)
-                .focusable(!showTrackSelectionView)
-            if showControls {
-                ZStack {
-                    Image("hero_overlay")
-                }
-            }
-            
-            // Overlay TrackSelectionView when showTrackSelectionView is true
-            if showTrackSelectionView {
-                // Add semi-transparent overlay
-                Color.black.opacity(0.3)
-                    .edgesIgnoringSafeArea(.all)
-                    .allowsHitTesting(true)
-                    .focusable(false)
-                .focusSection()
-                .transition(.opacity)
-            }
-            // Show banner image before live video play
-            if !playbackViewModel.isPlaying() && showThumbnail{
-                Spinner(size: .regular)
-            }
+        
         }
         .onAppear {
             playbackViewModel.destroyPlayer()
@@ -98,9 +77,16 @@ struct LogixVideoPlayer: View {
         }
         .onPlayPauseCommand(perform: togglePlayback)
         .onExitCommand {
-            print("exitAction")
+            isPresentingTheScreen = false
         }
         .fullScreenCover(isPresented: $showControls) {
+            LivePlayerControlsView(playBackViewModel: playbackViewModel, dismissTheControllers: {
+                showControls = false
+                isPresentingTheScreen = false
+            }, settingsButtonTapped: {
+                showControls = false
+                settingsButtonAction()
+            })
         }
         //.onChange(of: playbackViewModel.playerState, perform: handlePlayerState)
        // .onChange(of: playbackViewModel.isPlaying(), perform: checkVideoIsStartPlaying)
@@ -112,7 +98,6 @@ struct LogixVideoPlayer: View {
         }
     }
     private func handleMoveCommand(_ direction: MoveCommandDirection) {
-        guard !showTrackSelectionView,isLiveContent else { return }
         // Cancel existing timer and reset visibility
         if showControls == false && !showChannelList{
 

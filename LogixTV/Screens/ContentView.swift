@@ -61,7 +61,9 @@ struct ContentView: View {
     @StateObject private var globalNavigationState = GlobalNavigationState()
     @State private var showVideoErrorAlert = false
     @State private var videoErrorMessage = ""
-    
+    @State private var showSplashScreen: Bool = true
+    @State var isContentLoaded: Bool = false
+    @State var showPlayerScreen: Bool = false
     init() {
         // Placeholder; replaced later in body where we have $focusedField
     }
@@ -71,6 +73,7 @@ struct ContentView: View {
             
             Color.black.opacity(1.0)
                 .ignoresSafeArea(edges: .all)
+
             
             // Main Content Area using TabView
             ZStack {
@@ -80,7 +83,7 @@ struct ContentView: View {
                     Group {
                         switch type {
                         case .home:
-                            HomeView(focusedItem: $focusedField)
+                            HomeView(focusedItem: $focusedField, isContentLoaded: $isContentLoaded)
                         case .sports:
                             SportsView()
                         case .listen:
@@ -119,7 +122,8 @@ struct ContentView: View {
                         category:"ccategory", videoData: videoData,
                         showControls: .constant(true),
                         mute: .constant(false),
-                        showAds: .constant(true), isPresentingTheScreen: true, onDismiss: {
+                        showAds: .constant(true), isPresentingTheScreen: $globalNavigationState.showPlayer, onDismiss: {
+                            globalNavigationState.showPlayer = false
                         }
                     )
 
@@ -141,6 +145,13 @@ struct ContentView: View {
             /*.fullScreenCover(isPresented: $globalNavigationState.showDetails) {
                 //SeriesDetailScreen(series: item)
             }*/
+            
+            
+            if !isContentLoaded {
+                Image("splashScreen")
+                    .resizable()
+                    .aspectRatio(contentMode: .fill)
+            }
         }
         .environmentObject(globalNavigationState)  
         .ignoresSafeArea()

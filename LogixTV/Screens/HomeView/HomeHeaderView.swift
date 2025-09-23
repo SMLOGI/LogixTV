@@ -81,7 +81,11 @@ struct HomeHeaderView: View {
                         }
                     } else if dir == .down {
                         if case .carouselItem = globalNavState.lastFocus {
-                            focusedItem = globalNavState.lastFocus
+                            print("*** globalNavState.lastFocus Id =\(String(describing: globalNavState.lastFocus))")
+                            if let firstGroup = homeViewModel.carouselGroups.first {
+                                print("*** first section = \(firstGroup.name) and Id =\(firstGroup.id)")
+                               
+                        }
                         } else if let firstGroup = homeViewModel.carouselGroups.first, let firstItem = homeViewModel.carousels[firstGroup.name]?.first {
                             focusedItem = .carouselItem(firstGroup.id, firstItem.id)
                         }

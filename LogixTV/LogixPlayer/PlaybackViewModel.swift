@@ -33,6 +33,22 @@ enum PlayerState {
     case none
 }
 
+extension PlayerState: CustomStringConvertible {
+    var description: String {
+        switch self {
+        case .showingAds: return "Showing Ads"
+        case .hiddenAds: return "Hidden Ads"
+        case .readyPlayback: return "Ready for Playback"
+        case .startedPlayback: return "Started Playback"
+        case .endedPlayback: return "Ended Playback"
+        case .errorPlayback: return "Error in Playback"
+        case .pauseplayback: return "Paused Playback"
+        case .resumedPlayback: return "Resumed Playback"
+        case .none: return "None"
+        }
+    }
+}
+
 enum VideoQualityName: String, CaseIterable {
     case automatic = "Auto"
     case lowQuality = "Low (240p)"
@@ -194,6 +210,9 @@ extension PlaybackViewModel {
 
     func isPlaying() -> Bool {
         return (self.mediaPlayer?.isPlaying ?? false)
+    }
+    func isShowingAds() -> Bool {
+        return (playerState == .showingAds)
     }
 
     func seekToPosition(value: Float) {
