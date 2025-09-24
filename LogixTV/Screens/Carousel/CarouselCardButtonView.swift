@@ -45,6 +45,13 @@ struct CarouselCardButtonView: View {
         }
         .focused($focusedItem, equals: .carouselItem(group.id, item.id))
         .buttonStyle(.card)
+        .onCompatibleChange(of: focusedItem) { oldValue, newValue in
+            if newValue != nil && oldValue != newValue {
+                if case .carouselItem = newValue, case .carouselItem = oldValue {
+                    globalNavState.lastFocus = newValue
+                }
+            }
+        }
     }
 }
 

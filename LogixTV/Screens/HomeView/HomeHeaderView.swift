@@ -32,6 +32,7 @@ struct HomeHeaderView: View {
                             HeroBannerCarouselView(
                                 content: content,
                                 viewModel: viewModel,
+                                homeViewModel: homeViewModel,
                                 focusedItem: $focusedItem,
                                 currentPage: $currentPage
                             )
@@ -51,7 +52,7 @@ struct HomeHeaderView: View {
             HStack(spacing: 12) {
                 ForEach(viewModel.contentList.indices, id: \.self) { index in
                     let isSelected = currentPage == index
-                    let isFocused = focusedItem == .pageDot
+                    let isFocused = focusedItem == .playButton
                     let size = isFocused && isSelected ? 25.0 : 20.0
                     Circle()
                         .fill(isSelected ? Color.white : Color.gray)
@@ -66,10 +67,10 @@ struct HomeHeaderView: View {
             }
             .frame(width: UIScreen.main.bounds.width - 60)
             .background(.clear)
-            .focusable(true)
-            .focused($focusedItem, equals: .pageDot) // each dot individually focusable
-            .focusSection() // optional: marks the whole HStack as a section
-            .onMoveCommand { dir in
+           // .focusable(true)
+           // .focused($focusedItem, equals: .pageDot) // each dot individually focusable
+           // .focusSection() // optional: marks the whole HStack as a section
+           /* .onMoveCommand { dir in
                 withAnimation {
                     if dir == .left {
                         // go back to sidebar
@@ -77,7 +78,7 @@ struct HomeHeaderView: View {
                             focusedItem = .playButton
                         } else {
                             currentPage = (currentPage - 1)
-                            focusedItem = .pageDot
+                            focusedItem = .playButton
                         }
                     } else if dir == .down {
                         if case .carouselItem = globalNavState.lastFocus {
@@ -92,7 +93,7 @@ struct HomeHeaderView: View {
                     } else if dir == .right {
                         if currentPage < viewModel.contentList.count - 1 {
                             currentPage = currentPage + 1
-                            focusedItem = .pageDot
+                            focusedItem = .playButton
                         } else {
                             if let firstGroup = homeViewModel.carouselGroups.first, let firstItem = homeViewModel.carousels[firstGroup.name]?.first {
                                 focusedItem = .carouselItem(firstGroup.id, firstItem.id)
@@ -100,7 +101,7 @@ struct HomeHeaderView: View {
                         }
                     }
                 }
-            } 
+            } */
             .padding(.bottom, 340)
             .padding(.leading, 60.0)
             
@@ -112,6 +113,7 @@ struct HomeHeaderView: View {
             }
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .focusSection()
         .task {
             await viewModel.loadCarousel()
         }

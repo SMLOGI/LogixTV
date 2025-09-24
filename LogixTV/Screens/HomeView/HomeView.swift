@@ -18,7 +18,7 @@ struct HomeView: View {
     
     var body: some View {
         ScrollView(.vertical, showsIndicators: false) {
-            ZStack(alignment: .top) {
+            VStack(alignment: .leading) {
                 
                 // MARK: Parallax Header
                 GeometryReader { geo in
@@ -27,59 +27,13 @@ struct HomeView: View {
                     HomeHeaderView(focusedItem: $focusedItem, homeViewModel: viewModel)
                         .frame(height: max(headerHeight, headerHeight + offset)) // expands on pull
                         .offset(y: offset > 0 ? -offset : 0) // parallax scroll
+
                 }
-                .frame(height: headerHeight)
+                .frame(height: UIScreen.main.bounds.height - 260)
                 
-                // MARK: Transparent Content
-                LazyVStack(alignment: .leading, spacing: 20) {
-                    ForEach(viewModel.carouselGroups, id: \.name) { group in
-                        VStack(alignment: .leading, spacing: 8) {
-                            Section(
-                                header: Text(group.displayName)
-                                    .font(.headline)            // set font
-                                    .foregroundColor(.gray)     // set color
-                                    .padding(.leading, 40)      // padding
-                            )  {
-                                ScrollView(.horizontal, showsIndicators: false) {
-                                    HStack(spacing: .zero) {
-                                        if let items = viewModel.carousels[group.name] {
-                                            ForEach(items, id: \.id) { item in
-                                                HStack(spacing: 0) {
-                                                    CarouselCardButtonView(item: item, group: group, focusedItem: $focusedItem)
-                                                }
-                                                .padding(20)
-                                            }
-                                        }
-                                        
-                                    }
-                                    .padding(.horizontal)
-                                    .focusSection()
-                                }
-                                .padding()
-                                
-                            }
-                            .font(.title2)
-                            .foregroundColor(.white)
-                            .padding(.horizontal)
-                        }
-                        .padding(.top, 16)
-                        .focusSection()
-                    }
-                }
-                .padding(.top, headerHeight - 320) // aligns first section at bottom of header
-                .padding(.leading, 60)
-                .focusSection()
-                .onMoveCommand { dir in
-                    if dir == .up {
-                        globalNavState.lastFocus = focusedItem
-                        focusedItem = .pageDot
-                        
-                    }
-                    if dir == .left {
-                        // go back to sidebar
-                       // focusedItem = .menu(0)
-                    }
-                }
+                MovieCollectionView(viewModel: viewModel, focusedItem: $focusedItem)
+                    .padding(.leading, 80)
+                
                 .task {
                     await viewModel.loadCarouselGroup()
                     await viewModel.loadCarouselContents()

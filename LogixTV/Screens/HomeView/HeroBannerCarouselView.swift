@@ -12,6 +12,8 @@ import SwiftUI
 struct HeroBannerCarouselView: View {
     let content: CarouselContent
     let viewModel: CarouselViewModel
+    var homeViewModel: HomeViewModel
+
     @FocusState.Binding var focusedItem: FocusTarget?
     @Binding var currentPage: Int
     
@@ -40,7 +42,7 @@ struct HeroBannerCarouselView: View {
                     .fill(Color.gray)
                     .ignoresSafeArea()
             }
-            BannerDetailView(content: content, focusedItem: $focusedItem)
+            BannerDetailView(content: content, focusedItem: $focusedItem, viewModel: viewModel, homeViewModel: homeViewModel, currentPage: $currentPage)
                 .frame(height: 400)
                 .padding(.bottom, 200)
         }
@@ -53,10 +55,14 @@ struct HeroBannerCarouselView: View {
 struct BannerDetailView: View {
     let content: CarouselContent
     @FocusState.Binding var focusedItem: FocusTarget?
+    let viewModel: CarouselViewModel
+    var homeViewModel: HomeViewModel
+    @Binding var currentPage: Int
+    @EnvironmentObject var globalNavState: GlobalNavigationState
 
     var body: some View {
         HStack {
-            VStack(alignment: .leading, spacing: 16) {
+            VStack(alignment: .leading, spacing: 15) {
                 Text(content.title ?? "")
                     .font(.largeTitle)
                     .bold()
@@ -72,11 +78,21 @@ struct BannerDetailView: View {
                 PlayButton(content: content, focusedItem: $focusedItem)
                     .onMoveCommand { dir in
                         if dir == .right {
-                            focusedItem = .pageDot
-                        }
-                        if dir == .left {
+                            if currentPage == (viewModel.contentList.count - 1) {
+                                moveToMovieCollection()
+                            } else {
+                                focusedItem = .playButton
+
+                            }
+                        } else if dir == .left {
                             // go back to sidebar
-                            focusedItem = .menu(0)
+                            if currentPage == 0 {
+                                focusedItem = .menu(0)
+                            } else {
+                                focusedItem = .playButton
+                            }
+                        } else if dir == .down {
+                            moveToMovieCollection()
                         }
                     }
                  
@@ -86,9 +102,20 @@ struct BannerDetailView: View {
 
             Spacer()
         }
-        .padding(.leading, 120)
+        .padding(.leading, 140)
         .background(.clear)
         .focusSection()
+    }
+    func moveToMovieCollection() {
+        if case .carouselItem = globalNavState.lastFocus {
+            print("*** globalNavState.lastFocus Id =\(String(describing: globalNavState.lastFocus))")
+            if let firstGroup = homeViewModel.carouselGroups.first {
+                print("*** first section = \(firstGroup.name) and Id =\(firstGroup.id)")
+                focusedItem = globalNavState.lastFocus
+        }
+        } else if let firstGroup = homeViewModel.carouselGroups.first, let firstItem = homeViewModel.carousels[firstGroup.name]?.first {
+            focusedItem = .carouselItem(firstGroup.id, firstItem.id)
+        }
     }
 }
 
@@ -99,22 +126,25 @@ struct PlayButton: View {
     @EnvironmentObject var globalNavState: GlobalNavigationState
 
     var body: some View {
-        Button {
-            globalNavState.contentItem = content
-            globalNavState.showPlayer = true
-        } label: {
-            HStack(spacing: 10) {
-                Image(systemName: "play.fill")
-                    .font(.subheadline)
-                Text("PLAY")
-                    .font(.caption)
+        VStack(alignment: .leading) {
+            Button {
+                globalNavState.contentItem = content
+                globalNavState.showPlayer = true
+            } label: {
+                HStack(spacing: 10) {
+                    Image(systemName: "play.fill")
+                        .font(.subheadline)
+                    Text("PLAY")
+                        .font(.caption)
+                }
+                .padding(10)
+                .frame(width: 120, height: 32)
             }
-            .padding(10)
-            .frame(width: 120, height: 32)
+            .buttonStyle(.automatic)
+            .background(focusedItem == .playButton ? Color.red : Color.appPurple)
+            .cornerRadius(12)
+            .focused($focusedItem, equals: .playButton)
         }
-        .background(Color.appPurple)
-        .cornerRadius(12)
-        .focused($focusedItem, equals: .playButton)
     }
 }
 

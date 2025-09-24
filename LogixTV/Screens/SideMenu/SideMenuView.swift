@@ -30,7 +30,6 @@ struct SideMenuView: View {
 
             // ✅ focusSection applied only to menu block
             VStack(alignment: .leading, spacing: 10) {
-
                 Button {
                     isShowingSearch = true
                 } label: {
@@ -90,8 +89,8 @@ struct SideMenuView: View {
                     .animation(.easeInOut(duration: 0.2), value: focusedField)
                 }
             }
-            .focusSection()   // ✅ sidebar section ends here
-            .defaultFocus($focusedField, .menu(0))
+            //.focusSection()   // ✅ sidebar section ends here
+            //.defaultFocus($focusedField, .menu(0))
             
             Spacer()
 
@@ -106,10 +105,30 @@ struct SideMenuView: View {
                 Color.black
             }
         }
+        .focusSection()
+        // ✅ custom move handling
         .onMoveCommand { dir in
             switch dir {
             case .right:
-                focusedField = .playButton   // ✅ ensure this exists in FocusTarget
+                // override SwiftUI’s default “stay inside focusSection”
+                if case .menu = focusedField {
+                    DispatchQueue.main.async {
+                        focusedField = .playButton
+                    }
+                } else if focusedField == .searchOption {
+                    DispatchQueue.main.async {
+                        focusedField = .playButton
+                    }
+                }
+
+            case .left:
+                // back from play button → go to last selected menu
+                if focusedField == .playButton {
+                    DispatchQueue.main.async {
+                        focusedField = .menu(selectedIndex)
+                    }
+                }
+
             default:
                 break
             }
@@ -139,6 +158,7 @@ struct SideMenuView: View {
         }
     }
 }
+
 
 
 #Preview {
