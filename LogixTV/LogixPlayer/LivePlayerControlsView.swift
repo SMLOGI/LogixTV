@@ -38,10 +38,8 @@ struct LivePlayerControlsView: View {
     // MARK: - Body
     var body: some View {
         ZStack {
-            Text(playBackViewModel.playerState.description)
-                .foregroundStyle(.red)
-                .padding(.top, 100)
-            if (playBackViewModel.playerState == .showingAds) == false {
+
+            if (playBackViewModel.isShowingAd == false) {
                 PlayerControlButton(
                     imageName: playBackViewModel.isPlaying() ? "PlayButtonUnfocused" : "PauseButtonUnfocused",
                     focusedImageName: playBackViewModel.isPlaying() ? "pause" : "play",

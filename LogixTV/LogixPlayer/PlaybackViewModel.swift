@@ -90,6 +90,7 @@ class PlaybackViewModel: ObservableObject, Observable {
     @Published var sdkError: LogixPlayerSDKError?
     @Published var adPositions: [Double] = []
     @Published var wasPaused: Bool = false
+    @Published var isShowingAd: Bool = false
     var liveData: VideoData?
 
     private var observers = Set<AnyCancellable>()
@@ -377,6 +378,16 @@ extension PlaybackViewModel {
 
     private func logAdEvent(_ message: String) {
         debugPrint("Ad Event:: \(message)")
+        switch message {
+        case "IMAadProgress":
+            isShowingAd = true
+        case "IMAadComplete":
+            isShowingAd = false
+        case "IMAadContentResume":
+            isShowingAd = false
+        default:
+            break
+        }
     }
 
     func setAdCuePoints(data: [AnyHashable: Any]) {
