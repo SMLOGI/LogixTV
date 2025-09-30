@@ -66,6 +66,15 @@ struct HomeHeaderView: View {
                     }
                     .buttonStyle(.borderless) // removes default rectangle highlight
                     .focused($focusedItem, equals: .pageDot(index)) // each dot individually focusable
+                    .onMoveCommand { dir in
+                        print("Button onMoveCommand currentPage=\(currentPage) =\(dir)")
+                        if currentPage == 7 {
+                                globalNavState.bannerIndex = 0
+                                currentPage = 0
+                                focusedItem = .pageDot(0)
+
+                        }
+                    }
                 }
             }
             .frame(width: UIScreen.main.bounds.width - 60)
@@ -77,19 +86,25 @@ struct HomeHeaderView: View {
                         if case let .pageDot(index) = newValue {
                             print("index=\(index)")
                             print("currentPage=\(currentPage)")
-                            if index < currentPage {
-                                focusedItem = .menu(0)
-                            } else {
+                            //if index < currentPage {
+                                //focusedItem = .menu(0)
+                            //} else {
                                 print("Do something dude")
                                 globalNavState.bannerIndex = index
                                 currentPage = index
-                            }
+                           // }
                         }
                     }
                 }
             }
-            /*
             .onMoveCommand { dir in
+                print("onMoveCommand currentPage=\(currentPage) =\(dir)")
+                if currentPage == 7 {
+                        globalNavState.bannerIndex = 0
+                        currentPage = 0
+                        focusedItem = .pageDot(0)
+
+                }
                     if dir == .left {
                         // go back to sidebar
 //                        if globalNavState.bannerIndex == 0 {
@@ -109,15 +124,14 @@ struct HomeHeaderView: View {
                         } */
                         return
                     } else if dir == .right {
-                        if globalNavState.bannerIndex < viewModel.contentList.count - 1 {
-                            globalNavState.bannerIndex = globalNavState.bannerIndex + 1
-                        } else {
-                            if let firstGroup = homeViewModel.carouselGroups.first, let firstItem = homeViewModel.carousels[firstGroup.name]?.first {
-                                focusedItem = .carouselItem(firstGroup.id, firstItem.id)
-                            }
+                        print("onMoveCommand currentPage=\(currentPage)")
+                        if currentPage == 7 {
+                            globalNavState.bannerIndex = 0
+                            currentPage = 0
+                            focusedItem = .pageDot(0)
                         }
                     }
-            }*/
+            }
             .padding(.bottom, 340)
             .padding(.leading, 60.0)
             

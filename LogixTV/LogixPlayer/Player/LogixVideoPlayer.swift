@@ -64,7 +64,6 @@ struct LogixVideoPlayer: View {
             }
             addObservers()
         }
-        .onDisappear {removeObservers()}
         .onMoveCommand { direction in
             if showTrackSelectionView {
                 // Prevent any focus movement when track selection is shown
@@ -88,8 +87,11 @@ struct LogixVideoPlayer: View {
                 settingsButtonAction()
             })
         }
-        //.onChange(of: playbackViewModel.playerState, perform: handlePlayerState)
-       // .onChange(of: playbackViewModel.isPlaying(), perform: checkVideoIsStartPlaying)
+        .onCompatibleChange(of: playbackViewModel.playerState) { oldValue, newValue in
+            if oldValue != newValue {
+                handlePlayerState()
+            }
+        }
         .onReceive(playbackViewModel.$progress) { progress in
             let currentDuration = progress?.currentDuration ?? 0
             if currentDuration > 1.0 {
@@ -171,8 +173,19 @@ struct LogixVideoPlayer: View {
     }
 
     private func cleanup() {
-            playbackViewModel.destroyPlayer()
-            playerController = nil
+        print("LogixVideoPlayer onDisappear")
+        isPresentingTheScreen = false
+        showControls = false
+        playbackViewModel.destroyPlayer()
+        playerController = nil
+        removeObservers()
+    }
+    
+    private func handlePlayerState() {
+        print("handlePlayerState = ", playbackViewModel.playerState)
+        if playbackViewModel.playerState == .endedPlayback {
+            cleanup()
+        }
     }
     
 }
