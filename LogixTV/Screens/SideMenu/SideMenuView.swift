@@ -13,6 +13,7 @@ struct SideMenuView: View {
     @FocusState.Binding var focusedField: FocusTarget?
     @ObservedObject var viewModel: SideMenuViewModel
     @State private var isShowingSearch = false
+    @EnvironmentObject var globalNavState: GlobalNavigationState
 
     var body: some View {
         VStack(alignment: .leading, spacing: 40) {
@@ -112,21 +113,17 @@ struct SideMenuView: View {
             case .right:
                 // override SwiftUI’s default “stay inside focusSection”
                 if case .menu = focusedField {
-                    DispatchQueue.main.async {
-                        focusedField = .playButton
-                    }
+                    focusedField = .pageDot(0)
+                    globalNavState.bannerIndex = 0
                 } else if focusedField == .searchOption {
-                    DispatchQueue.main.async {
-                        focusedField = .playButton
-                    }
+                    focusedField = .pageDot(0)
+                    globalNavState.bannerIndex = 0
                 }
 
             case .left:
                 // back from play button → go to last selected menu
-                if focusedField == .playButton {
-                    DispatchQueue.main.async {
-                        focusedField = .menu(selectedIndex)
-                    }
+                if case .pageDot = focusedField {
+                    focusedField = .menu(0)
                 }
 
             default:

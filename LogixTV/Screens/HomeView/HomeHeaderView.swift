@@ -29,13 +29,16 @@ struct HomeHeaderView: View {
             ScrollViewReader { proxy in
                     TabView(selection: $currentPage) {
                         ForEach(Array(viewModel.contentList.enumerated()), id: \.1.id) { (index, content) in
-                            HeroBannerCarouselView(
-                                content: content,
-                                viewModel: viewModel,
-                                homeViewModel: homeViewModel,
-                                focusedItem: $focusedItem,
-                                currentPage: $currentPage
-                            )
+                            ZStack{
+                                HeroBannerCarouselView(
+                                    content: content,
+                                    viewModel: viewModel,
+                                    homeViewModel: homeViewModel,
+                                    focusedItem: $focusedItem,
+                                    currentPage: $globalNavState.bannerIndex
+                                )
+                                Text("\(currentPage)")
+                            }
                             .id(index) // important for scrollTo
                             .frame(width: UIScreen.main.bounds.width - 60) // full-screen card
                             .tag(index)
@@ -43,45 +46,57 @@ struct HomeHeaderView: View {
                     }
                     .tabViewStyle(PageTabViewStyle(indexDisplayMode: .never))
                 }
-                .onChange(of: currentPage) { newPage in
-                    // Scroll to the selected page when currentPage changes (tap or focus)
-                    
-                }
+
             
             // MARK: Pager Dots
             HStack(spacing: 12) {
                 ForEach(viewModel.contentList.indices, id: \.self) { index in
-                    let isSelected = currentPage == index
-                    let isFocused = focusedItem == .playButton
-                    let size = isFocused && isSelected ? 25.0 : 20.0
+                    let isSelected = focusedItem == .pageDot(index)
+                    let size = isSelected ? 25.0 : 20.0
                     Circle()
                         .fill(isSelected ? Color.white : Color.gray)
-                        .opacity(isFocused ? 1 : 0.8)
+                        //.opacity(isSelected ? 1 : 0.8)
                         .frame(width: size,height: size)
                         .onTapGesture {
                             withAnimation {
-                                currentPage = index
+                                globalNavState.bannerIndex = index
                             }
                         }
+                     .focusable(true)
+                     .focused($focusedItem, equals: .pageDot(index)) // each dot individually focusable
                 }
             }
             .frame(width: UIScreen.main.bounds.width - 60)
             .background(.clear)
-           // .focusable(true)
-           // .focused($focusedItem, equals: .pageDot) // each dot individually focusable
-           // .focusSection() // optional: marks the whole HStack as a section
-           /* .onMoveCommand { dir in
-                withAnimation {
+            .focusSection()
+            .onCompatibleChange(of: focusedItem) { oldValue, newValue in
+                if newValue != nil && oldValue != newValue {
+                    withAnimation {
+                        if case let .pageDot(index) = newValue {
+                            print("index=\(index)")
+                            print("currentPage=\(currentPage)")
+                            if index < currentPage {
+                                focusedItem = .menu(0)
+                            } else {
+                                print("Do something dude")
+                                globalNavState.bannerIndex = index
+                                currentPage = index
+                            }
+                        }
+                    }
+                }
+            }
+            /*
+            .onMoveCommand { dir in
                     if dir == .left {
                         // go back to sidebar
-                        if currentPage == 0 {
-                            focusedItem = .playButton
-                        } else {
-                            currentPage = (currentPage - 1)
-                            focusedItem = .playButton
-                        }
+//                        if globalNavState.bannerIndex == 0 {
+//                            focusedItem = .menu(0)
+//                        } else {
+//                            globalNavState.bannerIndex = (globalNavState.bannerIndex - 1)
+                        focusedItem = .menu(0)
                     } else if dir == .down {
-                        if case .carouselItem = globalNavState.lastFocus {
+                       /* if case .carouselItem = globalNavState.lastFocus {
                             print("*** globalNavState.lastFocus Id =\(String(describing: globalNavState.lastFocus))")
                             if let firstGroup = homeViewModel.carouselGroups.first {
                                 print("*** first section = \(firstGroup.name) and Id =\(firstGroup.id)")
@@ -89,19 +104,18 @@ struct HomeHeaderView: View {
                         }
                         } else if let firstGroup = homeViewModel.carouselGroups.first, let firstItem = homeViewModel.carousels[firstGroup.name]?.first {
                             focusedItem = .carouselItem(firstGroup.id, firstItem.id)
-                        }
+                        } */
+                        return
                     } else if dir == .right {
-                        if currentPage < viewModel.contentList.count - 1 {
-                            currentPage = currentPage + 1
-                            focusedItem = .playButton
+                        if globalNavState.bannerIndex < viewModel.contentList.count - 1 {
+                            globalNavState.bannerIndex = globalNavState.bannerIndex + 1
                         } else {
                             if let firstGroup = homeViewModel.carouselGroups.first, let firstItem = homeViewModel.carousels[firstGroup.name]?.first {
                                 focusedItem = .carouselItem(firstGroup.id, firstItem.id)
                             }
                         }
                     }
-                }
-            } */
+            }*/
             .padding(.bottom, 340)
             .padding(.leading, 60.0)
             

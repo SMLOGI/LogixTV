@@ -20,8 +20,8 @@ enum FocusTarget: Hashable , Equatable  {
     case searchOption
     case searchItem(String)
     case menu(Int)
-    case pageDot
-    case playButton
+    case pageDot(Int)
+    //case playButton
     case carouselItem(Int, Int)
     case mainContent
     
@@ -33,10 +33,10 @@ enum FocusTarget: Hashable , Equatable  {
             return "Search(\(item))"
         case .menu(let index):
             return "Menu(\(index))"
-        case .pageDot:
+        case .pageDot(let index):
             return "PageDot"
-        case .playButton:
-            return "PlayButton"
+       // case .playButton:
+          //  return "PlayButton"
         case .carouselItem(let group, let contentId):
             return "CarouselItem (\(group)): (\(contentId))"
         case .mainContent:
@@ -49,6 +49,7 @@ class GlobalNavigationState: ObservableObject {
     @Published var showPlayer: Bool = false
     @Published var showDetail: Bool = false
     @Published var contentItem: CarouselContent?
+    @Published var bannerIndex: Int = 0
     @Published var lastFocus: FocusTarget?
 }
 
@@ -73,7 +74,7 @@ struct ContentView: View {
             
             Color.black.opacity(1.0)
                 .ignoresSafeArea(edges: .all)
-
+            
             
             // Main Content Area using TabView
             ZStack {
@@ -115,7 +116,7 @@ struct ContentView: View {
             // Movie → play directly
             .fullScreenCover(isPresented: $globalNavigationState.showPlayer) {
                 if let contentItem = globalNavigationState.contentItem, let videoUrl = URL(string: contentItem.video?.first?.contentUrl ?? "") {
-                   // VideoPlayerScreen(videoURL: videoUrl, videoTitle: contentItem.title ?? "")
+                    // VideoPlayerScreen(videoURL: videoUrl, videoTitle: contentItem.title ?? "")
                     let videoData = VideoData(type: "vod", profile: "pradip", drmEnabled: false, licenceUrl: "", contentUrl: videoUrl.absoluteString, protocol: "", encryptionType: "hls", adInfo: nil, qualityGroup: .none)
                     
                     LogixVideoPlayer(
@@ -126,7 +127,7 @@ struct ContentView: View {
                             globalNavigationState.showPlayer = false
                         }
                     )
-
+                    
                 } else {
                     // Invalid URL, show alert instead
                     Color.clear
@@ -140,11 +141,11 @@ struct ContentView: View {
             .alert(videoErrorMessage, isPresented: $showVideoErrorAlert) {
                 Button("OK", role: .cancel) {}
             }
-
+            
             // Series → go to detail screen
             /*.fullScreenCover(isPresented: $globalNavigationState.showDetails) {
-                //SeriesDetailScreen(series: item)
-            }*/
+             //SeriesDetailScreen(series: item)
+             }*/
             
             
             if !isContentLoaded {
@@ -153,7 +154,7 @@ struct ContentView: View {
                     .aspectRatio(contentMode: .fill)
             }
         }
-        .environmentObject(globalNavigationState)  
+        .environmentObject(globalNavigationState)
         .ignoresSafeArea()
         .task {
             await viewModel.loadMenu()

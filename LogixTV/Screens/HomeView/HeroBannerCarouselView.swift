@@ -75,27 +75,7 @@ struct BannerDetailView: View {
                         .frame(maxWidth: 600, alignment: .leading)
                 }
 
-                PlayButton(content: content, focusedItem: $focusedItem)
-                    .onMoveCommand { dir in
-                        if dir == .right {
-                            if currentPage == (viewModel.contentList.count - 1) {
-                                moveToMovieCollection()
-                            } else {
-                                focusedItem = .playButton
-
-                            }
-                        } else if dir == .left {
-                            // go back to sidebar
-                            if currentPage == 0 {
-                                focusedItem = .menu(0)
-                            } else {
-                                focusedItem = .playButton
-                            }
-                        } else if dir == .down {
-                            moveToMovieCollection()
-                        }
-                    }
-                 
+                PlayButton(content: content, focusedItem: $focusedItem)                 
             }
             .frame(maxHeight: .infinity)
             .padding(.leading, 0)
@@ -115,6 +95,8 @@ struct BannerDetailView: View {
         }
         } else if let firstGroup = homeViewModel.carouselGroups.first, let firstItem = homeViewModel.carousels[firstGroup.name]?.first {
             focusedItem = .carouselItem(firstGroup.id, firstItem.id)
+        } else {
+            print("default moveToMovieCollection")
         }
     }
 }
@@ -141,11 +123,8 @@ struct PlayButton: View {
                 .frame(width: 120, height: 32)
             }
             .buttonStyle(.automatic)
-            .background(focusedItem == .playButton ? Color.red : Color.appPurple)
+            .background(focusedItem == .pageDot(globalNavState.bannerIndex) ? Color.red : Color.appPurple)
             .cornerRadius(12)
-            .focused($focusedItem, equals: .playButton)
-        }
+       }
     }
 }
-
- 
