@@ -75,7 +75,7 @@ struct BannerDetailView: View {
                         .frame(maxWidth: 600, alignment: .leading)
                 }
 
-                PlayButton(content: content, focusedItem: $focusedItem)                 
+                PlayButton(content: content)
             }
             .frame(maxHeight: .infinity)
             .padding(.leading, 0)
@@ -104,27 +104,20 @@ struct BannerDetailView: View {
 /// MARK: - Play Button
 struct PlayButton: View {
     let content: CarouselContent
-    @FocusState.Binding var focusedItem: FocusTarget?
     @EnvironmentObject var globalNavState: GlobalNavigationState
 
     var body: some View {
         VStack(alignment: .leading) {
-            Button {
-                globalNavState.contentItem = content
-                globalNavState.showPlayer = true
-            } label: {
-                HStack(spacing: 10) {
-                    Image(systemName: "play.fill")
-                        .font(.subheadline)
-                    Text("PLAY")
-                        .font(.caption)
-                }
-                .padding(10)
-                .frame(width: 120, height: 32)
+            HStack(spacing: 10) {
+                Image(systemName: "play.fill")
+                    .font(.subheadline)
+                Text("PLAY")
+                    .font(.caption)
             }
-            .buttonStyle(.automatic)
-            .background(focusedItem == .pageDot(globalNavState.bannerIndex) ? Color.red : Color.appPurple)
-            .cornerRadius(12)
-       }
+            .padding(10)
+        }
+        .frame(width: 120, height: 40)
+        .background(Color.appPurple)
+        .cornerRadius(12)
     }
 }

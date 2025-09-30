@@ -53,17 +53,19 @@ struct HomeHeaderView: View {
                 ForEach(viewModel.contentList.indices, id: \.self) { index in
                     let isSelected = focusedItem == .pageDot(index)
                     let size = isSelected ? 25.0 : 20.0
-                    Circle()
-                        .fill(isSelected ? Color.white : Color.gray)
-                        //.opacity(isSelected ? 1 : 0.8)
-                        .frame(width: size,height: size)
-                        .onTapGesture {
-                            withAnimation {
-                                globalNavState.bannerIndex = index
-                            }
-                        }
-                     .focusable(true)
-                     .focused($focusedItem, equals: .pageDot(index)) // each dot individually focusable
+                    Button {
+                        print("bhai button to click ho raha hain")
+                        globalNavState.bannerIndex = index
+                        currentPage = index
+                        globalNavState.contentItem = viewModel.contentList[index]
+                        globalNavState.showPlayer = true
+                    } label: {
+                        Circle()
+                            .fill(isSelected ? Color.white : Color.gray)
+                            .frame(width: size, height: size)
+                    }
+                    .buttonStyle(.borderless) // removes default rectangle highlight
+                    .focused($focusedItem, equals: .pageDot(index)) // each dot individually focusable
                 }
             }
             .frame(width: UIScreen.main.bounds.width - 60)
