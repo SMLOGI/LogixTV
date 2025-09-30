@@ -66,7 +66,7 @@ struct SideMenuView: View {
                         focusedField = .menu(index)
                     } label: {
                         HStack(spacing: 12) {
-                            if let url = URL(string: isFocused ? menuItems[index].details.focusImageLink : menuItems[index].details.unselectedImageLink) {
+                            if let url = URL(string: isFocused ? menuItems[index].details.focusImageLink : menuItems[index].details.focusImageLink) {
                                 CachedAsyncImage(url: url)
                                     .frame(width: 50, height: 50)
                             }

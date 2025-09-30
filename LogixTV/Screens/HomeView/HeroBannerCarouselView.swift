@@ -86,19 +86,6 @@ struct BannerDetailView: View {
         .background(.clear)
         .focusSection()
     }
-    func moveToMovieCollection() {
-        if case .carouselItem = globalNavState.lastFocus {
-            print("*** globalNavState.lastFocus Id =\(String(describing: globalNavState.lastFocus))")
-            if let firstGroup = homeViewModel.carouselGroups.first {
-                print("*** first section = \(firstGroup.name) and Id =\(firstGroup.id)")
-                focusedItem = globalNavState.lastFocus
-        }
-        } else if let firstGroup = homeViewModel.carouselGroups.first, let firstItem = homeViewModel.carousels[firstGroup.name]?.first {
-            focusedItem = .carouselItem(firstGroup.id, firstItem.id)
-        } else {
-            print("default moveToMovieCollection")
-        }
-    }
 }
 
 /// MARK: - Play Button

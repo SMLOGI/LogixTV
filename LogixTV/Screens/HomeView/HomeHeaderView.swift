@@ -82,6 +82,7 @@ struct HomeHeaderView: View {
             .focusSection()
             .onCompatibleChange(of: focusedItem) { oldValue, newValue in
                 if newValue != nil && oldValue != newValue {
+                    print("Button onCompatibleChange newValue=\(String(describing: newValue))")
                     withAnimation {
                         if case let .pageDot(index) = newValue {
                             print("index=\(index)")
@@ -94,43 +95,12 @@ struct HomeHeaderView: View {
                                 currentPage = index
                            // }
                         }
-                    }
-                }
-            }
-            .onMoveCommand { dir in
-                print("onMoveCommand currentPage=\(currentPage) =\(dir)")
-                if currentPage == 7 {
-                        globalNavState.bannerIndex = 0
-                        currentPage = 0
-                        focusedItem = .pageDot(0)
-
-                }
-                    if dir == .left {
-                        // go back to sidebar
-//                        if globalNavState.bannerIndex == 0 {
-//                            focusedItem = .menu(0)
-//                        } else {
-//                            globalNavState.bannerIndex = (globalNavState.bannerIndex - 1)
-                        focusedItem = .menu(0)
-                    } else if dir == .down {
-                       /* if case .carouselItem = globalNavState.lastFocus {
-                            print("*** globalNavState.lastFocus Id =\(String(describing: globalNavState.lastFocus))")
-                            if let firstGroup = homeViewModel.carouselGroups.first {
-                                print("*** first section = \(firstGroup.name) and Id =\(firstGroup.id)")
-                                focusedItem = globalNavState.lastFocus
-                        }
-                        } else if let firstGroup = homeViewModel.carouselGroups.first, let firstItem = homeViewModel.carousels[firstGroup.name]?.first {
-                            focusedItem = .carouselItem(firstGroup.id, firstItem.id)
-                        } */
-                        return
-                    } else if dir == .right {
-                        print("onMoveCommand currentPage=\(currentPage)")
-                        if currentPage == 7 {
-                            globalNavState.bannerIndex = 0
-                            currentPage = 0
-                            focusedItem = .pageDot(0)
+                        if case .pageDot = oldValue,
+                           case .carouselItem = newValue {
+                            moveToMovieCollection()
                         }
                     }
+                }
             }
             .padding(.bottom, 340)
             .padding(.leading, 60.0)
@@ -146,6 +116,19 @@ struct HomeHeaderView: View {
         .focusSection()
         .task {
             await viewModel.loadCarousel()
+        }
+    }
+    func moveToMovieCollection() {
+        if case .carouselItem = globalNavState.lastFocus {
+            print("*** globalNavState.lastFocus Id =\(String(describing: globalNavState.lastFocus))")
+            if let firstGroup = homeViewModel.carouselGroups.first {
+                print("*** first section = \(firstGroup.name) and Id =\(firstGroup.id)")
+                focusedItem = globalNavState.lastFocus
+        }
+        } else if let firstGroup = homeViewModel.carouselGroups.first, let firstItem = homeViewModel.carousels[firstGroup.name]?.first {
+            focusedItem = .carouselItem(firstGroup.id, firstItem.id)
+        } else {
+            print("default moveToMovieCollection")
         }
     }
 }
