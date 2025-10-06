@@ -11,15 +11,12 @@ import Combine
 
 class SearchViewModel: ObservableObject {
     @Published var searchText: String = ""
-    @Published var items: [String] = []      // Your full dataset
-    @Published var filteredItems: [String] = []
+    @Published var filteredItems: [CarouselContent] = []
 
     private var cancellables = Set<AnyCancellable>()
 
     init() {
         // Example dataset
-        items = ["Apple", "Banana", "Mango", "Orange", "Pineapple", "Grapes"]
-
         // Observe searchText and filter items dynamically
         $searchText
             .debounce(for: 0.3, scheduler: DispatchQueue.main)
@@ -32,9 +29,22 @@ class SearchViewModel: ObservableObject {
 
     private func filterItems(with text: String) {
         if text.isEmpty {
-            filteredItems = items
+            filteredItems = []
         } else {
-            filteredItems = items.filter { $0.localizedCaseInsensitiveContains(text) }
+            Task {
+                do {
+                    let searchResponse = try await NetworkManager.shared.request(
+                        baseURL: .main, path: "allcontent?title=\(text)",
+                        method: .GET
+                    ) as CarouselResponse
+                    
+                    filteredItems = searchResponse.data ?? []
+                    
+                    print("✅ searchResponse:", searchResponse)
+                } catch {
+                    //errorMessage = error.localizedDescription
+                }
+            }
         }
     }
 }

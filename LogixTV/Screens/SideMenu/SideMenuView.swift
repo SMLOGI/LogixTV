@@ -51,7 +51,7 @@ struct SideMenuView: View {
                         RoundedRectangle(cornerRadius: 10)
                             .fill(focusedField == .searchOption ? Color.gray : .clear)
                     )
-                    .scaleEffect(focusedField == .searchOption ? 1.15 : 1.0)
+                   // .scaleEffect(focusedField == .searchOption ? 1.15 : 1.0)
                 }
                 .buttonStyle(.borderless)
                 .focused($focusedField, equals: .searchOption)
@@ -78,34 +78,30 @@ struct SideMenuView: View {
                         }
                         .padding(.horizontal, 12)
                         .padding(.vertical, 10)
+                        .frame(width: isSidebarExpanded ? 250 : 100, height: 70)
+
                         .background(
                             RoundedRectangle(cornerRadius: 10)
                                 .fill(isFocused ? Color.gray : .clear)
                         )
-                        .scaleEffect(isFocused ? 1.15 : 1.0)
+                        //.scaleEffect(isFocused ? 1.15 : 1.0)
                     }
                     .buttonStyle(.borderless)
                     .focused($focusedField, equals: .menu(index))
                     .padding()
-                    .animation(.easeInOut(duration: 0.2), value: focusedField)
+                   // .animation(.easeInOut(duration: 0.2), value: focusedField)
                 }
             }
-            //.focusSection()   // ✅ sidebar section ends here
-            //.defaultFocus($focusedField, .menu(0))
-            
+            .frame(width: isSidebarExpanded ? 250 : 100)
+            .background(Color.yellow)
             Spacer()
 
-            Text(focusedField?.description ?? "No Focus")
-                .font(.system(size: 20))
-                .frame(width: 60)
         }
+        .frame(width: isSidebarExpanded ? 250 : 100)
         .background {
-            if isSidebarExpanded {
-                Color.black.opacity(0.5)
-            } else {
-                Color.black
-            }
+            Color.black.opacity(0.5)
         }
+        .animation(.easeInOut(duration: 0.3), value: isSidebarExpanded)
         .focusSection()
         // ✅ custom move handling
         .onMoveCommand { dir in
@@ -132,7 +128,7 @@ struct SideMenuView: View {
         }
         .onChange(of: focusedField) { oldFocus, newFocus in
             print("onChange oldFocus: \(String(describing: oldFocus)) newFocus:\(String(describing: newFocus))")
-
+            
             switch newFocus {
             case .menu:
                 isSidebarExpanded = true
@@ -140,6 +136,15 @@ struct SideMenuView: View {
                 isSidebarExpanded = true
             default:
                 isSidebarExpanded = false
+            }
+            
+            if case .pageDot = oldFocus,
+               case .menu = newFocus {
+                focusedField = .menu(0)
+            }
+            if case .carouselItem = oldFocus,
+               case .menu = newFocus {
+                focusedField = .menu(0)
             }
         }
         .task {

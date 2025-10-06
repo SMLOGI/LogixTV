@@ -14,28 +14,43 @@ struct SearchView: View {
 
     var body: some View {
         VStack {
-            SearchBar(text: $viewModel.searchText)
-
-            ScrollView {
-                LazyVStack(alignment: .leading, spacing: 20) {
-                    ForEach(viewModel.filteredItems, id: \.self) { item in
-                        Text(item)
-                            .font(focusedField == .searchItem(item) ? .title2 : .body) // 🔑 choose font based on focus
-                            .padding()
-                            .background(
-                                focusedField == .searchItem(item)
-                                ? Color.blue.opacity(0.6) // focused background
-                                : Color.gray.opacity(0.3) // normal background
-                            )
-                            .cornerRadius(8)
-                            .scaleEffect(focusedField == .searchItem(item) ? 1.1 : 1.0) // 🔑 subtle zoom on focus
-                            .animation(.easeInOut(duration: 0.2), value: focusedField)
+           // SearchBar(text: $viewModel.searchText)
+            
+            // Recent searches
+           /* if !viewModel.recentSearches.isEmpty {
+                Text("Recent Searches")
+                    .font(.title3)
+                ScrollView(.horizontal, showsIndicators: false) {
+                    HStack {
+                        ForEach(viewModel.recentSearches, id: \.self) { query in
+                            Button(query) {
+                                viewModel.searchText = query
+                                viewModel.performSearch()
+                            }
                             .focusable(true)
-                            .focused($focusedField, equals: .searchItem(item))
+                        }
                     }
                 }
-                .padding()
+            }
+            */
+            ScrollView {
+                LazyVStack(alignment: .leading, spacing: 20) {
+                    ScrollView(.horizontal, showsIndicators: false) {
+                        HStack(spacing: .zero) {
+                            ForEach(viewModel.filteredItems, id: \.id) { item in
+                                HStack(spacing: 0) {
+                                    CarouselCardButtonView(item: item, group: nil, focusedItem: $focusedField)
+                                }
+                                .padding(20)
+                                
+                            }
+                            .padding(.horizontal, 40)
+                        }
+                        .padding()
+                    }
+                }
             }
         }
+        .searchable(text: $viewModel.searchText)
     }
 }

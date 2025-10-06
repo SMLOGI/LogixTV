@@ -37,7 +37,7 @@ struct HomeHeaderView: View {
                                     focusedItem: $focusedItem,
                                     currentPage: $globalNavState.bannerIndex
                                 )
-                                Text("\(currentPage)")
+                               // Text("\(currentPage)")
                             }
                             .id(index) // important for scrollTo
                             .frame(width: UIScreen.main.bounds.width - 60) // full-screen card
