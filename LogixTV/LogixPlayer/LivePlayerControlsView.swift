@@ -25,14 +25,11 @@ struct LivePlayerControlsView: View {
     // MARK: - Callbacks
     let dismissTheControllers: () -> Void
     let settingsButtonTapped: () -> Void
-    @State        private var emptyViewShouldInFocus = true
-    @FocusState private var trapFocused:  Bool
     @State private var isLoading = false
     // MARK: - Focus Section Enum
     enum FocusSection: Hashable {
-        case channelList
-        case settings
-        case otherLiveTvChannels
+        case trapFocused1
+        case trapFocused2
         case playPause
     }
     
@@ -40,30 +37,37 @@ struct LivePlayerControlsView: View {
     var body: some View {
         ZStack {
 
-            if (playBackViewModel.isShowingAd == false) {
-                PlayerControlButton(
-                    imageName: playBackViewModel.isPlaying() ? "PlayButtonUnfocused" : "PauseButtonUnfocused",
-                    focusedImageName: playBackViewModel.isPlaying() ? "pause" : "play",
-                    action: togglePlayPause
-                )
-                .focused($focusedSection, equals: .playPause)
-            }
+           // if (playBackViewModel.isShowingAd == false) {
+                if showControls {
+                    PlayerControlButton(
+                        imageName: playBackViewModel.isPlaying() ? "PlayButtonUnfocused" : "PauseButtonUnfocused",
+                        focusedImageName: playBackViewModel.isPlaying() ? "pause" : "play",
+                        action: togglePlayPause
+                    )
+                    .focused($focusedSection, equals: .playPause)
+                    .onAppear {
+                        print("****** PlayerControlButton onAppear called")
+                        resetHideTimer()
+                    }
+  
+                }
+                
+                bottomTrailingView
+                    .padding(.bottom, 400)
+
+           // }
+
+            /*
             if isLoading {
                 Color.black.opacity(0.5)
                     .ignoresSafeArea()
                 PulsingDots()
             }
-        }
-        .onChange(of: trapFocused) { newIdx in
-            focusedSection = .playPause
+            */
         }
         .onAppear {
+            print("****** LivePlayerControlsView onAppear called")
             focusedSection = .playPause
-            isLoading = true
-            DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
-                isLoading = false
-            }
-            resetHideTimer()
         }
         .onDisappear {
             resetTime()
@@ -74,8 +78,11 @@ struct LivePlayerControlsView: View {
             }
         }
         .onCompatibleChange(of: focusedSection) { oldValue, newValue in
-            if newValue != nil && oldValue != newValue {
-                resetHideTimer()
+            if newValue == .trapFocused2 {
+                if !showControls {
+                    showControls = true
+                    focusedSection = .playPause
+                }
             }
         }
         // MARK: - Moved logic to a separate method
@@ -99,7 +106,7 @@ extension LivePlayerControlsView {
     private func resetHideTimer() {
         hideWorkItem?.cancel()
         let task = DispatchWorkItem {
-            if hideWorkItem != nil && !showChannelList {
+            if hideWorkItem != nil {
                 showControls = false
             }
         }
@@ -121,30 +128,35 @@ extension LivePlayerControlsView {
 // MARK: - Live Blinker and Settings
 extension LivePlayerControlsView {
     
+    private var isTrapOneFocused: Bool {
+        focusedSection == .trapFocused1
+    }
+    
+    private var sizeForFocused: CGFloat {
+        isTrapOneFocused ? 100 : 90
+    }
+    
+    private var isTrapTwoFocused: Bool {
+        focusedSection == .trapFocused2
+    }
+    
+    private var size2ForFocused: CGFloat {
+        isTrapTwoFocused ? 100 : 90
+    }
+    
+    
     private var bottomTrailingView: some View {
-        VStack {
-            VStack {
-                Color.clear
-                    .frame(width: 100, height: 100)
-                    .focusable(emptyViewShouldInFocus)
-                    .focused($trapFocused)
-            }
-            .padding(.trailing, 20)
-            .padding(.bottom, 100)
-            HStack(spacing: 20) {
-                liveNowBlinkingView
-                PlayerControlButton(
-                    imageName: "settings",
-                    focusedImageName: "settings",
-                    buttonSize: 60,
-                    action: settingsButtonAction
-                )
-                .focused($focusedSection, equals: .settings)
-            }
-            .padding(.trailing, 20)
-            .padding(.bottom, 40)
+        VStack(alignment: .leading, spacing: 10) {
+            Color.clear
+                .frame(width: sizeForFocused, height: sizeForFocused)
+                .focusable(true)
+                .focused($focusedSection, equals: .trapFocused1)
+            
+            Color.clear
+                .frame(width: size2ForFocused, height: sizeForFocused)
+                .focusable(true)
+                .focused($focusedSection, equals: .trapFocused2)
         }
-        .focusSection()
     }
     
     private var liveNowBlinkingView: some View {
@@ -159,48 +171,5 @@ extension LivePlayerControlsView {
     
     private func settingsButtonAction() {
         settingsButtonTapped()
-    }
-}
-
-// MARK: - Other Live TV Channels
-extension LivePlayerControlsView {
-        
-    private var bottomHeaderTextView: some View {
-        VStack {
-            HStack(alignment: .center, spacing: 8) {
-                Text("OTHER LIVE TV CHANNELS")
-                    .foregroundColor(.white)
-                    .font(.robotoBold(size: 24))
-                
-                Image(!showChannelList ? "Down Arrow" : "upload")
-                    .resizable()
-                    .renderingMode(.template)
-                    .foregroundColor(.white)
-                    .fontWeight(.bold)
-                    .scaledToFit()
-                    .frame(width: 28, height: 28)
-            }
-            .padding(.horizontal, 20)
-            .padding(.vertical, 16)
-            .background(
-                focusedSection == .otherLiveTvChannels
-                ? Color.gray.opacity(1)
-                : Color.clear
-            )
-            .cornerRadius(8)
-            .animation(.easeInOut, value: focusedSection)
-            .focusable(!showChannelList)
-            .focused($focusedSection, equals: .otherLiveTvChannels)
-            .onTapGesture {
-                withAnimation {
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
-                        focusedSection = .channelList
-                        showChannelList.toggle()
-                        resetTime()
-                    }
-                }
-            }
-        }
-        .padding(.bottom, 35)
     }
 }
