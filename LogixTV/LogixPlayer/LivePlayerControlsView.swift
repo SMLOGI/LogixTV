@@ -27,6 +27,7 @@ struct LivePlayerControlsView: View {
     let settingsButtonTapped: () -> Void
     @State        private var emptyViewShouldInFocus = true
     @FocusState private var trapFocused:  Bool
+    @State private var isLoading = false
     // MARK: - Focus Section Enum
     enum FocusSection: Hashable {
         case channelList
@@ -47,13 +48,21 @@ struct LivePlayerControlsView: View {
                 )
                 .focused($focusedSection, equals: .playPause)
             }
-            
+            if isLoading {
+                Color.black.opacity(0.5)
+                    .ignoresSafeArea()
+                PulsingDots()
+            }
         }
         .onChange(of: trapFocused) { newIdx in
             focusedSection = .playPause
         }
         .onAppear {
             focusedSection = .playPause
+            isLoading = true
+            DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+                isLoading = false
+            }
             resetHideTimer()
         }
         .onDisappear {

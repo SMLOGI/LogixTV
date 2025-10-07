@@ -90,7 +90,7 @@ class PlaybackViewModel: ObservableObject, Observable {
     @Published var sdkError: LogixPlayerSDKError?
     @Published var adPositions: [Double] = []
     @Published var wasPaused: Bool = false
-    @Published var isShowingAd: Bool = false
+    @Published var isShowingAd: Bool = true
     var liveData: VideoData?
 
     private var observers = Set<AnyCancellable>()
