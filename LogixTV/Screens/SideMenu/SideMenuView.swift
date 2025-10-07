@@ -79,13 +79,14 @@ struct SideMenuView: View {
                 Text("Search")
                     .font(.headline)
                     .opacity(focusedField == .searchOption ? 1 : 0)
+                    .foregroundColor(focusedField == .searchOption ? .black : .white)
             }
             .padding(.horizontal, isSidebarExpanded ? 12 : 2)
             .padding(.vertical, 10)
             .frame(width: sidebarWidth, height: 100)
             .background(
                 RoundedRectangle(cornerRadius: 10)
-                    .fill(focusedField == .searchOption ? Color.gray : .clear)
+                    .fill(focusedField == .searchOption ? Color.white : .clear)
             )
         }
         .buttonStyle(.borderless)
@@ -112,13 +113,14 @@ struct SideMenuView: View {
                 Text(menuItem.details.displayName)
                     .font(.headline)
                     .opacity(isFocused ? 1 : 0)
+                    .foregroundColor(isFocused ? .black : .white)
             }
             .padding(.horizontal, isSidebarExpanded ? 2 : 15)
             .padding(.vertical, 10)
             .frame(width: sidebarWidth, height: 100)
             .background(
                 RoundedRectangle(cornerRadius: 10)
-                    .fill(isFocused ? Color.gray : .clear)
+                    .fill(isFocused ? Color.white : ((selectedIndex == index) ? .gray.opacity(0.3) : .clear))
             )
         }
         .buttonStyle(.borderless)
