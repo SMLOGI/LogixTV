@@ -26,6 +26,11 @@ struct SideMenuView: View {
             logoView
             menuListView
             Spacer()
+            
+            Color.clear
+                .frame(width: 50, height: 50)
+                .focusable(true)
+                .focused($focusedField, equals: .trapFocused)
         }
         .frame(width: sidebarWidth)
         .background(
@@ -33,7 +38,6 @@ struct SideMenuView: View {
         )
         .animation(.easeInOut(duration: 0.3), value: isSidebarExpanded)
         .focusSection()
-        .onMoveCommand(perform: handleMoveCommand)
         .onCompatibleChange(of: focusedField, perform: handleFocusChange)
         .task { await viewModel.loadMenu() }
         .onAppear { setupInitialState() }
@@ -121,6 +125,7 @@ struct SideMenuView: View {
         .buttonStyle(.borderless)
         .focused($focusedField, equals: .menu(index))
         .padding(.horizontal, isSidebarExpanded ? sidebarPadding : 15)
+        .onMoveCommand(perform: handleMoveCommand)
     }
 
     // MARK: - Handlers
@@ -128,8 +133,11 @@ struct SideMenuView: View {
         switch direction {
         case .right:
             if case .menu = focusedField {
-                focusedField = .pageDot(0)
-                globalNavState.bannerIndex = 0
+                withAnimation {
+                    focusedField = .pageDot(0)
+                    globalNavState.bannerIndex = 0
+                    self.isSidebarExpanded = false
+                }
             } else if focusedField == .searchOption {
                 focusedField = .pageDot(0)
                 globalNavState.bannerIndex = 0
@@ -137,6 +145,10 @@ struct SideMenuView: View {
         case .left:
             if case .pageDot = focusedField {
                 focusedField = .menu(0)
+            }
+        case .down :
+            if focusedField == .trapFocused {
+                focusedField = .menu(viewModel.menuList.count - 1)
             }
         default: break
         }
@@ -147,12 +159,16 @@ struct SideMenuView: View {
         print("onChange oldFocus: \(String(describing: oldFocus)) newFocus:\(String(describing: newFocus))")
         
         switch newFocus {
-        case .menu:
-            isSidebarExpanded = true
-        case .searchOption:
-            isSidebarExpanded = true
+        case .menu, .searchOption:
+            if isSidebarExpanded == false {
+                isSidebarExpanded = true
+            }
+        case .trapFocused :
+            break
         default:
-            isSidebarExpanded = false
+            if isSidebarExpanded {
+                isSidebarExpanded = false
+            }
         }
         
         if case .pageDot = oldFocus, case .menu = newFocus {
@@ -160,6 +176,9 @@ struct SideMenuView: View {
         }
         if case .carouselItem = oldFocus, case .menu = newFocus {
             focusedField = .menu(0)
+        }
+        if focusedField == .trapFocused {
+            focusedField = .menu(viewModel.menuList.count - 1)
         }
     }
 

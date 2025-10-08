@@ -24,6 +24,7 @@ enum FocusTarget: Hashable , Equatable  {
     //case playButton
     case carouselItem(Int, Int)
     case mainContent
+    case trapFocused
     
     var description: String {
         switch self {
@@ -41,6 +42,8 @@ enum FocusTarget: Hashable , Equatable  {
             return "CarouselItem (\(group)): (\(contentId))"
         case .mainContent:
             return "MainContent"
+        case .trapFocused:
+            return "trapFocused"
         }
     }
 }
