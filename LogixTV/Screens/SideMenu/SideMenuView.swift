@@ -14,22 +14,22 @@ struct SideMenuView: View {
     @ObservedObject var viewModel: SideMenuViewModel
     @State private var isShowingSearch = false
     @EnvironmentObject var globalNavState: GlobalNavigationState
+    
+    private let menuFont: Font = .system(size: 30, weight: .medium, design: .rounded)
 
     private var sidebarWidth: CGFloat { isSidebarExpanded ? 250 : 100 }
+    private var sidebarPadding: CGFloat { isSidebarExpanded ? 10 : 4 }
 
     var body: some View {
         VStack(alignment: .leading, spacing: 40) {
+            
             logoView
             menuListView
             Spacer()
         }
         .frame(width: sidebarWidth)
         .background(
-            LinearGradient(
-                gradient: Gradient(colors: [Color.black.opacity(0.8), Color.black.opacity(0.3)]),
-                startPoint: .leading,   // start from left
-                endPoint: .trailing     // end at right
-            )
+            .ultraThinMaterial.opacity(0.95) // or .thinMaterial, .regularMaterial, etc.
         )
         .animation(.easeInOut(duration: 0.3), value: isSidebarExpanded)
         .focusSection()
@@ -71,27 +71,25 @@ struct SideMenuView: View {
         Button {
             isShowingSearch = true
         } label: {
-            HStack(spacing: 12) {
+            HStack(spacing: 25) {
                 Image(systemName: "magnifyingglass")
                     .resizable()
                     .frame(width: 50, height: 50)
                     .foregroundColor(Color.appPurple)
-                Text("Search")
-                    .font(.headline)
-                    .opacity(focusedField == .searchOption ? 1 : 0)
-                    .foregroundColor(focusedField == .searchOption ? .black : .white)
+                if isSidebarExpanded {
+                    Text("Search")
+                        .font(menuFont)
+                        .foregroundColor(focusedField == .searchOption ? .black : .white.opacity(0.8))
+                }
             }
-            .padding(.horizontal, isSidebarExpanded ? 12 : 2)
-            .padding(.vertical, 10)
-            .frame(width: sidebarWidth, height: 100)
+            .frame(width: sidebarWidth - 2 * sidebarPadding, height: 100)
             .background(
                 RoundedRectangle(cornerRadius: 10)
-                    .fill(focusedField == .searchOption ? Color.white : .clear)
-            )
+                    .fill(focusedField == .searchOption ? Color.white  : .clear))
         }
         .buttonStyle(.borderless)
         .focused($focusedField, equals: .searchOption)
-        .padding(.horizontal, isSidebarExpanded ? 2 : 15)
+        .padding(.horizontal, isSidebarExpanded ? sidebarPadding : 15)
     }
 
     private func menuButton(for index: Int) -> some View {
@@ -103,21 +101,18 @@ struct SideMenuView: View {
             selectedIndex = index
             focusedField = .menu(index)
         } label: {
-            HStack(spacing: 12) {
-                
+            HStack(spacing: 25) {
                 if let url = imageURL {
                     CachedAsyncImage(url: url)
                     .frame(width: 50, height: 50)
                 }
-
-                Text(menuItem.details.displayName)
-                    .font(.headline)
-                    .opacity(isFocused ? 1 : 0)
-                    .foregroundColor(isFocused ? .black : .white)
+                if isSidebarExpanded {
+                    Text(menuItem.details.displayName)
+                        .font(menuFont)
+                        .foregroundColor(isFocused ? .black : .white.opacity(0.8))
+                }
             }
-            .padding(.horizontal, isSidebarExpanded ? 2 : 15)
-            .padding(.vertical, 10)
-            .frame(width: sidebarWidth, height: 100)
+            .frame(width: sidebarWidth - 2 * sidebarPadding, height: 100)
             .background(
                 RoundedRectangle(cornerRadius: 10)
                     .fill(isFocused ? Color.white : ((selectedIndex == index) ? .gray.opacity(0.3) : .clear))
@@ -125,7 +120,7 @@ struct SideMenuView: View {
         }
         .buttonStyle(.borderless)
         .focused($focusedField, equals: .menu(index))
-        .padding(.horizontal, isSidebarExpanded ? 2 : 15)
+        .padding(.horizontal, isSidebarExpanded ? sidebarPadding : 15)
     }
 
     // MARK: - Handlers
