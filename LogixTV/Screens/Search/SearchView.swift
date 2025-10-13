@@ -11,46 +11,64 @@ import SwiftUI
 struct SearchView: View {
     @StateObject private var viewModel = SearchViewModel()
     @FocusState.Binding var focusedField: FocusTarget?
+    @State private var isPresentingLogixPlayer = false
+    @EnvironmentObject var globalNavigationState: GlobalNavigationState
+    let columns = [GridItem(.adaptive(minimum: 267), spacing: 30)]
 
     var body: some View {
-        VStack {
-           // SearchBar(text: $viewModel.searchText)
-            
-            // Recent searches
-           /* if !viewModel.recentSearches.isEmpty {
-                Text("Recent Searches")
-                    .font(.title3)
-                ScrollView(.horizontal, showsIndicators: false) {
-                    HStack {
-                        ForEach(viewModel.recentSearches, id: \.self) { query in
-                            Button(query) {
-                                viewModel.searchText = query
-                                viewModel.performSearch()
-                            }
-                            .focusable(true)
-                        }
-                    }
-                }
-            }
-            */
+        ZStack {
+            Color.black.ignoresSafeArea()
+
+
             ScrollView {
-                LazyVStack(alignment: .leading, spacing: 20) {
-                    ScrollView(.horizontal, showsIndicators: false) {
-                        HStack(spacing: .zero) {
-                            ForEach(viewModel.filteredItems, id: \.id) { item in
-                                HStack(spacing: 0) {
-                                    CarouselCardButtonView(item: item, group: nil, focusedItem: $focusedField)
-                                }
-                                .padding(20)
-                                
-                            }
-                            .padding(.horizontal, 40)
+                LazyVGrid(columns: columns, spacing: 30) {
+                    ForEach(viewModel.filteredItems, id: \.id) { item in
+                        CarouselCardButtonView(item: item, group: nil, focusedItem: $focusedField) {
+                            globalNavigationState.contentItem = item
+                            isPresentingLogixPlayer = true
                         }
-                        .padding()
                     }
                 }
+                .padding()
+            }
+            .fullScreenCover(isPresented: $isPresentingLogixPlayer) {
+                showPlayerView()
+            }
+            .searchable(text: $viewModel.searchText)
+        }
+    }
+
+    @ViewBuilder
+    private func showPlayerView() -> some View {
+        ZStack {
+            Color.gray.ignoresSafeArea()
+                
+
+            if let contentItem = globalNavigationState.contentItem,
+               let videoUrlString = contentItem.video?.first?.contentUrl,
+               let videoUrl = URL(string: videoUrlString) {
+
+                let videoData = VideoData(
+                    type: "vod",
+                    profile: "pradip",
+                    drmEnabled: false,
+                    licenceUrl: "",
+                    contentUrl: videoUrl.absoluteString,
+                    protocol: "",
+                    encryptionType: "hls",
+                    adInfo: nil,
+                    qualityGroup: .none
+                )
+
+                LogixVideoPlayer(
+                    category: "ccategory",
+                    videoData: videoData,
+                    isPresentingLogixPlayer: $isPresentingLogixPlayer,
+                    mute: .constant(false),
+                    showAds: .constant(true),
+                    onDismiss: { }
+                )
             }
         }
-        .searchable(text: $viewModel.searchText)
     }
 }

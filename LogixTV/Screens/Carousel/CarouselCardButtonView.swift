@@ -11,20 +11,13 @@ struct CarouselCardButtonView: View {
     let item: CarouselContent
     let group: CarouselGroupData?
     @FocusState.Binding var focusedItem: FocusTarget?
-    @State private var showPlayer = false
     @State private var showDetails = false
     @EnvironmentObject var globalNavState: GlobalNavigationState
-    
+    var completion: (()->Void)?
     var body: some View {
         Button(action: {
-//            if item.subContentType?.name!.lowercased() == "movie" {
-//                showPlayer = true
-//            } else if item.subContentType?.name!.lowercased() == "episode" {
-//                showDetails = true
-//            } else {
-                showPlayer = true
                 globalNavState.contentItem = item
-                globalNavState.showPlayer = true
+                completion?()
            // }
         }) {
             VStack(alignment: .leading) {

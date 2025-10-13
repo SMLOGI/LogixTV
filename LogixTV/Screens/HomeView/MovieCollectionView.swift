@@ -11,6 +11,7 @@ import SwiftUI
 struct MovieCollectionView: View {
     @ObservedObject var viewModel: HomeViewModel
     @FocusState.Binding var focusedItem: FocusTarget?
+    @EnvironmentObject var globalNavState: GlobalNavigationState
 
     var body: some View {
         VStack {
@@ -25,7 +26,9 @@ struct MovieCollectionView: View {
                                     if let items = viewModel.carousels[group.name] {
                                         ForEach(items, id: \.id) { item in
                                             HStack(spacing: 0) {
-                                                CarouselCardButtonView(item: item, group: group, focusedItem: $focusedItem)
+                                                CarouselCardButtonView(item: item, group: group, focusedItem: $focusedItem) {
+                                                    globalNavState.activeScreen = .player
+                                                }
                                             }
                                             .padding(20)
                                         }

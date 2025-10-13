@@ -14,10 +14,10 @@ import Kingfisher
 struct LogixVideoPlayer: View {
     var category: String
     @State var videoData: VideoData
-    @Binding var showControls: Bool
+    @Binding var isPresentingLogixPlayer: Bool
     @Binding var mute: Bool
     @Binding var showAds: Bool
-    @FocusState private var focusedSection: FocusSection?
+    @FocusState private var focusedSection: TrapFocusSection?
     @EnvironmentObject var sideMenuViewModel: SideMenuViewModel
     @StateObject private var playbackViewModel = PlaybackViewModel()
     @State private var playerController: PlayerContainerViewController?
@@ -25,18 +25,17 @@ struct LogixVideoPlayer: View {
     @State private var showTrackSelectionView = false // Controls the modal visibility
     var isLiveContent:Bool = false
     @State private var savedSingleOption: String? = "Auto"
-    @State private var showLiveControlls:Bool = false
+    @State private var showControlls:Bool = false
     @State var hidePlayPauseWhenOverLayInHome:Bool = false
-    @State private var showChannelList: Bool = false
     @State private var  hascontentstarted: Bool = true
     @State private var isContentStarted: Bool = true
     @State private var showThumbnail: Bool = true
     @State private var retryCount: Int = 0
     @State private var isHomeLivePlayer: Bool = false
-
+    @State private var isAdPlaying: Bool = false
+    
     var onExit: (() -> Void)?
     var videoIsStartPlaying: (() -> Void)?
-    @Binding var isPresentingTheScreen: Bool
     var onDismiss: () -> Void
     
     enum FocusSection: Hashable {
@@ -49,14 +48,19 @@ struct LogixVideoPlayer: View {
         case none
     }
     
-
+    // MARK: - Focus Section Enum
+    enum TrapFocusSection: Hashable {
+        case trapFocused1
+        case trapFocused2
+        case playPause
+    }
     var body: some View {
         ZStack {
             // Make base player view non-focusable when track selection is shown
             videoPlayerView
-        
         }
         .onAppear {
+            print("**** loading LogixVideoPlayer")
             playbackViewModel.destroyPlayer()
             initializePlayerIfNeeded()
             DispatchQueue.main.async {
@@ -76,20 +80,25 @@ struct LogixVideoPlayer: View {
         }
         .onPlayPauseCommand(perform: togglePlayback)
         .onExitCommand {
-            isPresentingTheScreen = false
+            isPresentingLogixPlayer = false
         }
-        .fullScreenCover(isPresented: $showControls) {
-            LivePlayerControlsView(playBackViewModel: playbackViewModel, dismissTheControllers: {
-                showControls = false
-                isPresentingTheScreen = false
+        .fullScreenCover(isPresented: $showControlls) {
+            LivePlayerControlsView(playBackViewModel: playbackViewModel, presentPlayPauseScreen: $showControlls, dismissTheControllers: {
+                isPresentingLogixPlayer = false
             }, settingsButtonTapped: {
-                showControls = false
-                settingsButtonAction()
             })
         }
         .onCompatibleChange(of: playbackViewModel.playerState) { oldValue, newValue in
             if oldValue != newValue {
                 handlePlayerState()
+            }
+        }
+        .onCompatibleChange(of: focusedSection) { oldValue, newValue in
+            if newValue == .trapFocused2 {
+                if !showControlls {
+                    showControlls = true
+                    focusedSection = .playPause
+                }
             }
         }
         .onReceive(playbackViewModel.$progress) { progress in
@@ -101,13 +110,12 @@ struct LogixVideoPlayer: View {
     }
     private func handleMoveCommand(_ direction: MoveCommandDirection) {
         // Cancel existing timer and reset visibility
-        if showControls == false && !showChannelList{
-
+        if showControlls == false {
             var transaction = Transaction()
             transaction.disablesAnimations = true
             withTransaction(transaction) {
                 focusedSection = .playPause
-                showControls = true
+                showControlls = true
             }
             return
         }
@@ -136,7 +144,7 @@ struct LogixVideoPlayer: View {
             .padding(.leading, 74)
             .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
         }
-        .opacity(showLiveControlls ? 1 : 0)
+        .opacity(showControlls ? 1 : 0)
     }
     
     private func settingsButtonAction() {
@@ -146,9 +154,8 @@ struct LogixVideoPlayer: View {
     }
 
     private func setupView() {
-        showChannelList = false
         initializePlayer(vid: videoData)
-        showControls = false
+        showControlls = false
     }
 
     private func togglePlayback() {
@@ -174,17 +181,28 @@ struct LogixVideoPlayer: View {
 
     private func cleanup() {
         print("LogixVideoPlayer onDisappear")
-        isPresentingTheScreen = false
-        showControls = false
+        isPresentingLogixPlayer = false
+        showControlls = false
         playbackViewModel.destroyPlayer()
         playerController = nil
         removeObservers()
     }
     
     private func handlePlayerState() {
-        print("handlePlayerState = ", playbackViewModel.playerState)
+        print(" **** handlePlayerState = ", playbackViewModel.playerState)
         if playbackViewModel.playerState == .endedPlayback {
             cleanup()
+        }
+        
+        if playbackViewModel.playerState ==  .showingAds {
+            isAdPlaying = true
+            showControlls = !isAdPlaying
+        } else  if playbackViewModel.playerState == .hiddenAds {
+            // Ad ended
+            if isAdPlaying {
+                isAdPlaying = false
+                showControlls = !isAdPlaying
+            }
         }
     }
     

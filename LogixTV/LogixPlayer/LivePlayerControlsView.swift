@@ -17,10 +17,10 @@ struct LivePlayerControlsView: View {
     @FocusState private var focusedSection: FocusSection?
     
     // MARK: - States
-    @State private var showControls: Bool = true
+    @Binding var presentPlayPauseScreen: Bool
     @State private var hideWorkItem: DispatchWorkItem?
     @State private var blinkingOpacity: Double = 1.0
-    @State private var showChannelList: Bool = false
+    @State var isShowPlayPauseButton: Bool = false
     
     // MARK: - Callbacks
     let dismissTheControllers: () -> Void
@@ -36,52 +36,41 @@ struct LivePlayerControlsView: View {
     // MARK: - Body
     var body: some View {
         ZStack {
-
-           // if (playBackViewModel.isShowingAd == false) {
-                if showControls {
-                    PlayerControlButton(
-                        imageName: playBackViewModel.isPlaying() ? "PlayButtonUnfocused" : "PauseButtonUnfocused",
-                        focusedImageName: playBackViewModel.isPlaying() ? "pause" : "play",
-                        action: togglePlayPause
-                    )
-                    .focused($focusedSection, equals: .playPause)
-                    .onAppear {
-                        print("****** PlayerControlButton onAppear called")
-                        resetHideTimer()
-                    }
-  
+            if isShowPlayPauseButton {
+                PlayerControlButton(
+                    imageName: playBackViewModel.isPlaying() ? "PlayButtonUnfocused" : "PauseButtonUnfocused",
+                    focusedImageName: playBackViewModel.isPlaying() ? "pause" : "play",
+                    action: togglePlayPause
+                )
+                .focused($focusedSection, equals: .playPause)
+                .onAppear {
+                    print("****** PlayerControlButton onAppear called")
+                    resetHideTimer()
                 }
                 
-                bottomTrailingView
-                    .padding(.bottom, 400)
-
-           // }
-
-            /*
-            if isLoading {
-                Color.black.opacity(0.5)
-                    .ignoresSafeArea()
-                PulsingDots()
             }
-            */
+            bottomTrailingView
+                .padding(.bottom, 400)
         }
         .onAppear {
             print("****** LivePlayerControlsView onAppear called")
+            isShowPlayPauseButton = true
             focusedSection = .playPause
+            
         }
         .onDisappear {
             resetTime()
         }
-        .onCompatibleChange(of: showControls) { _, newValue in
+        .onCompatibleChange(of: presentPlayPauseScreen) { _, newValue in
             if !newValue {
-               // dismissTheControllers()
+                 dismissTheControllers()
             }
         }
         .onCompatibleChange(of: focusedSection) { oldValue, newValue in
             if newValue == .trapFocused2 {
-                if !showControls {
-                    showControls = true
+                if !isShowPlayPauseButton {
                     focusedSection = .playPause
+                    isShowPlayPauseButton = true
                 }
             }
         }
@@ -107,7 +96,7 @@ extension LivePlayerControlsView {
         hideWorkItem?.cancel()
         let task = DispatchWorkItem {
             if hideWorkItem != nil {
-                showControls = false
+                isShowPlayPauseButton = false
             }
         }
         hideWorkItem = task
@@ -122,6 +111,7 @@ extension LivePlayerControlsView {
     
     private func handleExitCommand() {
             dismissTheControllers()
+            presentPlayPauseScreen = false
     }
 }
 
@@ -157,19 +147,5 @@ extension LivePlayerControlsView {
                 .focusable(true)
                 .focused($focusedSection, equals: .trapFocused2)
         }
-    }
-    
-    private var liveNowBlinkingView: some View {
-        HStack(spacing: 10) {
-            LiveBlinker()
-            Text("LIVE")
-                .font(.robotoBold(size: 24))
-                .foregroundColor(Color.white)
-                .opacity(blinkingOpacity)
-        }
-    }
-    
-    private func settingsButtonAction() {
-        settingsButtonTapped()
     }
 }

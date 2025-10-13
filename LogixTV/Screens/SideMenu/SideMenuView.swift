@@ -12,7 +12,6 @@ struct SideMenuView: View {
     @Binding var selectedIndex: Int
     @FocusState.Binding var focusedField: FocusTarget?
     @ObservedObject var viewModel: SideMenuViewModel
-    @State private var isShowingSearch = false
     @EnvironmentObject var globalNavState: GlobalNavigationState
     
     private let menuFont: Font = .system(size: 30, weight: .medium, design: .rounded)
@@ -26,11 +25,7 @@ struct SideMenuView: View {
             logoView
             menuListView
             Spacer()
-            
-            Color.clear
-                .frame(width: 50, height: 50)
-                .focusable(true)
-                .focused($focusedField, equals: .trapFocused)
+            shaddowTrappedView
         }
         .frame(width: sidebarWidth)
         .background(
@@ -41,9 +36,7 @@ struct SideMenuView: View {
         .onCompatibleChange(of: focusedField, perform: handleFocusChange)
         .task { await viewModel.loadMenu() }
         .onAppear { setupInitialState() }
-        .sheet(isPresented: $isShowingSearch) {
-            SearchView(focusedField: $focusedField)
-        }
+
     }
 
     // MARK: - Logo View
@@ -59,6 +52,13 @@ struct SideMenuView: View {
             }
         }
     }
+    
+    private var shaddowTrappedView: some View {
+        Color.clear
+            .frame(width: 50, height: 50)
+            .focusable(true)
+            .focused($focusedField, equals: .trapFocused)
+    }
 
     // MARK: - Menu List
     private var menuListView: some View {
@@ -73,7 +73,7 @@ struct SideMenuView: View {
 
     private var searchButton: some View {
         Button {
-            isShowingSearch = true
+            globalNavState.activeScreen = .search
         } label: {
             HStack(spacing: 25) {
                 Image(systemName: "magnifyingglass")

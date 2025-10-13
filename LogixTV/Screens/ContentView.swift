@@ -48,12 +48,26 @@ enum FocusTarget: Hashable , Equatable  {
     }
 }
 
+enum ActiveScreen: Identifiable, Equatable {
+    case none
+    case search
+    case player
+    
+    var id: String {
+        switch self {
+        case .none: return "none"
+        case .search: return "search"
+        case .player: return "player"
+        }
+    }
+}
+    
 class GlobalNavigationState: ObservableObject {
-    @Published var showPlayer: Bool = false
     @Published var showDetail: Bool = false
     @Published var contentItem: CarouselContent?
     @Published var bannerIndex: Int = 0
     @Published var lastFocus: FocusTarget?
+    @Published var activeScreen: ActiveScreen? = nil
 }
 
 struct ContentView: View {
@@ -67,7 +81,7 @@ struct ContentView: View {
     @State private var videoErrorMessage = ""
     @State private var showSplashScreen: Bool = true
     @State var isContentLoaded: Bool = false
-    @State var showPlayerScreen: Bool = false
+    @State var isPresentingLogixPlayer: Bool = false
     init() {
         // Placeholder; replaced later in body where we have $focusedField
     }
@@ -115,31 +129,17 @@ struct ContentView: View {
                 focusedField: $focusedField, viewModel: viewModel,
             )
             .focusSection()
-            
             // Movie → play directly
-            .fullScreenCover(isPresented: $globalNavigationState.showPlayer) {
-                if let contentItem = globalNavigationState.contentItem, let videoUrl = URL(string: contentItem.video?.first?.contentUrl ?? "") {
-                    // VideoPlayerScreen(videoURL: videoUrl, videoTitle: contentItem.title ?? "")
-                    let videoData = VideoData(type: "vod", profile: "pradip", drmEnabled: false, licenceUrl: "", contentUrl: videoUrl.absoluteString, protocol: "", encryptionType: "hls", adInfo: nil, qualityGroup: .none)
-                    
-                    LogixVideoPlayer(
-                        category:"ccategory", videoData: videoData,
-                        showControls: .constant(true),
-                        mute: .constant(false),
-                        showAds: .constant(true), isPresentingTheScreen: $globalNavigationState.showPlayer, onDismiss: {
-                            globalNavigationState.showPlayer = false
-                        }
-                    )
-                    
-                } else {
-                    // Invalid URL, show alert instead
-                    Color.clear
-                        .onAppear {
-                            videoErrorMessage = "Unable to play video. URL is invalid."
-                            showVideoErrorAlert = true
-                            globalNavigationState.showPlayer = false
-                        }
+            .fullScreenCover(item: $globalNavigationState.activeScreen) { screen in
+                switch screen {
+                case .search:
+                    SearchView(focusedField: $focusedField)
+                case .player:
+                    showPlayerView()
+                case .none:
+                    EmptyView()
                 }
+                
             }
             .alert(videoErrorMessage, isPresented: $showVideoErrorAlert) {
                 Button("OK", role: .cancel) {}
@@ -163,6 +163,47 @@ struct ContentView: View {
             await viewModel.loadMenu()
         }
     }
+    
+    @ViewBuilder
+    private func showPlayerView() -> some View {
+        ZStack {
+            Color.black.ignoresSafeArea()
+
+            if let contentItem = globalNavigationState.contentItem,
+               let videoUrlString = contentItem.video?.first?.contentUrl,
+               let videoUrl = URL(string: videoUrlString) {
+                
+                let videoData = VideoData(
+                    type: "vod",
+                    profile: "pradip",
+                    drmEnabled: false,
+                    licenceUrl: "",
+                    contentUrl: videoUrl.absoluteString,
+                    protocol: "",
+                    encryptionType: "hls",
+                    adInfo: nil,
+                    qualityGroup: .none
+                )
+
+                LogixVideoPlayer(
+                    category: "ccategory",
+                    videoData: videoData,
+                    isPresentingLogixPlayer: $isPresentingLogixPlayer,
+                    mute: .constant(false),
+                    showAds: .constant(true),
+                    onDismiss: { }
+                )
+                
+            } else {
+                Color.clear
+                    .onAppear {
+                        videoErrorMessage = "Unable to play video. URL is invalid."
+                        showVideoErrorAlert = true
+                    }
+            }
+        }
+    }
+
 }
 
 
