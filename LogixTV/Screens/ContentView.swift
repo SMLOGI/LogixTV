@@ -25,6 +25,7 @@ enum FocusTarget: Hashable , Equatable  {
     case carouselItem(Int, Int)
     case mainContent
     case trapFocused
+    case sideTrappedFocused
     
     var description: String {
         switch self {
@@ -44,6 +45,8 @@ enum FocusTarget: Hashable , Equatable  {
             return "MainContent"
         case .trapFocused:
             return "trapFocused"
+        case .sideTrappedFocused:
+            return "sideTrappedFocused"
         }
     }
 }
@@ -132,6 +135,8 @@ struct ContentView: View {
                 focusedField: $focusedField, viewModel: viewModel,
             )
             .focusSection()
+            
+            
             // Movie → play directly
             .fullScreenCover(item: $globalNavigationState.activeScreen) { screen in
                 switch screen {
@@ -167,6 +172,9 @@ struct ContentView: View {
                     .resizable()
                     .aspectRatio(contentMode: .fill)
             }
+            
+            sideTrappedView
+                .padding(.leading, 400)
         }
         .environmentObject(globalNavigationState)
         .ignoresSafeArea()
@@ -221,7 +229,13 @@ struct ContentView: View {
             }
         }
     }
-
+    private var sideTrappedView: some View {
+        Color.clear
+            .frame(width: 50, height: 600)
+            .focusable(true)
+            .focused($focusedField, equals: .sideTrappedFocused)
+            .animation(.easeInOut(duration: 0.2), value: focusedField)
+    }
 }
 
 

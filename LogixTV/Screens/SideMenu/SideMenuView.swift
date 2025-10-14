@@ -166,6 +166,7 @@ struct SideMenuView: View {
             }
         case .trapFocused :
             break
+            
         default:
             if isSidebarExpanded {
                 isSidebarExpanded = false
@@ -180,6 +181,12 @@ struct SideMenuView: View {
         }
         if focusedField == .trapFocused {
             focusedField = .menu(viewModel.menuList.count - 1)
+        }
+        if newFocus == .sideTrappedFocused, case .menu = oldFocus {
+            focusedField = .pageDot(0)
+        }
+        if newFocus == .sideTrappedFocused, case .pageDot = oldFocus {
+            focusedField = .menu(0)
         }
     }
 
