@@ -7,7 +7,13 @@
 import SwiftUI
 
 
-struct CarouselCardButtonView: View {
+struct CarouselCardButtonView: View, Equatable {
+    
+    static func == (lhs: Self, rhs: Self) -> Bool {
+        lhs.item.id == rhs.item.id &&
+        lhs.focusedItem == rhs.focusedItem
+    }
+
     let item: CarouselContent
     let group: CarouselGroupData?
     @FocusState.Binding var focusedItem: FocusTarget?

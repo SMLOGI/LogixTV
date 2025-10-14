@@ -9,6 +9,7 @@ import Foundation
 import SwiftUI
 
 struct MovieCollectionView: View {
+    
     @ObservedObject var viewModel: HomeViewModel
     @FocusState.Binding var focusedItem: FocusTarget?
     @EnvironmentObject var globalNavState: GlobalNavigationState
@@ -53,11 +54,13 @@ private struct MovieRowView: View {
                             group: group,
                             focusedItem: $focusedItem,
                         )
+                        .id(item.id)
                         .padding(.vertical, 20)
                     }
                 }
                 .padding(.horizontal, 40)
             }
+            .id(group.name)
             .focusSection()
         } header: {
             Text(title)
