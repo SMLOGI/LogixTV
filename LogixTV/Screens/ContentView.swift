@@ -82,6 +82,8 @@ struct ContentView: View {
     @State private var showSplashScreen: Bool = true
     @State var isContentLoaded: Bool = false
     @State var isPresentingLogixPlayer: Bool = false
+    @State private var showExitAlert = false
+    
     init() {
         // Placeholder; replaced later in body where we have $focusedField
     }
@@ -102,6 +104,7 @@ struct ContentView: View {
                         switch type {
                         case .home:
                             HomeView(focusedItem: $focusedField, isContentLoaded: $isContentLoaded)
+                                .onExitCommand { showExitAlert = true }
                         case .sports:
                             SportsView()
                         case .listen:
@@ -141,6 +144,14 @@ struct ContentView: View {
                 }
                 
             }
+            .alert("Exit App?", isPresented: $showExitAlert) {
+                Button("Cancel", role: .cancel) { }
+                Button("Exit", role: .destructive) {
+                    exitApp()
+                }
+            } message: {
+                Text("Are you sure you want to close the app?")
+            }
             .alert(videoErrorMessage, isPresented: $showVideoErrorAlert) {
                 Button("OK", role: .cancel) {}
             }
@@ -164,6 +175,13 @@ struct ContentView: View {
         }
     }
     
+    private func exitApp() {
+        // Apple discourages forcibly quitting apps, but on tvOS it's often fine for exit flows
+        // You can simulate exit by returning to root or performing cleanup
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+            UIApplication.shared.perform(#selector(NSXPCConnection.suspend))
+        }
+    }
     @ViewBuilder
     private func showPlayerView() -> some View {
         ZStack {
