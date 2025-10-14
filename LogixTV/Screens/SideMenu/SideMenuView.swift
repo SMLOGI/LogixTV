@@ -29,7 +29,7 @@ struct SideMenuView: View {
         }
         .frame(width: sidebarWidth)
         .background(
-            .ultraThinMaterial.opacity(0.95) // or .thinMaterial, .regularMaterial, etc.
+            .regularMaterial // or .thinMaterial, .regularMaterial, etc.
         )
         .animation(.easeInOut(duration: 0.3), value: isSidebarExpanded)
         .focusSection()
@@ -104,6 +104,7 @@ struct SideMenuView: View {
         return Button {
             selectedIndex = index
             focusedField = .menu(index)
+            isSidebarExpanded = false
         } label: {
             HStack(spacing: 25) {
                 if let url = imageURL {

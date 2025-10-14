@@ -7,145 +7,117 @@
 
 import SwiftUI
 
-// MARK: - Main View
 struct LivePlayerControlsView: View {
     
-    // MARK: - ViewModel Observers
+    // MARK: - ViewModel
     @ObservedObject var playBackViewModel: PlaybackViewModel
     
-    // MARK: - Focus States
-    @FocusState private var focusedSection: FocusSection?
+    // MARK: - Bindings
+    @Binding var presentPlayPauseScreen: Bool
     
     // MARK: - States
-    @Binding var presentPlayPauseScreen: Bool
+    @FocusState private var focusedSection: FocusSection?
     @State private var hideWorkItem: DispatchWorkItem?
-    @State private var blinkingOpacity: Double = 1.0
-    @State var isShowPlayPauseButton: Bool = false
+    @State private var isShowPlayPauseButton = false
+    @State private var isLoading = false
     
     // MARK: - Callbacks
     let dismissTheControllers: () -> Void
     let settingsButtonTapped: () -> Void
-    @State private var isLoading = false
-    // MARK: - Focus Section Enum
+    
+    // MARK: - Focus Enum
     enum FocusSection: Hashable {
-        case trapFocused1
-        case trapFocused2
         case playPause
+        case trap(position: TrapPosition)
+        
+        enum TrapPosition: CaseIterable {
+            case top, bottom, left, right
+        }
     }
     
     // MARK: - Body
     var body: some View {
         ZStack {
             if isShowPlayPauseButton {
+                // MARK: - Play / Pause Button (Center)
                 PlayerControlButton(
                     imageName: playBackViewModel.isPlaying() ? "PlayButtonUnfocused" : "PauseButtonUnfocused",
                     focusedImageName: playBackViewModel.isPlaying() ? "pause" : "play",
                     action: togglePlayPause
                 )
                 .focused($focusedSection, equals: .playPause)
-                .onAppear {
-                    print("****** PlayerControlButton onAppear called")
-                    resetHideTimer()
+                .onAppear(perform: resetHideTimer)
+            } else  {
+                // MARK: - Trap Buttons (4 Directions)
+                ForEach(FocusSection.TrapPosition.allCases, id: \.self) { position in
+                    trapButton(for: position)
                 }
-                
             }
-            bottomTrailingView
-                .padding(.bottom, 400)
         }
-        .onAppear {
-            print("****** LivePlayerControlsView onAppear called")
-            isShowPlayPauseButton = true
-            focusedSection = .playPause
-            
-        }
-        .onDisappear {
-            resetTime()
-        }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .onAppear(perform: handleAppear)
+        .onDisappear(perform: resetHideTimer)
         .onCompatibleChange(of: presentPlayPauseScreen) { _, newValue in
-            if !newValue {
-                 dismissTheControllers()
-            }
+            if !newValue { dismissTheControllers() }
         }
-        .onCompatibleChange(of: focusedSection) { oldValue, newValue in
-            if newValue == .trapFocused2 {
-                if !isShowPlayPauseButton {
-                    focusedSection = .playPause
-                    isShowPlayPauseButton = true
-                }
-            }
-        }
-        // MARK: - Moved logic to a separate method
-        // MARK: - Moved logic to a separate method
         .onExitCommand(perform: handleExitCommand)
         .ignoresSafeArea()
     }
 }
 
 // MARK: - Private Methods
-extension LivePlayerControlsView {
+private extension LivePlayerControlsView {
     
-    private func togglePlayPause() {
-        if playBackViewModel.isPlaying() {
-            playBackViewModel.pause()
-        } else {
-            playBackViewModel.play()
-        }
+    func handleAppear() {
+        isShowPlayPauseButton = true
+        focusedSection = .playPause
     }
     
-    private func resetHideTimer() {
+    func togglePlayPause() {
+        playBackViewModel.isPlaying() ? playBackViewModel.pause() : playBackViewModel.play()
+    }
+    
+    func resetHideTimer() {
         hideWorkItem?.cancel()
-        let task = DispatchWorkItem {
-            if hideWorkItem != nil {
-                isShowPlayPauseButton = false
-            }
-        }
+        let task = DispatchWorkItem { isShowPlayPauseButton = false }
         hideWorkItem = task
         DispatchQueue.main.asyncAfter(deadline: .now() + 5, execute: task)
     }
     
-    private func resetTime() {
-        hideWorkItem = nil
-    }
-    
-    // MARK: - Separate Logic
-    
-    private func handleExitCommand() {
-            dismissTheControllers()
-            presentPlayPauseScreen = false
+    func handleExitCommand() {
+        dismissTheControllers()
+        presentPlayPauseScreen = false
     }
 }
 
-// MARK: - Live Blinker and Settings
-extension LivePlayerControlsView {
+// MARK: - UI Builders
+private extension LivePlayerControlsView {
     
-    private var isTrapOneFocused: Bool {
-        focusedSection == .trapFocused1
+    func trapButton(for position: FocusSection.TrapPosition) -> some View {
+        let offset: CGFloat = 120 // Distance from center
+        
+        return Circle()
+            .fill(Color.red.opacity(0.9))
+            .frame(width: size(for: position), height: size(for: position))
+            .focusable(true)
+            .focused($focusedSection, equals: .trap(position: position))
+            .offset(offsetFor(position))
+            .animation(.easeInOut(duration: 0.2), value: focusedSection)
     }
     
-    private var sizeForFocused: CGFloat {
-        isTrapOneFocused ? 100 : 90
+    func size(for position: FocusSection.TrapPosition) -> CGFloat {
+        if case .trap(let focusedPos)? = focusedSection {
+            return focusedPos == position ? 90 : 70
+        }
+        return 70
     }
     
-    private var isTrapTwoFocused: Bool {
-        focusedSection == .trapFocused2
-    }
-    
-    private var size2ForFocused: CGFloat {
-        isTrapTwoFocused ? 100 : 90
-    }
-    
-    
-    private var bottomTrailingView: some View {
-        VStack(alignment: .leading, spacing: 10) {
-            Color.clear
-                .frame(width: sizeForFocused, height: sizeForFocused)
-                .focusable(true)
-                .focused($focusedSection, equals: .trapFocused1)
-            
-            Color.clear
-                .frame(width: size2ForFocused, height: sizeForFocused)
-                .focusable(true)
-                .focused($focusedSection, equals: .trapFocused2)
+    func offsetFor(_ position: FocusSection.TrapPosition) -> CGSize {
+        switch position {
+        case .top: return CGSize(width: 0, height: -120)
+        case .bottom: return CGSize(width: 0, height: 120)
+        case .left: return CGSize(width: -120, height: 0)
+        case .right: return CGSize(width: 120, height: 0)
         }
     }
 }
