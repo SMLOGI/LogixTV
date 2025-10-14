@@ -29,7 +29,7 @@ struct CarouselCardButtonView: View {
                         .fill(Color.gray)
                 }
             }
-            .frame(height: 150)
+            .frame(width: 267, height: 150)
             .cornerRadius(12)
             .overlay(
                 RoundedRectangle(cornerRadius: 12)
