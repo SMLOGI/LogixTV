@@ -28,11 +28,13 @@ struct LivePlayerControlsView: View {
     // MARK: - Focus Enum
     enum FocusSection: Hashable {
         case playPause
-        case trap(position: TrapPosition)
-        
+        case trap
+        //case trap(position: TrapPosition)
+        case progressBar
+        /*
         enum TrapPosition: CaseIterable {
             case top, bottom, left, right
-        }
+        }*/
     }
     
     // MARK: - Body
@@ -49,10 +51,28 @@ struct LivePlayerControlsView: View {
                 .onAppear(perform: resetHideTimer)
             } else  {
                 // MARK: - Trap Buttons (4 Directions)
-                ForEach(FocusSection.TrapPosition.allCases, id: \.self) { position in
+               /* ForEach(FocusSection.TrapPosition.allCases, id: \.self) { position in
                     trapButton(for: position)
                 }
+                */
+                shaddowTrappedView
             }
+            
+            VStack() {
+                Spacer()
+                if let progress = playBackViewModel.progress {
+                    ProgressSliderView(
+                        currentTime: .constant(progress.currentDuration),
+                        totalTime: progress.totalDuration,
+                        onSeek: { newTime in
+                            playBackViewModel.seekToPosition(value: Float(newTime))
+                        },
+                        focusedSection: $focusedSection
+                    )
+                }
+            }
+            .padding(.bottom, 40)
+
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .onAppear(perform: handleAppear)
@@ -60,8 +80,22 @@ struct LivePlayerControlsView: View {
         .onCompatibleChange(of: presentPlayPauseScreen) { _, newValue in
             if !newValue { dismissTheControllers() }
         }
+        .onCompatibleChange(of: focusedSection, perform: { oldValue , newValue in
+            if !isShowPlayPauseButton {
+                if oldValue == .progressBar && newValue == .trap {
+                    handleAppear()
+                }
+            }
+        })
         .onExitCommand(perform: handleExitCommand)
         .ignoresSafeArea()
+    }
+    
+    private var shaddowTrappedView: some View {
+        Color.clear
+            .frame(width: 50, height: 50)
+            .focusable(true)
+            .focused($focusedSection, equals: .trap)
     }
 }
 
@@ -70,7 +104,9 @@ private extension LivePlayerControlsView {
     
     func handleAppear() {
         isShowPlayPauseButton = true
-        focusedSection = .playPause
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+            focusedSection = .playPause
+        }
     }
     
     func togglePlayPause() {
@@ -91,6 +127,7 @@ private extension LivePlayerControlsView {
 }
 
 // MARK: - UI Builders
+/*
 private extension LivePlayerControlsView {
     
     func trapButton(for position: FocusSection.TrapPosition) -> some View {
@@ -121,3 +158,4 @@ private extension LivePlayerControlsView {
         }
     }
 }
+*/
