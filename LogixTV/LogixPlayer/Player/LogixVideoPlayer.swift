@@ -34,6 +34,8 @@ struct LogixVideoPlayer: View {
     @State private var isHomeLivePlayer: Bool = false
     @State private var isAdPlaying: Bool = false
     
+    @State private var showPlayer = false
+
     var onExit: (() -> Void)?
     var videoIsStartPlaying: (() -> Void)?
     var onDismiss: () -> Void
@@ -56,8 +58,16 @@ struct LogixVideoPlayer: View {
     }
     var body: some View {
         ZStack {
-            // Make base player view non-focusable when track selection is shown
+            Color.black.ignoresSafeArea()
             videoPlayerView
+
+            // Make base player view non-focusable when track selection is shown
+            if !showPlayer {
+                Color.black.ignoresSafeArea()
+                 .transition(.opacity)
+                
+                LoadingView()
+            }
         }
         .onAppear {
             print("**** loading LogixVideoPlayer")
@@ -65,6 +75,12 @@ struct LogixVideoPlayer: View {
             initializePlayerIfNeeded()
             DispatchQueue.main.async {
                 setupView()
+            }
+            showPlayer = false
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
+                withAnimation(.easeIn(duration: 0.2)) {
+                    showPlayer = true
+                }
             }
             addObservers()
         }
