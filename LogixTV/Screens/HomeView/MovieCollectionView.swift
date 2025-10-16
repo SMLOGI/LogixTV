@@ -53,6 +53,7 @@ private struct MovieRowView: View {
                             item: item,
                             group: group,
                             focusedItem: $focusedItem,
+                            completion: onItemSelect
                         )
                         .id(item.id)
                         .padding(.vertical, 20)
