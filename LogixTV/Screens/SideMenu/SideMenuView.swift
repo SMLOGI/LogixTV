@@ -54,10 +54,13 @@ struct SideMenuView: View {
     }
     
     private var shaddowTrappedView: some View {
-        Color.clear
+        Color.red
             .frame(width: 50, height: 50)
             .focusable(true)
             .focused($focusedField, equals: .trapFocused)
+            .background(
+                RoundedRectangle(cornerRadius: 10)
+                    .fill(focusedField == .trapFocused ? Color.green  : .clear))
     }
 
     // MARK: - Menu List
@@ -147,10 +150,6 @@ struct SideMenuView: View {
             if case .pageDot = focusedField {
                 focusedField = .menu(0)
             }
-        case .down :
-            if focusedField == .trapFocused {
-                focusedField = .menu(viewModel.menuList.count - 1)
-            }
         default: break
         }
     }
@@ -160,13 +159,10 @@ struct SideMenuView: View {
         print("onChange oldFocus: \(String(describing: oldFocus)) newFocus:\(String(describing: newFocus))")
         
         switch newFocus {
-        case .menu, .searchOption:
+        case .menu, .searchOption, .trapFocused:
             if isSidebarExpanded == false {
                 isSidebarExpanded = true
             }
-        case .trapFocused :
-            break
-            
         default:
             if isSidebarExpanded {
                 isSidebarExpanded = false
@@ -175,17 +171,19 @@ struct SideMenuView: View {
         
         if case .pageDot = oldFocus, case .menu = newFocus {
             focusedField = .menu(0)
-        }
-        if case .carouselItem = oldFocus, case .menu = newFocus {
+        } else if case .carouselItem = oldFocus, case .menu = newFocus {
             focusedField = .menu(0)
-        }
-        if focusedField == .trapFocused {
+        } else if focusedField == .menu(viewModel.menuList.count - 1) || focusedField == .trapFocused {
+            print("handleFocusChange trapFocused")
             focusedField = .menu(viewModel.menuList.count - 1)
-        }
-        if newFocus == .sideTrappedFocused, case .menu = oldFocus {
+            
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                print("handleFocusChange trapFocused asyncAfter")
+                focusedField = .menu(viewModel.menuList.count - 1)
+            }
+        } else if newFocus == .sideTrappedFocused, case .menu = oldFocus {
             focusedField = .pageDot(0)
-        }
-        if newFocus == .sideTrappedFocused, case .pageDot = oldFocus {
+        }else if newFocus == .sideTrappedFocused, case .pageDot = oldFocus {
             focusedField = .menu(0)
         }
     }

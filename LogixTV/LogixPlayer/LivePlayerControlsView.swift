@@ -60,16 +60,17 @@ struct LivePlayerControlsView: View {
             
             VStack() {
                 Spacer()
-                if let progress = playBackViewModel.progress {
                     ProgressSliderView(
-                        currentTime: .constant(progress.currentDuration),
-                        totalTime: progress.totalDuration,
+                        currentTime: Binding(
+                            get: { playBackViewModel.progress?.currentDuration ?? 0 },
+                            set: { playBackViewModel.progress?.currentDuration = $0 }
+                        ),
+                        totalTime:  playBackViewModel.progress?.totalDuration ?? 0.0,
                         onSeek: { newTime in
                             playBackViewModel.seekToPosition(value: Float(newTime))
                         },
                         focusedSection: $focusedSection
                     )
-                }
             }
             .padding(.bottom, 40)
 

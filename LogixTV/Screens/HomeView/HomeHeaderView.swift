@@ -14,7 +14,8 @@ struct HomeHeaderView: View {
     @FocusState.Binding var focusedItem: FocusTarget?
     @ObservedObject var homeViewModel: HomeViewModel
     @EnvironmentObject var globalNavState: GlobalNavigationState
-
+    @State private var focusTransitioning = false
+    @State private var lastItemFocused = false
     // Number of rows in horizontal grid
     let rows: [GridItem] = [
         GridItem(.flexible(minimum: 500, maximum: .infinity), spacing: 0)
@@ -54,7 +55,6 @@ struct HomeHeaderView: View {
                     let isSelected = focusedItem == .pageDot(index)
                     let size = isSelected ? 25.0 : 20.0
                     Button {
-                        print("bhai button to click ho raha hain")
                         globalNavState.bannerIndex = index
                         currentPage = index
                         globalNavState.contentItem = viewModel.contentList[index]
@@ -66,13 +66,25 @@ struct HomeHeaderView: View {
                     }
                     .buttonStyle(.borderless) // removes default rectangle highlight
                     .focused($focusedItem, equals: .pageDot(index)) // each dot individually focusable
-                    .onMoveCommand { dir in
-                        print("Button onMoveCommand currentPage=\(currentPage) =\(dir)")
-                        if currentPage == 7 {
-                                globalNavState.bannerIndex = 0
-                                currentPage = 0
-                                focusedItem = .pageDot(0)
-
+                    .onMoveCommand { direction in
+                        let total = viewModel.contentList.count
+                        print("onMoveCommand direction=\(direction) currentPage=\(currentPage)")
+                        
+                        switch direction {
+                        case .right:
+                            if currentPage == total {
+                                // wrap to first
+                                // currentPage = 0
+                                // globalNavState.bannerIndex = 0
+                                // focusedItem = .pageDot(0)
+                            }
+                        default:
+                            break
+                        }
+                        
+                        withAnimation {
+                            globalNavState.bannerIndex = currentPage
+                            focusedItem = .pageDot(currentPage)
                         }
                     }
                 }
@@ -81,24 +93,23 @@ struct HomeHeaderView: View {
             .background(.clear)
             .focusSection()
             .onCompatibleChange(of: focusedItem) { oldValue, newValue in
+                print("HomeHeaderView onCompatibleChange newValue=\(String(describing: newValue))")
+                
                 if newValue != nil && oldValue != newValue {
-                    print("Button onCompatibleChange newValue=\(String(describing: newValue))")
-                    withAnimation {
-                        if case let .pageDot(index) = newValue {
-                            print("index=\(index)")
-                            print("currentPage=\(currentPage)")
-                            //if index < currentPage {
-                                //focusedItem = .menu(0)
-                            //} else {
-                                print("Do something dude")
-                                globalNavState.bannerIndex = index
-                                currentPage = index
-                           // }
+                    if case let .pageDot(index) = newValue {
+                        print("index=\(index)")
+                        print("currentPage=\(currentPage)")
+                        //if index < currentPage {
+                        //focusedItem = .menu(0)
+                        //} else {
+                        withAnimation {
+                            globalNavState.bannerIndex = index
+                            currentPage = index
                         }
-                        if case .pageDot = oldValue,
-                           case .carouselItem = newValue {
-                            moveToMovieCollection()
-                        }
+                    }
+                    if case .pageDot = oldValue,
+                       case .carouselItem = newValue {
+                        moveToMovieCollection()
                     }
                 }
             }
@@ -119,16 +130,23 @@ struct HomeHeaderView: View {
         }
     }
     func moveToMovieCollection() {
-        if case .carouselItem = globalNavState.lastFocus {
-            print("*** globalNavState.lastFocus Id =\(String(describing: globalNavState.lastFocus))")
-            if let firstGroup = homeViewModel.carouselGroups.first {
-                print("*** first section = \(firstGroup.name) and Id =\(firstGroup.id)")
+        focusTransitioning = true
+
+        Task { @MainActor in
+            // short pause lets tvOS finish current focus release
+            try? await Task.sleep(nanoseconds: 100_000_000) // 0.1s
+
+            if case .carouselItem = globalNavState.lastFocus,
+               let firstGroup = homeViewModel.carouselGroups.first {
                 focusedItem = globalNavState.lastFocus
-        }
-        } else if let firstGroup = homeViewModel.carouselGroups.first, let firstItem = homeViewModel.carousels[firstGroup.name]?.first {
-            focusedItem = .carouselItem(firstGroup.id, firstItem.id)
-        } else {
-            print("default moveToMovieCollection")
+            } else if let firstGroup = homeViewModel.carouselGroups.first,
+                      let firstItem = homeViewModel.carousels[firstGroup.name]?.first {
+                focusedItem = .carouselItem(firstGroup.id, firstItem.id)
+            }
+
+            // release the focus lock after another brief delay
+            try? await Task.sleep(nanoseconds: 50_000_000)
+            focusTransitioning = false
         }
     }
 }

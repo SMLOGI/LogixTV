@@ -35,6 +35,7 @@ struct LogixVideoPlayer: View {
     @State private var isAdPlaying: Bool = false
     
     @State private var showPlayer = false
+    @EnvironmentObject var globalNavState: GlobalNavigationState
 
     var onExit: (() -> Void)?
     var videoIsStartPlaying: (() -> Void)?
@@ -101,6 +102,7 @@ struct LogixVideoPlayer: View {
         .fullScreenCover(isPresented: $showControlls) {
             LivePlayerControlsView(playBackViewModel: playbackViewModel, presentPlayPauseScreen: $showControlls, dismissTheControllers: {
                 isPresentingLogixPlayer = false
+                globalNavState.activeScreen = nil
             }, settingsButtonTapped: {
             })
         }

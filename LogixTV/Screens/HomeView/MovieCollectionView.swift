@@ -34,6 +34,13 @@ struct MovieCollectionView: View {
             .padding(.top)
         }
         .background(Color.clear.ignoresSafeArea())
+        .onAppear {
+            print("MovieCollectionView")
+            if let lastFocus = globalNavState.lastFocus {
+                print("lastFocus = \(lastFocus)")
+                focusedItem = lastFocus
+            }
+        }
     }
 }
 

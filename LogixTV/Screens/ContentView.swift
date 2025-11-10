@@ -106,7 +106,7 @@ struct ContentView: View {
                     Group {
                         switch type {
                         case .home:
-                            HomeView(focusedItem: $focusedField, isContentLoaded: $isContentLoaded)
+                            HomeView(focusedItem: $focusedField, isContentLoaded: $isContentLoaded, focusTransitioning: .constant(true))
                                 .onExitCommand { showExitAlert = true }
                         case .sports:
                             SportsView()
@@ -235,6 +235,11 @@ struct ContentView: View {
             .focusable(true)
             .focused($focusedField, equals: .sideTrappedFocused)
             .animation(.easeInOut(duration: 0.2), value: focusedField)
+    }
+    
+    private func dismissPlayer() {
+        isPresentingLogixPlayer = false
+        globalNavigationState.activeScreen = nil
     }
 }
 

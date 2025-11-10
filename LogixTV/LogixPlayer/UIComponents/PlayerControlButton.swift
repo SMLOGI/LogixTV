@@ -33,12 +33,6 @@ struct PlayerControlButton: View {
             .resizable()
             .scaledToFit()
             .frame(width: buttonSize ?? Layout.defaultButtonSize, height: buttonSize ?? Layout.defaultButtonSize)
-            .background(
-                isFocused
-                ? Color.gray.opacity(1)
-                : Color.clear
-            )
-            .cornerRadius(Layout.cornerRadius)
             .animation(.easeInOut, value: isFocused)
             .focusable(true)
             .focused($isFocused)

@@ -13,6 +13,8 @@ struct HomeView: View {
     @FocusState.Binding var focusedItem: FocusTarget?
     @EnvironmentObject var globalNavState: GlobalNavigationState
     @Binding var isContentLoaded: Bool
+    @Binding var focusTransitioning: Bool
+
     // Full screen header height
     private let headerHeight: CGFloat = UIScreen.main.bounds.height
     
@@ -33,7 +35,7 @@ struct HomeView: View {
                 
                 MovieCollectionView(viewModel: viewModel, focusedItem: $focusedItem)
                     .padding(.leading, 80)
-                
+                    .allowsHitTesting(focusTransitioning)
                 .task {
                     await viewModel.loadCarouselGroup()
                     await viewModel.loadCarouselContents()

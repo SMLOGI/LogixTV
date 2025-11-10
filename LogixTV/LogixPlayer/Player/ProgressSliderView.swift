@@ -47,6 +47,7 @@ struct ProgressSliderView: View {
     }
     
     private func handleMove(_ direction: MoveCommandDirection) {
+        print("ProgressSliderView handleMove direction =\(direction)")
         let step = 10.0 // 10-second skip
         if direction == .left {
             currentTime = max(0, currentTime - step)
