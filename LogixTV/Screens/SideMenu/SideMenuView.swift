@@ -16,7 +16,10 @@ struct SideMenuView: View {
     
     private let menuFont: Font = .system(size: 30, weight: .medium, design: .rounded)
 
-    private var sidebarWidth: CGFloat { isSidebarExpanded ? 250 : 100 }
+    private var sidebarWidth: CGFloat {
+        print("SideMenuView sidebarWidth =\(isSidebarExpanded)")
+        return isSidebarExpanded ? 230 : 100
+    }
     private var sidebarPadding: CGFloat { isSidebarExpanded ? 10 : 4 }
 
     var body: some View {
@@ -31,7 +34,7 @@ struct SideMenuView: View {
         .background(
             .regularMaterial // or .thinMaterial, .regularMaterial, etc.
         )
-        .animation(.easeInOut(duration: 0.3), value: isSidebarExpanded)
+       // .animation(.easeInOut(duration: 0.3), value: isSidebarExpanded)
         .focusSection()
         .onCompatibleChange(of: focusedField, perform: handleFocusChange)
         .task { await viewModel.loadMenu() }
@@ -54,13 +57,10 @@ struct SideMenuView: View {
     }
     
     private var shaddowTrappedView: some View {
-        Color.red
+        Color.clear
             .frame(width: 50, height: 50)
             .focusable(true)
             .focused($focusedField, equals: .trapFocused)
-            .background(
-                RoundedRectangle(cornerRadius: 10)
-                    .fill(focusedField == .trapFocused ? Color.green  : .clear))
     }
 
     // MARK: - Menu List
@@ -75,28 +75,19 @@ struct SideMenuView: View {
     }
 
     private var searchButton: some View {
-        Button {
+        SideMenuItemView(
+            isFocused: focusedField == .searchOption,
+            isExpanded: isSidebarExpanded,
+            title: "Search",
+            icon: .system(name: "magnifyingglass", color: Color.appPurple),
+            width: sidebarWidth,
+            padding: sidebarPadding,
+            highlightColor: .white,
+            textColor: .white.opacity(0.8)
+        ) {
             globalNavState.activeScreen = .search
-        } label: {
-            HStack(spacing: 25) {
-                Image(systemName: "magnifyingglass")
-                    .resizable()
-                    .frame(width: 50, height: 50)
-                    .foregroundColor(Color.appPurple)
-                if isSidebarExpanded {
-                    Text("Search")
-                        .font(menuFont)
-                        .foregroundColor(focusedField == .searchOption ? .black : .white.opacity(0.8))
-                }
-            }
-            .frame(width: sidebarWidth - 2 * sidebarPadding, height: 100)
-            .background(
-                RoundedRectangle(cornerRadius: 10)
-                    .fill(focusedField == .searchOption ? Color.white  : .clear))
         }
-        .buttonStyle(.borderless)
         .focused($focusedField, equals: .searchOption)
-        .padding(.horizontal, isSidebarExpanded ? sidebarPadding : 15)
     }
 
     private func menuButton(for index: Int) -> some View {
@@ -104,31 +95,21 @@ struct SideMenuView: View {
         let menuItem = viewModel.menuList[index]
         let imageURL = viewModel.menuItemURL(at: index)
 
-        return Button {
+        return SideMenuItemView(
+            isFocused: isFocused,
+            isExpanded: isSidebarExpanded,
+            title: menuItem.details.displayName,
+            icon: .remote(url: imageURL!),
+            width: sidebarWidth,
+            padding: sidebarPadding,
+            highlightColor: .white,
+            textColor: .white.opacity(0.8)
+        ) {
             selectedIndex = index
             focusedField = .menu(index)
             isSidebarExpanded = false
-        } label: {
-            HStack(spacing: 25) {
-                if let url = imageURL {
-                    CachedAsyncImage(url: url)
-                    .frame(width: 50, height: 50)
-                }
-                if isSidebarExpanded {
-                    Text(menuItem.details.displayName)
-                        .font(menuFont)
-                        .foregroundColor(isFocused ? .black : .white.opacity(0.8))
-                }
-            }
-            .frame(width: sidebarWidth - 2 * sidebarPadding, height: 100)
-            .background(
-                RoundedRectangle(cornerRadius: 10)
-                    .fill(isFocused ? Color.white : ((selectedIndex == index) ? .gray.opacity(0.3) : .clear))
-            )
         }
-        .buttonStyle(.borderless)
         .focused($focusedField, equals: .menu(index))
-        .padding(.horizontal, isSidebarExpanded ? sidebarPadding : 15)
         .onMoveCommand(perform: handleMoveCommand)
     }
 
@@ -153,7 +134,7 @@ struct SideMenuView: View {
         default: break
         }
     }
-
+    
     private func handleFocusChange(_ oldFocus: FocusTarget?,  _ newFocus: FocusTarget?) {
         
         print("onChange oldFocus: \(String(describing: oldFocus)) newFocus:\(String(describing: newFocus))")
