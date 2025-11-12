@@ -49,8 +49,10 @@ struct SideMenuItemView: View {
         .scaleEffect(isFocused ? 1.05 : 1.0)
         .shadow(color: isFocused ? .white.opacity(0.4) : .clear, radius: 8)
         .animation(.easeInOut(duration: 0.2), value: isFocused)
-        .onTapGesture { onTap() }
         .focusable(true)
+        .simultaneousGesture(TapGesture().onEnded {
+                onTap()
+            })
         .compositingGroup()
     }
 
