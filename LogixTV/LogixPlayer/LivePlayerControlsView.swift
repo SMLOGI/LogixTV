@@ -20,7 +20,8 @@ struct LivePlayerControlsView: View {
     @State private var hideWorkItem: DispatchWorkItem?
     @State private var isShowPlayPauseButton = false
     @State private var isLoading = false
-    
+    @EnvironmentObject var globalNavState: GlobalNavigationState
+
     // MARK: - Callbacks
     let dismissTheControllers: () -> Void
     let settingsButtonTapped: () -> Void
@@ -124,6 +125,7 @@ private extension LivePlayerControlsView {
     func handleExitCommand() {
         dismissTheControllers()
         presentPlayPauseScreen = false
+        globalNavState.activeScreen = nil
     }
 }
 

@@ -184,6 +184,7 @@ extension SideMenuViewModel {
 
     func menuItemURL(at index: Int) -> URL? {
         guard menuList.indices.contains(index) else { return nil }
+        print("***** Url for (\(index)) : \(menuList[index].details.focusImageLink)")
         return URL(string: menuList[index].details.focusImageLink)
     }
 }
