@@ -17,7 +17,6 @@ struct SideMenuView: View {
     private let menuFont: Font = .system(size: 30, weight: .medium, design: .rounded)
 
     private var sidebarWidth: CGFloat {
-        print("SideMenuView sidebarWidth =\(isSidebarExpanded)")
         return isSidebarExpanded ? 230 : 100
     }
     private var sidebarPadding: CGFloat { isSidebarExpanded ? 10 : 4 }
@@ -28,6 +27,7 @@ struct SideMenuView: View {
             logoView
             menuListView
             Spacer()
+            
             shaddowTrappedView
         }
         .frame(width: sidebarWidth)
@@ -107,7 +107,7 @@ struct SideMenuView: View {
         ) {
             selectedIndex = index
             focusedField = .menu(index)
-            isSidebarExpanded = false
+            isSidebarExpanded = isSidebarExpanded
         }
         .focused($focusedField, equals: .menu(index))
         .onMoveCommand(perform: handleMoveCommand)
@@ -154,7 +154,7 @@ struct SideMenuView: View {
             focusedField = .menu(0)
         } else if case .carouselItem = oldFocus, case .menu = newFocus {
             focusedField = .menu(0)
-        } else if focusedField == .menu(viewModel.menuList.count - 1) || focusedField == .trapFocused {
+        } else if focusedField == .trapFocused {
             print("handleFocusChange trapFocused")
             focusedField = .menu(viewModel.menuList.count - 1)
             
@@ -184,7 +184,7 @@ extension SideMenuViewModel {
 
     func menuItemURL(at index: Int) -> URL? {
         guard menuList.indices.contains(index) else { return nil }
-        print("***** Url for (\(index)) : \(menuList[index].details.focusImageLink)")
+        // print("***** Url for (\(index)) : \(menuList[index].details.focusImageLink)")
         return URL(string: menuList[index].details.focusImageLink)
     }
 }

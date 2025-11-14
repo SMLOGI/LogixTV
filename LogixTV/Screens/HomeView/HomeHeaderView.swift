@@ -41,7 +41,7 @@ struct HomeHeaderView: View {
                                // Text("\(currentPage)")
                             }
                             .id(index) // important for scrollTo
-                            .frame(width: UIScreen.main.bounds.width - 60) // full-screen card
+                            .frame(width: UIScreen.main.bounds.width - 100) // full-screen card
                             .tag(index)
                         }
                     }
@@ -66,27 +66,6 @@ struct HomeHeaderView: View {
                     }
                     .buttonStyle(.borderless) // removes default rectangle highlight
                     .focused($focusedItem, equals: .pageDot(index)) // each dot individually focusable
-                    .onMoveCommand { direction in
-                        let total = viewModel.contentList.count
-                        print("onMoveCommand direction=\(direction) currentPage=\(currentPage)")
-                        
-                        switch direction {
-                        case .right:
-                            if currentPage == total {
-                                // wrap to first
-                                // currentPage = 0
-                                // globalNavState.bannerIndex = 0
-                                // focusedItem = .pageDot(0)
-                            }
-                        default:
-                            break
-                        }
-                        
-                        withAnimation {
-                            globalNavState.bannerIndex = currentPage
-                            focusedItem = .pageDot(currentPage)
-                        }
-                    }
                 }
             }
             .frame(width: UIScreen.main.bounds.width - 60)
@@ -97,19 +76,24 @@ struct HomeHeaderView: View {
                 
                 if newValue != nil && oldValue != newValue {
                     if case let .pageDot(index) = newValue {
-                        print("index=\(index)")
-                        print("currentPage=\(currentPage)")
-                        //if index < currentPage {
-                        //focusedItem = .menu(0)
-                        //} else {
-                        withAnimation {
-                            globalNavState.bannerIndex = index
-                            currentPage = index
+                        if case .carouselItem = oldValue {
+                            currentPage = globalNavState.bannerIndex
+                            focusedItem = .pageDot(globalNavState.bannerIndex)
+                        } else {
+                            withAnimation {
+                                globalNavState.bannerIndex = index
+                                currentPage = index
+                            }
                         }
                     }
                     if case .pageDot = oldValue,
                        case .carouselItem = newValue {
                         moveToMovieCollection()
+                    }
+                } else {
+                    if case .pageDot = oldValue {
+                        currentPage = globalNavState.bannerIndex
+                        focusedItem = .pageDot(globalNavState.bannerIndex)
                     }
                 }
             }
