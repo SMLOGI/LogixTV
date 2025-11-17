@@ -15,7 +15,7 @@ struct ProgressSliderView: View {
     @Binding var isUserSeeking: Bool
     
     @State private var isFocused: Bool = false
-    @State private var barWidth: CGFloat = 0
+    let barWidth: CGFloat
 
     var body: some View {
         VStack(spacing: 8) {
@@ -23,13 +23,6 @@ struct ProgressSliderView: View {
                 Capsule()
                     .fill(Color.white.opacity(0.2))
                     .frame(height: isFocused ? 12 : 10)
-                    .background(
-                        GeometryReader { geo in
-                            Color.clear
-                                .onAppear { barWidth = geo.size.width }
-                                .onChange(of: geo.size.width) { barWidth = $0 }
-                        }
-                    )
 
                 Capsule()
                     .fill(focusedSection == .progressBar ? Color.green : Color.white)
@@ -38,6 +31,7 @@ struct ProgressSliderView: View {
                         height: isFocused ? 12 : 10
                     )
             }
+            .frame(width: barWidth) 
             .animation(.easeInOut(duration: 0.2), value: isFocused)
             .focusable(true)
             .focused($focusedSection, equals: .progressBar)
@@ -51,6 +45,7 @@ struct ProgressSliderView: View {
             .font(.caption2)
             .foregroundColor(.white.opacity(0.7))
         }
+        .frame(maxWidth: .infinity)
         .padding(.horizontal, 80)
     }
     

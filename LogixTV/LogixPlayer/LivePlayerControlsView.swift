@@ -61,7 +61,6 @@ struct LivePlayerControlsView: View {
             
             VStack() {
                 Spacer()
-                Text(playBackViewModel.isUserSeeking ? "User seeking slider": "None")
                     ProgressSliderView(
                         currentTime: Binding(
                             get: { playBackViewModel.progress?.currentDuration ?? 0 },
@@ -74,9 +73,11 @@ struct LivePlayerControlsView: View {
                             }
                         },
                         focusedSection: $focusedSection,
-                        isUserSeeking: $playBackViewModel.isUserSeeking
+                        isUserSeeking: $playBackViewModel.isUserSeeking,
+                        barWidth: UIScreen.main.bounds.width - 160
                     )
             }
+            .frame(maxWidth: .infinity)
             .padding(.bottom, 40)
 
         }
