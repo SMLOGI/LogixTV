@@ -21,7 +21,6 @@ struct LivePlayerControlsView: View {
     @State private var isShowPlayPauseButton = false
     @State private var isLoading = false
     @EnvironmentObject var globalNavState: GlobalNavigationState
-    @State private var isUserSeeking = false
 
     // MARK: - Callbacks
     let dismissTheControllers: () -> Void
@@ -62,6 +61,7 @@ struct LivePlayerControlsView: View {
             
             VStack() {
                 Spacer()
+                Text(playBackViewModel.isUserSeeking ? "User seeking slider": "None")
                     ProgressSliderView(
                         currentTime: Binding(
                             get: { playBackViewModel.progress?.currentDuration ?? 0 },
@@ -70,11 +70,11 @@ struct LivePlayerControlsView: View {
                         totalTime:  playBackViewModel.progress?.totalDuration ?? 0.0,
                         onSeek: { newTime in
                             playBackViewModel.seekToPosition(value: Float(newTime)) {
-                                isUserSeeking = false
+                                playBackViewModel.isUserSeeking = false
                             }
                         },
                         focusedSection: $focusedSection,
-                        isUserSeeking: $isUserSeeking
+                        isUserSeeking: $playBackViewModel.isUserSeeking
                     )
             }
             .padding(.bottom, 40)

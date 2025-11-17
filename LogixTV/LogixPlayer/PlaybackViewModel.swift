@@ -100,6 +100,7 @@ class PlaybackViewModel: ObservableObject, Observable {
 
     private var cancellables = Set<AnyCancellable>()
     //let appManager = AppManager()
+    @Published var isUserSeeking: Bool = false
     
     @Published var streamQualities: [IMediaStreamQuality]?
     var selectedQuality: IMediaStreamQuality? {
@@ -314,7 +315,9 @@ extension PlaybackViewModel {
             playerState = .pauseplayback
         case let playerProgress as LogixPlayerSDK.Progress:
             if let currentDuration = playerProgress.currentDuration {
-                progress?.currentDuration = currentDuration
+                if !isUserSeeking {
+                    progress?.currentDuration = currentDuration
+                }
             }
             if let totalDuration = playerProgress.totalDuration {
                 progress?.totalDuration = totalDuration
