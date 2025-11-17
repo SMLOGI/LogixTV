@@ -120,6 +120,7 @@ struct LogixVideoPlayer: View {
             }
         }
         .onReceive(playbackViewModel.$progress) { progress in
+            print("playbackViewModel.$progress =\(progress)")
             let currentDuration = progress?.currentDuration ?? 0
             if currentDuration > 1.0 {
                 showThumbnail = false

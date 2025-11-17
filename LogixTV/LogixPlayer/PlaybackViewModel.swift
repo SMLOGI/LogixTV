@@ -216,10 +216,10 @@ extension PlaybackViewModel {
         return (playerState == .showingAds)
     }
 
-    func seekToPosition(value: Float) {
-        self.mediaPlayer?.seekTo(position: TimeInterval(value), completion: { _ in
-
-        })
+    func seekToPosition(value: Float, completion: (() -> Void)? = nil) {
+        mediaPlayer?.seekTo(position: TimeInterval(value)) { _ in
+            completion?()
+        }
     }
     func seekToLiveEdge() {
         self.play()

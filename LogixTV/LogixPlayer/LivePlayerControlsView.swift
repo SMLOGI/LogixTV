@@ -21,6 +21,7 @@ struct LivePlayerControlsView: View {
     @State private var isShowPlayPauseButton = false
     @State private var isLoading = false
     @EnvironmentObject var globalNavState: GlobalNavigationState
+    @State private var isUserSeeking = false
 
     // MARK: - Callbacks
     let dismissTheControllers: () -> Void
@@ -68,9 +69,12 @@ struct LivePlayerControlsView: View {
                         ),
                         totalTime:  playBackViewModel.progress?.totalDuration ?? 0.0,
                         onSeek: { newTime in
-                            playBackViewModel.seekToPosition(value: Float(newTime))
+                            playBackViewModel.seekToPosition(value: Float(newTime)) {
+                                isUserSeeking = false
+                            }
                         },
-                        focusedSection: $focusedSection
+                        focusedSection: $focusedSection,
+                        isUserSeeking: $isUserSeeking
                     )
             }
             .padding(.bottom, 40)

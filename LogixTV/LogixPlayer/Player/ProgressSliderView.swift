@@ -12,19 +12,31 @@ struct ProgressSliderView: View {
     var totalTime: Double
     var onSeek: (Double) -> Void
     @FocusState.Binding var focusedSection: LivePlayerControlsView.FocusSection?
+    @Binding var isUserSeeking: Bool
     
     @State private var isFocused: Bool = false
-    
+    @State private var barWidth: CGFloat = 0
+
     var body: some View {
         VStack(spacing: 8) {
             ZStack(alignment: .leading) {
                 Capsule()
                     .fill(Color.white.opacity(0.2))
                     .frame(height: isFocused ? 12 : 10)
-                
+                    .background(
+                        GeometryReader { geo in
+                            Color.clear
+                                .onAppear { barWidth = geo.size.width }
+                                .onChange(of: geo.size.width) { barWidth = $0 }
+                        }
+                    )
+
                 Capsule()
                     .fill(focusedSection == .progressBar ? Color.green : Color.white)
-                    .frame(width: progressWidth, height: isFocused ? 12 : 10)
+                    .frame(
+                        width: barWidth * CGFloat(currentTime / max(totalTime, 0.1)),
+                        height: isFocused ? 12 : 10
+                    )
             }
             .animation(.easeInOut(duration: 0.2), value: isFocused)
             .focusable(true)
@@ -42,12 +54,15 @@ struct ProgressSliderView: View {
         .padding(.horizontal, 80)
     }
     
-    private var progressWidth: CGFloat {
+    /*
+     private var progressWidth: CGFloat {
         CGFloat(currentTime / max(totalTime, 1)) * 800 // dynamic width
     }
-    
+    */
     private func handleMove(_ direction: MoveCommandDirection) {
         print("ProgressSliderView handleMove direction =\(direction)")
+        guard !isUserSeeking else { return }
+        isUserSeeking = true
         let step = 10.0 // 10-second skip
         if direction == .left {
             currentTime = max(0, currentTime - step)
