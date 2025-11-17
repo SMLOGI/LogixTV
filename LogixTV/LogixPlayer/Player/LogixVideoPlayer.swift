@@ -204,6 +204,7 @@ struct LogixVideoPlayer: View {
         showControlls = false
         playbackViewModel.destroyPlayer()
         playerController = nil
+        globalNavState.activeScreen = nil
         removeObservers()
     }
     
