@@ -118,11 +118,15 @@ struct SideMenuView: View {
         switch direction {
         case .right:
             if case .menu = focusedField {
-                withAnimation {
-                    focusedField = .pageDot(0)
-                    globalNavState.bannerIndex = 0
-                    self.isSidebarExpanded = false
+                if case .pageDot = globalNavState.lastFocus {
+                    withAnimation {
+                        focusedField = .pageDot(0)
+                        globalNavState.bannerIndex = 0
+                        self.isSidebarExpanded = false
+                    }
                 }
+                print("****** oldFocus: \(String(describing: globalNavState.lastFocus))")
+
             } else if focusedField == .searchOption {
                 focusedField = .pageDot(0)
                 globalNavState.bannerIndex = 0

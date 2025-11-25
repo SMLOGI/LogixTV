@@ -76,6 +76,7 @@ struct HomeHeaderView: View {
                 
                 if newValue != nil && oldValue != newValue {
                     if case let .pageDot(index) = newValue {
+                        globalNavState.lastFocus = newValue
                         if case .carouselItem = oldValue {
                             currentPage = globalNavState.bannerIndex
                             focusedItem = .pageDot(globalNavState.bannerIndex)
@@ -84,6 +85,7 @@ struct HomeHeaderView: View {
                                 globalNavState.bannerIndex = index
                                 currentPage = index
                             }
+                            
                         }
                     }
                     if case .pageDot = oldValue,
@@ -94,6 +96,7 @@ struct HomeHeaderView: View {
                     if case .pageDot = oldValue {
                         currentPage = globalNavState.bannerIndex
                         focusedItem = .pageDot(globalNavState.bannerIndex)
+                        globalNavState.lastFocus = newValue
                     }
                 }
             }

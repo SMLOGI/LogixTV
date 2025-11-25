@@ -49,11 +49,6 @@ struct ProgressSliderView: View {
         .padding(.horizontal, 80)
     }
     
-    /*
-     private var progressWidth: CGFloat {
-        CGFloat(currentTime / max(totalTime, 1)) * 800 // dynamic width
-    }
-    */
     private func handleMove(_ direction: MoveCommandDirection) {
         print("ProgressSliderView handleMove direction =\(direction)")
         guard !isUserSeeking else { return }

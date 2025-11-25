@@ -47,7 +47,10 @@ struct CarouselCardButtonView: View, Equatable {
         .onCompatibleChange(of: focusedItem) { oldValue, newValue in
             if newValue != nil && oldValue != newValue {
                 if case .carouselItem = newValue, case .carouselItem = oldValue {
+                    guard globalNavState.lastFocus != newValue else { return }  // <-- IMPORTANT
                     globalNavState.lastFocus = newValue
+                    print("****** CarouselCardButtonView focus: \(String(describing: globalNavState.lastFocus))")
+
                 }
             }
         }

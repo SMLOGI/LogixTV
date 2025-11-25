@@ -93,6 +93,7 @@ struct LivePlayerControlsView: View {
                     handleAppear()
                 }
             }
+            playBackViewModel.isUserSeeking = false
         })
         .onExitCommand(perform: handleExitCommand)
         .ignoresSafeArea()
