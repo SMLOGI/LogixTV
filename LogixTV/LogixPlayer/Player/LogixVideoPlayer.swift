@@ -29,7 +29,6 @@ struct LogixVideoPlayer: View {
     @State var hidePlayPauseWhenOverLayInHome:Bool = false
     @State private var  hascontentstarted: Bool = true
     @State private var isContentStarted: Bool = true
-    @State private var showThumbnail: Bool = true
     @State private var retryCount: Int = 0
     @State private var isHomeLivePlayer: Bool = false
     @State private var isAdPlaying: Bool = false
@@ -117,13 +116,6 @@ struct LogixVideoPlayer: View {
                     showControlls = true
                     focusedSection = .playPause
                 }
-            }
-        }
-        .onReceive(playbackViewModel.$progress) { progress in
-            print("playbackViewModel.$progress =\(progress)")
-            let currentDuration = progress?.currentDuration ?? 0
-            if currentDuration > 1.0 {
-                showThumbnail = false
             }
         }
     }

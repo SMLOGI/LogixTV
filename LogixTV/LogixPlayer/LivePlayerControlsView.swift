@@ -21,7 +21,7 @@ struct LivePlayerControlsView: View {
     @State private var isShowPlayPauseButton = false
     @State private var isLoading = false
     @EnvironmentObject var globalNavState: GlobalNavigationState
-
+    
     // MARK: - Callbacks
     let dismissTheControllers: () -> Void
     let settingsButtonTapped: () -> Void
@@ -30,12 +30,15 @@ struct LivePlayerControlsView: View {
     enum FocusSection: Hashable {
         case playPause
         case trap
-        //case trap(position: TrapPosition)
+        case trapLeft
+        case trapRight
+        case trapTop
+        case trapBottom
         case progressBar
         /*
-        enum TrapPosition: CaseIterable {
-            case top, bottom, left, right
-        }*/
+         enum TrapPosition: CaseIterable {
+         case top, bottom, left, right
+         }*/
     }
     
     // MARK: - Body
@@ -51,16 +54,11 @@ struct LivePlayerControlsView: View {
                 .focused($focusedSection, equals: .playPause)
                 .onAppear(perform: resetHideTimer)
             } else  {
-                // MARK: - Trap Buttons (4 Directions)
-               /* ForEach(FocusSection.TrapPosition.allCases, id: \.self) { position in
-                    trapButton(for: position)
-                }
-                */
                 shaddowTrappedView
             }
-            
-            VStack() {
-                Spacer()
+            if isShowPlayPauseButton {
+                VStack() {
+                    Spacer()
                     ProgressSliderView(
                         currentTime: Binding(
                             get: { playBackViewModel.progress?.currentDuration ?? 0 },
@@ -76,10 +74,11 @@ struct LivePlayerControlsView: View {
                         isUserSeeking: $playBackViewModel.isUserSeeking,
                         barWidth: UIScreen.main.bounds.width - 160
                     )
+                }
+                .frame(maxWidth: .infinity)
+                .padding(.bottom, 40)
             }
-            .frame(maxWidth: .infinity)
-            .padding(.bottom, 40)
-
+            
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .onAppear(perform: handleAppear)
@@ -89,8 +88,10 @@ struct LivePlayerControlsView: View {
         }
         .onCompatibleChange(of: focusedSection, perform: { oldValue , newValue in
             if !isShowPlayPauseButton {
-                if oldValue == .progressBar && newValue == .trap {
-                    handleAppear()
+                if oldValue == .trap {
+                    if newValue == .trapTop || newValue == .trapBottom || newValue == .trapLeft || newValue == .trapRight {
+                        handleAppear()
+                    }
                 }
             }
             playBackViewModel.isUserSeeking = false
@@ -100,10 +101,28 @@ struct LivePlayerControlsView: View {
     }
     
     private var shaddowTrappedView: some View {
+        VStack(spacing: 20) {
+            focusBox(for: .trapTop)
+            HStack(spacing: 20) {
+                // Left
+                focusBox(for: .trapLeft)
+                // Center
+                focusBox(for: .trap)
+                // Right
+                focusBox(for: .trapRight)
+            }
+            // Bottom item
+            focusBox(for: .trapBottom)
+        }
+    }
+    
+    // Reusable item box
+    @ViewBuilder
+    func focusBox(for section: FocusSection) -> some View {
         Color.clear
-            .frame(width: 50, height: 50)
+            .frame(width: 150, height: 150)
             .focusable(true)
-            .focused($focusedSection, equals: .trap)
+            .focused($focusedSection, equals: section)
     }
 }
 
@@ -123,7 +142,13 @@ private extension LivePlayerControlsView {
     
     func resetHideTimer() {
         hideWorkItem?.cancel()
-        let task = DispatchWorkItem { isShowPlayPauseButton = false }
+        let task = DispatchWorkItem {
+            isShowPlayPauseButton = false
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                focusedSection = .trap
+
+            }
+        }
         hideWorkItem = task
         DispatchQueue.main.asyncAfter(deadline: .now() + 5, execute: task)
     }
