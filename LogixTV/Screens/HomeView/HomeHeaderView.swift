@@ -71,12 +71,34 @@ struct HomeHeaderView: View {
             .frame(width: UIScreen.main.bounds.width - 60)
             .background(.clear)
             .focusSection()
+            .onCompatibleChange(of: globalNavState.lastFocus) { oldValue, newValue in
+                print("HomeHeaderView globalNavigationState.lastFocus newValue=\(String(describing: newValue))")
+            }
             .onCompatibleChange(of: focusedItem) { oldValue, newValue in
                 print("HomeHeaderView onCompatibleChange newValue=\(String(describing: newValue))")
                 
                 if newValue != nil && oldValue != newValue {
+                    
+                    switch (oldValue, newValue) {
+                    case (.pageDot, .menu),
+                         (.carouselItem, .menu):
+                        focusedItem = .menu(0)
+                    case (.pageDot, .trapFocused),
+                         (.carouselItem, .trapFocused):
+                        focusedItem = .menu(0)
+                    case (.menu, .sideBanerTrappedFocused):
+                        if case .carouselItem = globalNavState.lastFocus {
+                            focusedItem = globalNavState.lastFocus
+                        } else {
+                            focusedItem = .pageDot(0)
+                        }
+                    case (.pageDot, .carouselItem):
+                        moveToMovieCollection()
+                    default:
+                        break
+                    }
+                    
                     if case let .pageDot(index) = newValue {
-                        globalNavState.lastFocus = newValue
                         if case .carouselItem = oldValue {
                             currentPage = globalNavState.bannerIndex
                             focusedItem = .pageDot(globalNavState.bannerIndex)
@@ -88,17 +110,13 @@ struct HomeHeaderView: View {
                             
                         }
                     }
-                    if case .pageDot = oldValue,
-                       case .carouselItem = newValue {
-                        moveToMovieCollection()
-                    }
                 } else {
                     if case .pageDot = oldValue {
                         currentPage = globalNavState.bannerIndex
                         focusedItem = .pageDot(globalNavState.bannerIndex)
-                        globalNavState.lastFocus = newValue
                     }
                 }
+                 
             }
             .padding(.bottom, 340)
             .padding(.leading, 60.0)
@@ -117,14 +135,14 @@ struct HomeHeaderView: View {
         }
     }
     func moveToMovieCollection() {
+        guard !focusTransitioning else { return }
         focusTransitioning = true
 
         Task { @MainActor in
             // short pause lets tvOS finish current focus release
             try? await Task.sleep(nanoseconds: 100_000_000) // 0.1s
 
-            if case .carouselItem = globalNavState.lastFocus,
-               let firstGroup = homeViewModel.carouselGroups.first {
+            if case .carouselItem = globalNavState.lastFocus {
                 focusedItem = globalNavState.lastFocus
             } else if let firstGroup = homeViewModel.carouselGroups.first,
                       let firstItem = homeViewModel.carousels[firstGroup.name]?.first {

@@ -118,18 +118,10 @@ struct SideMenuView: View {
         switch direction {
         case .right:
             if case .menu = focusedField {
-                if case .pageDot = globalNavState.lastFocus {
-                    withAnimation {
-                        focusedField = .pageDot(0)
-                        globalNavState.bannerIndex = 0
-                        self.isSidebarExpanded = false
-                    }
-                }
-                print("****** oldFocus: \(String(describing: globalNavState.lastFocus))")
+                moveToPageDots()
 
             } else if focusedField == .searchOption {
-                focusedField = .pageDot(0)
-                globalNavState.bannerIndex = 0
+                moveToPageDots()
             }
         case .left:
             if case .pageDot = focusedField {
@@ -139,10 +131,21 @@ struct SideMenuView: View {
         }
     }
     
+    private func moveToPageDots() {
+        if case .carouselItem = globalNavState.lastFocus {
+                focusedField = globalNavState.lastFocus
+                self.isSidebarExpanded = false
+        } else  {
+            withAnimation {
+                focusedField = .pageDot(0)
+                globalNavState.bannerIndex = 0
+                self.isSidebarExpanded = false
+            }
+        }
+    }
+    
     private func handleFocusChange(_ oldFocus: FocusTarget?,  _ newFocus: FocusTarget?) {
-        
-        print("onChange oldFocus: \(String(describing: oldFocus)) newFocus:\(String(describing: newFocus))")
-        
+        print("SideMenuView oldFocus: \(String(describing: oldFocus)) newFocus:\(String(describing: newFocus))")
         switch newFocus {
         case .menu, .searchOption, .trapFocused:
             if isSidebarExpanded == false {
@@ -154,10 +157,11 @@ struct SideMenuView: View {
             }
         }
         
+        
+        print("onChange oldFocus: \(String(describing: oldFocus)) newFocus:\(String(describing: newFocus))")
+        
         if case .pageDot = oldFocus, case .menu = newFocus {
-            focusedField = .menu(0)
-        } else if case .carouselItem = oldFocus, case .menu = newFocus {
-            focusedField = .menu(0)
+         globalNavState.lastFocus = oldFocus
         } else if focusedField == .trapFocused {
             print("handleFocusChange trapFocused")
             focusedField = .menu(viewModel.menuList.count - 1)
@@ -166,10 +170,6 @@ struct SideMenuView: View {
                 print("handleFocusChange trapFocused asyncAfter")
                 focusedField = .menu(viewModel.menuList.count - 1)
             }
-        } else if newFocus == .sideTrappedFocused, case .menu = oldFocus {
-            focusedField = .pageDot(0)
-        }else if newFocus == .sideTrappedFocused, case .pageDot = oldFocus {
-            focusedField = .menu(0)
         }
     }
 

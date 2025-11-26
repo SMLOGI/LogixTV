@@ -25,7 +25,7 @@ enum FocusTarget: Hashable , Equatable  {
     case carouselItem(Int, Int)
     case mainContent
     case trapFocused
-    case sideTrappedFocused
+    case sideBanerTrappedFocused
     
     var description: String {
         switch self {
@@ -45,7 +45,7 @@ enum FocusTarget: Hashable , Equatable  {
             return "MainContent"
         case .trapFocused:
             return "trapFocused"
-        case .sideTrappedFocused:
+        case .sideBanerTrappedFocused:
             return "sideTrappedFocused"
         }
     }
@@ -171,10 +171,16 @@ struct ContentView: View {
                 Image("splashScreen")
                     .resizable()
                     .aspectRatio(contentMode: .fill)
+            } else {
+                // Side Menu: This is added for fixing need double click of remote right button to jump banner from side menu
+                    switch focusedField {
+                    case .menu, .sideBanerTrappedFocused:
+                        sideTrappedView
+                            .padding(.leading, 400)
+                    default:
+                        EmptyView()
+                }
             }
-            
-            sideTrappedView
-                .padding(.leading, 400)
         }
         .environmentObject(globalNavigationState)
         .ignoresSafeArea()
@@ -233,7 +239,7 @@ struct ContentView: View {
         Color.clear
             .frame(width: 50, height: 600)
             .focusable(true)
-            .focused($focusedField, equals: .sideTrappedFocused)
+            .focused($focusedField, equals: .sideBanerTrappedFocused)
             .animation(.easeInOut(duration: 0.2), value: focusedField)
     }
     
