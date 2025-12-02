@@ -159,37 +159,3 @@ private extension LivePlayerControlsView {
         globalNavState.activeScreen = nil
     }
 }
-
-// MARK: - UI Builders
-/*
-private extension LivePlayerControlsView {
-    
-    func trapButton(for position: FocusSection.TrapPosition) -> some View {
-        let offset: CGFloat = 120 // Distance from center
-        
-        return Circle()
-            .fill(Color.red.opacity(0.9))
-            .frame(width: size(for: position), height: size(for: position))
-            .focusable(true)
-            .focused($focusedSection, equals: .trap(position: position))
-            .offset(offsetFor(position))
-            .animation(.easeInOut(duration: 0.2), value: focusedSection)
-    }
-    
-    func size(for position: FocusSection.TrapPosition) -> CGFloat {
-        if case .trap(let focusedPos)? = focusedSection {
-            return focusedPos == position ? 90 : 70
-        }
-        return 70
-    }
-    
-    func offsetFor(_ position: FocusSection.TrapPosition) -> CGSize {
-        switch position {
-        case .top: return CGSize(width: 0, height: -120)
-        case .bottom: return CGSize(width: 0, height: 120)
-        case .left: return CGSize(width: -120, height: 0)
-        case .right: return CGSize(width: 120, height: 0)
-        }
-    }
-}
-*/
