@@ -88,6 +88,7 @@ struct SideMenuView: View {
             globalNavState.activeScreen = .search
         }
         .focused($focusedField, equals: .searchOption)
+        .onMoveCommand(perform: handleMoveCommand)
     }
 
     private func menuButton(for index: Int) -> some View {
@@ -105,9 +106,12 @@ struct SideMenuView: View {
             highlightColor: .white,
             textColor: .white.opacity(0.8)
         ) {
-            selectedIndex = index
-            focusedField = .menu(index)
-            isSidebarExpanded = isSidebarExpanded
+            // For now other options are made disabled
+            if index == 0 {
+                selectedIndex = index
+                focusedField = .menu(index)
+                isSidebarExpanded = isSidebarExpanded
+            }
         }
         .focused($focusedField, equals: .menu(index))
         .onMoveCommand(perform: handleMoveCommand)
@@ -115,12 +119,14 @@ struct SideMenuView: View {
 
     // MARK: - Handlers
     private func handleMoveCommand(_ direction: MoveCommandDirection) {
+        print("handleMoveCommand focusedField: \(String(describing: focusedField)) ")
+
         switch direction {
         case .right:
             if case .menu = focusedField {
                 moveToPageDots()
 
-            } else if focusedField == .searchOption {
+            } else if focusedField == .searchOption || focusedField == .sideBanerTrappedFocused {
                 moveToPageDots()
             }
         case .left:

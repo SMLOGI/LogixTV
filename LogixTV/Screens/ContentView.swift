@@ -174,7 +174,7 @@ struct ContentView: View {
             } else {
                 // Side Menu: This is added for fixing need double click of remote right button to jump banner from side menu
                     switch focusedField {
-                    case .menu, .sideBanerTrappedFocused:
+                    case .menu, .sideBanerTrappedFocused, .searchOption:
                         sideTrappedView
                             .padding(.leading, 400)
                     default:
@@ -236,8 +236,8 @@ struct ContentView: View {
         }
     }
     private var sideTrappedView: some View {
-        Color.clear
-            .frame(width: 50, height: 600)
+        Color.red
+            .frame(width: 50, height: 700)
             .focusable(true)
             .focused($focusedField, equals: .sideBanerTrappedFocused)
             .animation(.easeInOut(duration: 0.2), value: focusedField)
