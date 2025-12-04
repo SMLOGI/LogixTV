@@ -12,7 +12,8 @@ enum HTTPMethod: String {
 }
 
 enum BaseURL: String {
-    case main = "http://LogixCmsProd-2099249738.ap-south-1.elb.amazonaws.com:7040/user/v1/"
+   // case main = "http://LogixCmsProd-2099249738.ap-south-1.elb.amazonaws.com:7040/user/v1/"
+     case main = "http://logix-cms-prod-1137438712.ap-south-1.elb.amazonaws.com:7040/user/v1/"
 }
 
 final class NetworkManager {
