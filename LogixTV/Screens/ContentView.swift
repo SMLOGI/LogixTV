@@ -71,6 +71,7 @@ class GlobalNavigationState: ObservableObject {
     @Published var bannerIndex: Int = 0
     @Published var lastFocus: FocusTarget?
     @Published var activeScreen: ActiveScreen? = nil
+    @Published var dummyList: [CarouselContent]?
 }
 
 struct ContentView: View {
@@ -201,31 +202,27 @@ struct ContentView: View {
         ZStack {
             Color.black.ignoresSafeArea()
 
-            if let contentItem = globalNavigationState.contentItem,
-               let videoUrlString = contentItem.video?.first?.contentUrl,
-               let videoUrl = URL(string: videoUrlString) {
-                
-                let videoData = VideoData(
-                    type: "vod",
-                    profile: "pradip",
-                    drmEnabled: false,
-                    licenceUrl: "",
-                    contentUrl: videoUrl.absoluteString,
-                    protocol: "",
-                    encryptionType: "hls",
-                    adInfo: nil,
-                    qualityGroup: .none
-                )
+            if let mainItem = globalNavigationState.contentItem,
+               let mainVideoData = makeVideoData(from: mainItem) {
 
-                LogixVideoPlayer(
+                // Convert dummyList (contentItem list) → [VideoData]
+                let previewVideos: [VideoData] =
+                    (globalNavigationState.dummyList ?? [])
+                        .compactMap { makeVideoData(from: $0) }
+                        .prefix(3)
+                        .map { $0 }
+
+                // Fallback: use main video repeated 3 times
+                let finalVideoList = previewVideos.isEmpty
+                    ? Array(repeating: mainVideoData, count: 3)
+                    : previewVideos
+
+                LogixMultiVideoPlayer(
                     category: "ccategory",
-                    videoData: videoData,
-                    isPresentingLogixPlayer: $isPresentingLogixPlayer,
-                    mute: .constant(false),
-                    showAds: .constant(true),
-                    onDismiss: { }
+                    videoData: mainVideoData,
+                    videoDataList: finalVideoList,
+                    isPresentingLogixPlayer: $isPresentingLogixPlayer
                 )
-                
             } else {
                 Color.clear
                     .onAppear {
@@ -236,7 +233,7 @@ struct ContentView: View {
         }
     }
     private var sideTrappedView: some View {
-        Color.red
+        Color.clear
             .frame(width: 50, height: 700)
             .focusable(true)
             .focused($focusedField, equals: .sideBanerTrappedFocused)
@@ -246,6 +243,25 @@ struct ContentView: View {
     private func dismissPlayer() {
         isPresentingLogixPlayer = false
         globalNavigationState.activeScreen = nil
+    }
+    
+    func makeVideoData(from item: CarouselContent) -> VideoData? {
+        guard let urlString = item.video?.first?.contentUrl,
+              let _ = URL(string: urlString) else {
+            return nil
+        }
+
+        return VideoData(
+            type: "vod",
+            profile: "pradip",
+            drmEnabled: false,
+            licenceUrl: "",
+            contentUrl: urlString,
+            protocol: "",
+            encryptionType: "hls",
+            adInfo: nil,
+            qualityGroup: .none
+        )
     }
 }
 

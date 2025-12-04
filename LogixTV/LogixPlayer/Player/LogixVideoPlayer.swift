@@ -9,6 +9,12 @@ import Combine
 import SwiftUI
 import Kingfisher
 
+// MARK: - Focus Section Enum
+enum TrapFocusSection: Hashable {
+    case trapFocused1
+    case trapFocused2
+    case playPause
+}
 
 // swiftlint:disable type_body_length
 struct LogixVideoPlayer: View {
@@ -50,12 +56,6 @@ struct LogixVideoPlayer: View {
         case none
     }
     
-    // MARK: - Focus Section Enum
-    enum TrapFocusSection: Hashable {
-        case trapFocused1
-        case trapFocused2
-        case playPause
-    }
     var body: some View {
         ZStack {
             Color.black.ignoresSafeArea()

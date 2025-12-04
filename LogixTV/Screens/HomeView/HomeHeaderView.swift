@@ -132,6 +132,7 @@ struct HomeHeaderView: View {
         .focusSection()
         .task {
             await viewModel.loadCarousel()
+            //globalNavState.dummyList = Array(viewModel.contentList.prefix(3))
         }
     }
     func moveToMovieCollection() {
