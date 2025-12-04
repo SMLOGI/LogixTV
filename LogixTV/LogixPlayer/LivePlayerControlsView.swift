@@ -14,17 +14,19 @@ struct LivePlayerControlsView: View {
     
     // MARK: - Bindings
     @Binding var presentPlayPauseScreen: Bool
+    var category: String
     
     // MARK: - States
     @FocusState private var focusedSection: FocusSection?
     @State private var hideWorkItem: DispatchWorkItem?
     @State private var isShowPlayPauseButton = false
     @State private var isLoading = false
+    @State var videoData: VideoData                // Full-screen video
+    @State var videoDataList: [VideoData]          // Mini players on the right
     @EnvironmentObject var globalNavState: GlobalNavigationState
     
     // MARK: - Callbacks
     let dismissTheControllers: () -> Void
-    let settingsButtonTapped: () -> Void
     
     // MARK: - Focus Enum
     enum FocusSection: Hashable {
@@ -35,6 +37,7 @@ struct LivePlayerControlsView: View {
         case trapTop
         case trapBottom
         case progressBar
+        case miniplayer(Int)
         /*
          enum TrapPosition: CaseIterable {
          case top, bottom, left, right
@@ -54,7 +57,7 @@ struct LivePlayerControlsView: View {
                 .focused($focusedSection, equals: .playPause)
                 .onAppear(perform: resetHideTimer)
             } else  {
-                shaddowTrappedView
+                //shaddowTrappedView
             }
             if isShowPlayPauseButton {
                 VStack() {
@@ -79,6 +82,21 @@ struct LivePlayerControlsView: View {
                 .padding(.bottom, 40)
             }
             
+            HStack {
+                
+                Spacer()
+                
+                VStack(spacing: 30) {
+                    ForEach(videoDataList.indices, id: \.self) { index in
+                        miniPlayer(for: index)
+                    }
+                }
+                .padding()
+                .background(
+                    Color.black.opacity(0.4)
+                )
+            }
+            
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .onAppear(perform: handleAppear)
@@ -100,6 +118,56 @@ struct LivePlayerControlsView: View {
         .ignoresSafeArea()
     }
     
+    
+    // --------------------------------------------------
+    // MARK: MINI PLAYER VIEW
+    // --------------------------------------------------
+    @ViewBuilder
+    private func miniPlayer(for index: Int) -> some View {
+        let smallWidth: CGFloat = 400
+        let smallHeight: CGFloat = 250
+        //if case focusedSection = .miniPlayer(for: index)
+        let isFocused = .miniplayer(index) == focusedSection
+        LogixVideoPlayer(
+            category: category, isMiniPlayer: true,
+            videoData: videoDataList[index],
+            isPresentingLogixPlayer: .constant(true),
+            mute: .constant(true),
+            showAds: .constant(false),
+            onDismiss: { }
+        )
+        .frame(width: smallWidth, height: smallHeight)
+        .clipShape(RoundedRectangle(cornerRadius: 12))
+        
+        // White border when focused
+        .overlay(
+            RoundedRectangle(cornerRadius: 12)
+                .stroke(isFocused ? Color.white : Color.clear, lineWidth: 6)
+                .animation(.easeInOut(duration: 0.2), value: isFocused)
+        )
+        
+        .focusable(true)
+        .focused($focusedSection, equals: .miniplayer(index))
+        .onTapGesture {
+            swapToFullScreen(index)
+        }
+    }
+    
+    
+    // --------------------------------------------------
+    // MARK: SWAP MAIN ↔ MINI PLAYER
+    // --------------------------------------------------
+    private func swapToFullScreen(_ index: Int) {
+        withAnimation(.easeInOut(duration: 0.35)) {
+            
+            let tapped = videoDataList[index]
+            videoDataList[index] = videoData
+            videoData = tapped
+            
+            // Keep focus on the same mini player index after swap
+            focusedSection = .miniplayer(index)
+        }
+    }
     private var shaddowTrappedView: some View {
         VStack(spacing: 20) {
             focusBox(for: .trapTop)

@@ -205,24 +205,33 @@ struct ContentView: View {
             if let mainItem = globalNavigationState.contentItem,
                let mainVideoData = makeVideoData(from: mainItem) {
 
-                // Convert dummyList (contentItem list) → [VideoData]
+                // Remove main item from dummyList
+                let filteredList = (globalNavigationState.dummyList ?? [])
+                    .filter { $0.id != mainItem.id }
+
+                // Convert → [VideoData], pick first 3
                 let previewVideos: [VideoData] =
-                    (globalNavigationState.dummyList ?? [])
+                    filteredList
                         .compactMap { makeVideoData(from: $0) }
                         .prefix(3)
                         .map { $0 }
 
-                // Fallback: use main video repeated 3 times
+                // Fallback: repeat main video 3 times if nothing left
                 let finalVideoList = previewVideos.isEmpty
                     ? Array(repeating: mainVideoData, count: 3)
                     : previewVideos
 
-                LogixMultiVideoPlayer(
-                    category: "ccategory",
+                LogixVideoPlayer(
+                    category: "category",
                     videoData: mainVideoData,
                     videoDataList: finalVideoList,
-                    isPresentingLogixPlayer: $isPresentingLogixPlayer
+                    isPresentingLogixPlayer: $isPresentingLogixPlayer,
+                    mute: .constant(false),
+                    showAds: .constant(true),
+                    onDismiss: { }
                 )
+                .focusable(false)
+                .ignoresSafeArea()
             } else {
                 Color.clear
                     .onAppear {

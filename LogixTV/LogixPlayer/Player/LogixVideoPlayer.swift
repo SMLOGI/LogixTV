@@ -19,7 +19,9 @@ enum TrapFocusSection: Hashable {
 // swiftlint:disable type_body_length
 struct LogixVideoPlayer: View {
     var category: String
+    @State var isMiniPlayer: Bool = false
     @State var videoData: VideoData
+    @State var videoDataList: [VideoData]?
     @Binding var isPresentingLogixPlayer: Bool
     @Binding var mute: Bool
     @Binding var showAds: Bool
@@ -98,12 +100,19 @@ struct LogixVideoPlayer: View {
         .onExitCommand {
             isPresentingLogixPlayer = false
         }
-        .fullScreenCover(isPresented: $showControlls) {
-            LivePlayerControlsView(playBackViewModel: playbackViewModel, presentPlayPauseScreen: $showControlls, dismissTheControllers: {
-                //isPresentingLogixPlayer = false
-               // globalNavState.activeScreen = nil
-            }, settingsButtonTapped: {
-            })
+        .fullScreenCover(
+            isPresented: Binding(
+                get: { showControlls && isMiniPlayer == false },
+                set: { newValue in showControlls = newValue }
+            )
+        ) {
+            LivePlayerControlsView(
+                playBackViewModel: playbackViewModel,
+                presentPlayPauseScreen: $showControlls,
+                category: category,
+                videoData: videoData,
+                videoDataList: videoDataList ?? []
+            ) { }
         }
         .onCompatibleChange(of: playbackViewModel.playerState) { oldValue, newValue in
             if oldValue != newValue {
