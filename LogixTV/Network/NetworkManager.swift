@@ -37,6 +37,7 @@ final class NetworkManager {
         request.httpMethod = method.rawValue
         request.httpBody = body
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        request.setValue("tv", forHTTPHeaderField: "device")
         
         if let headers = headers {
             for (key, value) in headers {

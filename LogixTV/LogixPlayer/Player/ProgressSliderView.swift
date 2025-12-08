@@ -11,42 +11,40 @@ struct ProgressSliderView: View {
     @Binding var currentTime: Double
     var totalTime: Double
     var onSeek: (Double) -> Void
-    @FocusState.Binding var focusedSection: LivePlayerControlsView.FocusSection?
+    @FocusState.Binding var focusedSection: LivePlayerControlsView.ControlFocus?
     @Binding var isUserSeeking: Bool
     
     @State private var isFocused: Bool = false
     let barWidth: CGFloat
-
+    
     var body: some View {
-        VStack(spacing: 8) {
-            ZStack(alignment: .leading) {
-                Capsule()
-                    .fill(Color.white.opacity(0.2))
-                    .frame(height: isFocused ? 12 : 10)
-
-                Capsule()
-                    .fill(focusedSection == .progressBar ? Color.green : Color.white)
-                    .frame(
-                        width: barWidth * CGFloat(currentTime / max(totalTime, 0.1)),
-                        height: isFocused ? 12 : 10
-                    )
-            }
-            .frame(width: barWidth) 
-            .animation(.easeInOut(duration: 0.2), value: isFocused)
-            .focusable(true)
-            .focused($focusedSection, equals: .progressBar)
-            .onMoveCommand(perform: handleMove)
-            
-            HStack {
-                Text(formatTime(currentTime))
-                Spacer()
-                Text(formatTime(totalTime))
-            }
-            .font(.caption2)
-            .foregroundColor(.white.opacity(0.7))
+        HStack(spacing: 15.0) {
+            Text(formatTime(currentTime))
+            showProgressBar()
+            Text(formatTime(totalTime))
         }
-        .frame(maxWidth: .infinity)
-        .padding(.horizontal, 80)
+        .font(.caption2)
+        .foregroundColor(.white.opacity(0.7))
+    }
+    
+    private func showProgressBar() -> some View {
+        ZStack(alignment: .leading) {
+            Capsule()
+                .fill(Color.white.opacity(0.2))
+                .frame(height: isFocused ? 12 : 10)
+            
+            Capsule()
+                .fill(focusedSection == .progressBar ? Color.green : Color.white)
+                .frame(
+                    width: barWidth * CGFloat(currentTime / max(totalTime, 0.1)),
+                    height: isFocused ? 12 : 10
+                )
+        }
+        .frame(width: barWidth)
+        .animation(.easeInOut(duration: 0.2), value: isFocused)
+        .focusable(true)
+        .focused($focusedSection, equals: .progressBar)
+        .onMoveCommand(perform: handleMove)
     }
     
     private func handleMove(_ direction: MoveCommandDirection) {

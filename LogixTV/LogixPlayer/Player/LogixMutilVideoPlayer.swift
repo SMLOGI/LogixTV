@@ -10,102 +10,74 @@ import SwiftUI
 struct LogixMultiVideoPlayer: View {
     
     var category: String
-    
-    @State var videoData: VideoData                // Full-screen video
-    @State var videoDataList: [VideoData]          // Mini players on the right
+    @State var videoData: CarouselContent                // Full-screen video
+    @State var videoDataList: [CarouselContent]          // Mini players on the right
     
     @Binding var isPresentingLogixPlayer: Bool
+    @FocusState.Binding var focusedField: FocusTarget?
+    @EnvironmentObject var globalNavState: GlobalNavigationState
     
-    @FocusState private var focusedIndex: Int?     // tvOS focus tracking
     
-    let smallWidth: CGFloat = 400
+    let smallWidth: CGFloat = 300
     let smallHeight: CGFloat = 250
     
     var body: some View {
         ZStack(alignment: .topLeading) {
             
             // --------------------------------------------------
-            // MARK: FULL SCREEN MAIN PLAYER (not focusable)
-            // --------------------------------------------------
-            LogixVideoPlayer(
-                category: category,
-                videoData: videoData,
-                isPresentingLogixPlayer: $isPresentingLogixPlayer,
-                mute: .constant(false),
-                showAds: .constant(true),
-                onDismiss: { }
-            )
-            .focusable(false)
-            .ignoresSafeArea()
-            
-            // --------------------------------------------------
             // MARK: MINI PLAYERS LIST
             // --------------------------------------------------
-            HStack {
-                Spacer()
+            HStack(spacing: 0.0) {
                 
-                VStack(spacing: 50) {
-                    ForEach(videoDataList.indices, id: \.self) { index in
-                        miniPlayer(for: index)
-                    }
+                if let video = makeVideoData(from: videoData) {
+                    LogixVideoPlayer(
+                        category: category,
+                        videoData: video,
+                        isPresentingLogixPlayer: $isPresentingLogixPlayer,
+                        mute: .constant(false),
+                        showAds: .constant(true),
+                        onDismiss: { }
+                    )
+                    .focusable(false)
                 }
-                .padding(.trailing, 40)
+                if globalNavState.isShowMutiplayerView {
+                    VStack(alignment: .center) {
+                            ForEach(videoDataList, id: \.id) { item in
+                                MiniPlayerCardButtonView(item: item, focusedItem: $focusedField) {
+                                    globalNavState.contentItem = item
+                                    isPresentingLogixPlayer = true
+                                }
+                                .frame(maxWidth: .infinity, alignment: .center)
+                            }
+                    }
+                    .frame(width: 356)
+                    .padding(.vertical, 20)
+                    .background(Color.black)
+                }
             }
         }
-        .background(Color.black)
-        .onAppear {
-            focusedIndex = 0    // Default focus to the first mini player
-        }
     }
     
-    
-    // --------------------------------------------------
-    // MARK: MINI PLAYER VIEW
-    // --------------------------------------------------
-    @ViewBuilder
-    private func miniPlayer(for index: Int) -> some View {
-        
-        let isFocused = (focusedIndex == index)
-        
-        LogixVideoPlayer(
-            category: category,
-            videoData: videoDataList[index],
-            isPresentingLogixPlayer: $isPresentingLogixPlayer,
-            mute: .constant(true),
-            showAds: .constant(false),
-            onDismiss: { }
-        )
-        .frame(width: smallWidth, height: smallHeight)
-        .clipShape(RoundedRectangle(cornerRadius: 12))
-        
-        // White border when focused
-        .overlay(
-            RoundedRectangle(cornerRadius: 12)
-                .stroke(isFocused ? Color.white : Color.clear, lineWidth: 6)
-                .animation(.easeInOut(duration: 0.2), value: isFocused)
-        )
-        
-        .focusable(true)
-        .focused($focusedIndex, equals: index)
-        .onTapGesture {
-            swapToFullScreen(index)
+    func makeVideoData(from item: CarouselContent) -> VideoData? {
+        guard let urlString = item.video?.first?.contentUrl,
+              let _ = URL(string: urlString) else {
+            return nil
         }
-    }
-    
-    
-    // --------------------------------------------------
-    // MARK: SWAP MAIN ↔ MINI PLAYER
-    // --------------------------------------------------
-    private func swapToFullScreen(_ index: Int) {
-        withAnimation(.easeInOut(duration: 0.35)) {
-            
-            let tapped = videoDataList[index]
-            videoDataList[index] = videoData
-            videoData = tapped
-            
-            // Keep focus on the same mini player index after swap
-            focusedIndex = index
-        }
+
+        return VideoData(
+            type: "vod",
+            profile: "pradip",
+            drmEnabled: false,
+            licenceUrl: "",
+            contentUrl: urlString,
+            protocol: "",
+            encryptionType: "hls",
+            adInfo: nil,
+            qualityGroup: .none
+        )
     }
 }
+
+
+
 

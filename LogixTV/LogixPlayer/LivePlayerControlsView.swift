@@ -7,16 +7,34 @@
 
 import SwiftUI
 
+// MARK: - Focus Enum
+
+
 struct LivePlayerControlsView: View {
+    
+    enum ControlFocus: Hashable {
+        case playPause
+        case trap
+        case trapLeft
+        case trapRight
+        case trapTop
+        case trapBottom
+        case progressBar
+        case goLiveButton
+        case  subtitles
+        case settings
+        case  episodes
+        case next
+    }
     
     // MARK: - ViewModel
     @ObservedObject var playBackViewModel: PlaybackViewModel
     
     // MARK: - Bindings
     @Binding var presentPlayPauseScreen: Bool
-    
+
     // MARK: - States
-    @FocusState private var focusedSection: FocusSection?
+    @FocusState private var focusedControl: ControlFocus?
     @State private var hideWorkItem: DispatchWorkItem?
     @State private var isShowPlayPauseButton = false
     @State private var isLoading = false
@@ -26,66 +44,79 @@ struct LivePlayerControlsView: View {
     let dismissTheControllers: () -> Void
     let settingsButtonTapped: () -> Void
     
-    // MARK: - Focus Enum
-    enum FocusSection: Hashable {
-        case playPause
-        case trap
-        case trapLeft
-        case trapRight
-        case trapTop
-        case trapBottom
-        case progressBar
-        /*
-         enum TrapPosition: CaseIterable {
-         case top, bottom, left, right
-         }*/
-    }
-    
     // MARK: - Body
     var body: some View {
-        ZStack {
-            if isShowPlayPauseButton {
-                // MARK: - Play / Pause Button (Center)
-                PlayerControlButton(
-                    imageName: playBackViewModel.isPlaying() ? "PlayButtonUnfocused" : "PauseButtonUnfocused",
-                    focusedImageName: playBackViewModel.isPlaying() ? "pause" : "play",
-                    action: togglePlayPause
-                )
-                .focused($focusedSection, equals: .playPause)
-                .onAppear(perform: resetHideTimer)
-            } else  {
-                shaddowTrappedView
-            }
-            if isShowPlayPauseButton {
-                VStack() {
-                    Spacer()
-                    ProgressSliderView(
-                        currentTime: Binding(
-                            get: { playBackViewModel.progress?.currentDuration ?? 0 },
-                            set: { playBackViewModel.progress?.currentDuration = $0 }
-                        ),
-                        totalTime:  playBackViewModel.progress?.totalDuration ?? 0.0,
-                        onSeek: { newTime in
-                            playBackViewModel.seekToPosition(value: Float(newTime)) {
-                                playBackViewModel.isUserSeeking = false
+        GeometryReader { proxy in
+            ZStack(alignment: .leading) {
+
+                if isShowPlayPauseButton {
+                    VStack() {
+                        Spacer()
+                        
+                        VStack(spacing: 20.0) {
+                            HStack(spacing: 40.0) {
+                                TVPlayPauseIcon(
+                                    icon: playBackViewModel.isPlaying() ? "pause.fill" : "play.fill",
+                                    size: 38,
+                                    cornerRadius: 2
+                                ) {
+                                    togglePlayPause()
+                                }
+                                .focused($focusedControl, equals: .playPause)
+                                //.onAppear(perform: resetHideTimer)
+                                
+                                
+                                ProgressSliderView(
+                                    currentTime: Binding(
+                                        get: { playBackViewModel.progress?.currentDuration ?? 0 },
+                                        set: { playBackViewModel.progress?.currentDuration = $0 }
+                                    ),
+                                    totalTime:  playBackViewModel.progress?.totalDuration ?? 0.0,
+                                    onSeek: { newTime in
+                                        playBackViewModel.seekToPosition(value: Float(newTime)) {
+                                            playBackViewModel.isUserSeeking = false
+                                        }
+                                    },
+                                    focusedSection: $focusedControl,
+                                    isUserSeeking: $playBackViewModel.isUserSeeking,
+                                    barWidth: proxy.size.width * (globalNavState.isShowMutiplayerView ? 0.60 : 0.85)
+                                )
+                                Spacer()
                             }
-                        },
-                        focusedSection: $focusedSection,
-                        isUserSeeking: $playBackViewModel.isUserSeeking,
-                        barWidth: UIScreen.main.bounds.width - 160
-                    )
+                            .padding(.horizontal, 20)
+                            .frame(maxWidth: .infinity)
+                            
+                            HStack {
+                                controlButton(title: "Subtitle & Audio", icon: "captions.bubble.fill")
+                                    .focused($focusedControl, equals: .subtitles)
+                                
+                                controlButton(title: "Settings", icon: "gearshape.fill")
+                                    .focused($focusedControl, equals: .settings)
+                                
+                                controlButton(title: "Episodes", icon: "list.bullet.rectangle")
+                                    .focused($focusedControl, equals: .episodes)
+                                
+                                controlButton(title: "Next Episode", icon: "forward.end.fill")
+                                    .focused($focusedControl, equals: .next)
+                                
+                            }
+                            .padding(.bottom, 50)
+                            /*
+                            TVCardButton(title: "Keynote ON", selectedtitle: "Keynote OFF",  focusedSection: $focusedSection) {
+                                globalNavState.isShowMutiplayerView = !globalNavState.isShowMutiplayerView
+                            } */
+                        }
+                    }
                 }
-                .frame(maxWidth: .infinity)
-                .padding(.bottom, 40)
             }
-            
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .onAppear(perform: handleAppear)
-        .onDisappear(perform: resetHideTimer)
+        //.onDisappear(perform: resetHideTimer)
         .onCompatibleChange(of: presentPlayPauseScreen) { _, newValue in
             if !newValue { dismissTheControllers() }
         }
+        /*
         .onCompatibleChange(of: focusedSection, perform: { oldValue , newValue in
             if !isShowPlayPauseButton {
                 if oldValue == .trap {
@@ -96,8 +127,26 @@ struct LivePlayerControlsView: View {
             }
             playBackViewModel.isUserSeeking = false
         })
+         */
         .onExitCommand(perform: handleExitCommand)
         .ignoresSafeArea()
+    }
+    
+    // MARK: - CONTROL-BUTTON UI
+    @ViewBuilder
+    private func controlButton(title: String, icon: String) -> some View {
+        ZStack {
+            Button(action: {}) {
+                HStack(spacing: 12) {
+                    Image(systemName: icon)
+                        .font(.system(size: 25, weight: .regular))
+                    Text(title)
+                        .font(.system(size: 25, weight: .regular))
+                }
+            }
+            .buttonStyle(.plain)
+        }
+        .frame(maxWidth: .infinity)
     }
     
     private var shaddowTrappedView: some View {
@@ -118,12 +167,31 @@ struct LivePlayerControlsView: View {
     
     // Reusable item box
     @ViewBuilder
-    func focusBox(for section: FocusSection) -> some View {
+    func focusBox(for section: ControlFocus) -> some View {
         Color.clear
             .frame(width: 150, height: 150)
             .focusable(true)
-            .focused($focusedSection, equals: section)
+            .focused($focusedControl, equals: section)
     }
+    func makeVideoData(from item: CarouselContent) -> VideoData? {
+        guard let urlString = item.video?.first?.contentUrl,
+              let _ = URL(string: urlString) else {
+            return nil
+        }
+
+        return VideoData(
+            type: "vod",
+            profile: "pradip",
+            drmEnabled: false,
+            licenceUrl: "",
+            contentUrl: urlString,
+            protocol: "",
+            encryptionType: "hls",
+            adInfo: nil,
+            qualityGroup: .none
+        )
+    }
+    
 }
 
 // MARK: - Private Methods
@@ -131,9 +199,9 @@ private extension LivePlayerControlsView {
     
     func handleAppear() {
         isShowPlayPauseButton = true
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-            focusedSection = .playPause
-        }
+//        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+//            focusedControl = .playPause
+//        }
     }
     
     func togglePlayPause() {
@@ -145,7 +213,7 @@ private extension LivePlayerControlsView {
         let task = DispatchWorkItem {
             isShowPlayPauseButton = false
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-                focusedSection = .trap
+                focusedControl = .goLiveButton
 
             }
         }

@@ -99,7 +99,7 @@ struct LogixVideoPlayer: View {
             isPresentingLogixPlayer = false
         }
         .fullScreenCover(isPresented: $showControlls) {
-            LivePlayerControlsView(playBackViewModel: playbackViewModel, presentPlayPauseScreen: $showControlls, dismissTheControllers: {
+            LivePlayerControlsView(playBackViewModel: playbackViewModel, presentPlayPauseScreen: $showControlls,  dismissTheControllers: {
                 //isPresentingLogixPlayer = false
                // globalNavState.activeScreen = nil
             }, settingsButtonTapped: {

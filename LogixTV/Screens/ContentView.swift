@@ -72,6 +72,8 @@ class GlobalNavigationState: ObservableObject {
     @Published var lastFocus: FocusTarget?
     @Published var activeScreen: ActiveScreen? = nil
     @Published var dummyList: [CarouselContent]?
+    @Published var isShowMutiplayerView  = false
+    @Published var isPiPMutiplayerView = false
 }
 
 struct ContentView: View {
@@ -79,6 +81,7 @@ struct ContentView: View {
     @State private var isSidebarExpanded: Bool = false
     @FocusState private var focusedField: FocusTarget?
     @StateObject private var viewModel = SideMenuViewModel()
+    @StateObject private var configViewModel = ConfigViewModel()
     @State private var dynamicMenuItems: [MenuItem] = []
     @StateObject private var globalNavigationState = GlobalNavigationState()
     @State private var showVideoErrorAlert = false
@@ -186,7 +189,10 @@ struct ContentView: View {
         .environmentObject(globalNavigationState)
         .ignoresSafeArea()
         .task {
-            await viewModel.loadMenu()
+            await configViewModel.loadConfiguration()
+            if let deviceName = configViewModel.deviceName, !deviceName.isEmpty {
+                await viewModel.loadMenu(deviceName)
+            }
         }
     }
     
@@ -202,33 +208,21 @@ struct ContentView: View {
         ZStack {
             Color.black.ignoresSafeArea()
 
-            if let mainItem = globalNavigationState.contentItem,
-               let mainVideoData = makeVideoData(from: mainItem) {
-
+            if let mainItem = globalNavigationState.contentItem {
+                
                 // Convert dummyList (contentItem list) → [VideoData]
-                let previewVideos: [VideoData] =
-                    (globalNavigationState.dummyList ?? [])
-                        .compactMap { makeVideoData(from: $0) }
-                        .prefix(3)
-                        .map { $0 }
-
-                // Fallback: use main video repeated 3 times
-                let finalVideoList = previewVideos.isEmpty
-                    ? Array(repeating: mainVideoData, count: 3)
-                    : previewVideos
-
+                let previewVideos =
+                (globalNavigationState.dummyList ?? [])
+                    .prefix(3)
+                    .map { $0 }
+                
                 LogixMultiVideoPlayer(
                     category: "ccategory",
-                    videoData: mainVideoData,
-                    videoDataList: finalVideoList,
-                    isPresentingLogixPlayer: $isPresentingLogixPlayer
+                    videoData: mainItem,
+                    videoDataList: previewVideos,
+                    isPresentingLogixPlayer: $isPresentingLogixPlayer,
+                    focusedField: $focusedField
                 )
-            } else {
-                Color.clear
-                    .onAppear {
-                        videoErrorMessage = "Unable to play video. URL is invalid."
-                        showVideoErrorAlert = true
-                    }
             }
         }
     }
@@ -243,25 +237,6 @@ struct ContentView: View {
     private func dismissPlayer() {
         isPresentingLogixPlayer = false
         globalNavigationState.activeScreen = nil
-    }
-    
-    func makeVideoData(from item: CarouselContent) -> VideoData? {
-        guard let urlString = item.video?.first?.contentUrl,
-              let _ = URL(string: urlString) else {
-            return nil
-        }
-
-        return VideoData(
-            type: "vod",
-            profile: "pradip",
-            drmEnabled: false,
-            licenceUrl: "",
-            contentUrl: urlString,
-            protocol: "",
-            encryptionType: "hls",
-            adInfo: nil,
-            qualityGroup: .none
-        )
     }
 }
 

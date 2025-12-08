@@ -37,7 +37,6 @@ struct SideMenuView: View {
        // .animation(.easeInOut(duration: 0.3), value: isSidebarExpanded)
         .focusSection()
         .onCompatibleChange(of: focusedField, perform: handleFocusChange)
-        .task { await viewModel.loadMenu() }
         .onAppear { setupInitialState() }
 
     }

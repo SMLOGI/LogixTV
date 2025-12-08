@@ -34,7 +34,7 @@ struct CachedAsyncImage: View {
                 .resizable() // Must include for SwiftUI layout control
                 .aspectRatio(contentMode: contentMode)
                 .clipped()
-                .id(url.absoluteString)
+                //.id(url.absoluteString)
                 .animation(.none, value: url) // ✅ suppress implicit animation
         } else {
             placeholder

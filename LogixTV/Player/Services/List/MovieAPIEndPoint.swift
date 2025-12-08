@@ -61,6 +61,6 @@ extension APIEndpoint {
 struct APIConfig {
     static var baseURL: String {
         // You can use environment flags here
-        return "http://LogixCms-1616970263.ap-south-1.elb.amazonaws.com:7040"
+        return BaseURL.main.rawValue
     }
 }

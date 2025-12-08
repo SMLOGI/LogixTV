@@ -25,7 +25,7 @@ final class HomeViewModel: ObservableObject {
     func loadCarouselGroup() async {
         do {
             let carouselGroupResponse = try await NetworkManager.shared.request(
-                baseURL: .main, path: "carousels/mobile-listen?page=1&count=10",
+                baseURL: .main, path: "carousels/mobile-home?page=1&count=10",
                 method: .GET
             ) as CarouselGroupModel
             
