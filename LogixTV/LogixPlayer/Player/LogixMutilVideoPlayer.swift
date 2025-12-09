@@ -35,7 +35,7 @@ struct LogixMultiVideoPlayer: View {
                         videoData: video,
                         isPresentingLogixPlayer: $isPresentingLogixPlayer,
                         mute: .constant(false),
-                        showAds: .constant(true),
+                        showAds: .constant(false),
                         onDismiss: { }
                     )
                     .focusable(false)

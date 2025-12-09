@@ -206,15 +206,19 @@ struct LogixVideoPlayer: View {
             cleanup()
         }
         
-        if playbackViewModel.playerState ==  .showingAds {
-            isAdPlaying = true
-            showControlls = !isAdPlaying
-        } else  if playbackViewModel.playerState == .hiddenAds {
-            // Ad ended
-            if isAdPlaying {
-                isAdPlaying = false
+        if isAdPlaying {
+            if playbackViewModel.playerState ==  .showingAds {
+                isAdPlaying = true
                 showControlls = !isAdPlaying
+            } else  if playbackViewModel.playerState == .hiddenAds {
+                // Ad ended
+                if isAdPlaying {
+                    isAdPlaying = false
+                    showControlls = !isAdPlaying
+                }
             }
+        } else {
+            showControlls = true
         }
     }
     
