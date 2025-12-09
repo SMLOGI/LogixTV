@@ -15,7 +15,6 @@ struct ProgressSliderView: View {
     @Binding var isUserSeeking: Bool
     
     @State private var isFocused: Bool = false
-    let barWidth: CGFloat
     
     var body: some View {
         HStack(spacing: 15.0) {
@@ -28,20 +27,25 @@ struct ProgressSliderView: View {
     }
     
     private func showProgressBar() -> some View {
-        ZStack(alignment: .leading) {
-            Capsule()
-                .fill(Color.white.opacity(0.2))
-                .frame(height: isFocused ? 12 : 10)
-            
-            Capsule()
-                .fill(focusedSection == .progressBar ? Color.green : Color.white)
-                .frame(
-                    width: barWidth * CGFloat(currentTime / max(totalTime, 0.1)),
-                    height: isFocused ? 12 : 10
-                )
+        ZStack {
+            GeometryReader { proxy in
+                ZStack(alignment: .leading) {
+                    Capsule()
+                        .fill(Color.white.opacity(0.2))
+                        .frame(height: isFocused ? 12 : 10)
+
+                    Capsule()
+                        .fill(focusedSection == .progressBar ? Color.green : Color.white)
+                        .frame(
+                            width: proxy.size.width * CGFloat(currentTime / max(totalTime, 0.1)),
+                            height: isFocused ? 12 : 10
+                        )
+                }
+                .animation(.easeInOut(duration: 0.2), value: isFocused)
+            }
+            .frame(height: 12)   // only height is constrained
         }
-        .frame(width: barWidth)
-        .animation(.easeInOut(duration: 0.2), value: isFocused)
+        .fixedSize(horizontal: false, vertical: true)
         .focusable(true)
         .focused($focusedSection, equals: .progressBar)
         .onMoveCommand(perform: handleMove)

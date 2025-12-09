@@ -78,29 +78,44 @@ struct LivePlayerControlsView: View {
                                         }
                                     },
                                     focusedSection: $focusedControl,
-                                    isUserSeeking: $playBackViewModel.isUserSeeking,
-                                    barWidth: proxy.size.width * (globalNavState.isShowMutiplayerView ? 0.60 : 0.85)
+                                    isUserSeeking: $playBackViewModel.isUserSeeking
                                 )
+                                
                                 Spacer()
+                                    .frame(width:  globalNavState.isShowMutiplayerView ? 350 : 10)
+                               
                             }
                             .padding(.horizontal, 20)
+                            .padding(.bottom, globalNavState.isShowMutiplayerView ? 60 : 10)
                             .frame(maxWidth: .infinity)
                             
-                            HStack {
-                                controlButton(title: "Subtitle & Audio", icon: "captions.bubble.fill")
+                            if !globalNavState.isShowMutiplayerView {
+                                HStack {
+                                    controlButton(title: "Subtitle & Audio", icon: "captions.bubble.fill") {
+                                        
+                                    }
                                     .focused($focusedControl, equals: .subtitles)
-                                
-                                controlButton(title: "Settings", icon: "gearshape.fill")
+                                    
+                                    controlButton(title: "Settings", icon: "gearshape.fill") {
+                                        
+                                    }
                                     .focused($focusedControl, equals: .settings)
-                                
-                                controlButton(title: "Episodes", icon: "list.bullet.rectangle")
+                                    
+                                    controlButton(title: "Episodes", icon: "list.bullet.rectangle") {
+                                        
+                                    }
                                     .focused($focusedControl, equals: .episodes)
-                                
-                                controlButton(title: "Next Episode", icon: "forward.end.fill")
+                                    
+                                    controlButton(title: "Key-Moments", icon: "forward.end.fill") {
+                                        
+                                        globalNavState.isShowMutiplayerView = true
+                                        
+                                    }
                                     .focused($focusedControl, equals: .next)
-                                
+                                    
+                                }
+                                .padding(.bottom, 50)
                             }
-                            .padding(.bottom, 50)
                             /*
                             TVCardButton(title: "Keynote ON", selectedtitle: "Keynote OFF",  focusedSection: $focusedSection) {
                                 globalNavState.isShowMutiplayerView = !globalNavState.isShowMutiplayerView
@@ -134,9 +149,9 @@ struct LivePlayerControlsView: View {
     
     // MARK: - CONTROL-BUTTON UI
     @ViewBuilder
-    private func controlButton(title: String, icon: String) -> some View {
+    private func controlButton(title: String, icon: String, completion: @escaping (()->Void)) -> some View {
         ZStack {
-            Button(action: {}) {
+            Button(action: completion) {
                 HStack(spacing: 12) {
                     Image(systemName: icon)
                         .font(.system(size: 25, weight: .regular))
@@ -173,7 +188,7 @@ struct LivePlayerControlsView: View {
             .focusable(true)
             .focused($focusedControl, equals: section)
     }
-    func makeVideoData(from item: CarouselContent) -> VideoData? {
+    func map (from item: CarouselContent) -> VideoData? {
         guard let urlString = item.video?.first?.contentUrl,
               let _ = URL(string: urlString) else {
             return nil
