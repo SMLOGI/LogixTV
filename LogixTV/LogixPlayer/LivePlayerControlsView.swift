@@ -157,7 +157,10 @@ struct LivePlayerControlsView: View {
                                     .frame(height: 200)
                                 
                                 ForEach(dummyMiniPlayerContents, id: \.id) { item in
-                                    MiniPlayerCardButtonView(item: item, focusedControl: $focusedControl)
+                                    MiniPlayerCardButtonView(item: item, focusedControl: $focusedControl) {
+                                        globalNavState.miniPlayerItem = item
+                                        globalNavState.isPiPMutiplayerView = true
+                                    }
                                 }
                                 Spacer()
                             }

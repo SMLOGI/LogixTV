@@ -21,10 +21,7 @@ struct MiniPlayerCardButtonView: View, Equatable {
     var completion: (()->Void)?
     var body: some View {
         HStack {
-            Button(action: {
-                globalNavState.miniPlayerItem = item
-                completion?()
-            }) {
+            Button(action: { completion?() }) {
                 VStack {
                     if let imageUrl = URL(string: item.imageUrl) {
                         CachedAsyncImage(url: imageUrl)
