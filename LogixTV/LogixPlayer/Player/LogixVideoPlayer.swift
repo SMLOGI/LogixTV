@@ -70,8 +70,8 @@ struct LogixVideoPlayer: View {
             }
         }
         .onAppear {
-            print("**** loading LogixVideoPlayer = \(playbackViewModel.liveData?.contentUrl ?? "")")
-            playbackViewModel.destroyPlayer()
+            print("**** loading LogixVideoPlayer = \(videoData.contentUrl)")
+            //playbackViewModel.destroyPlayer()
             initializePlayerIfNeeded()
             DispatchQueue.main.async {
                 setupView()

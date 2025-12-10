@@ -243,6 +243,7 @@ extension PlaybackViewModel {
     }
 
     func destroyPlayer() {
+        print("*** destroyPlayer")
         // 1. Stop & destroy the media player
         mediaPlayer?.destroy()
         

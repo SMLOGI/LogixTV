@@ -166,7 +166,10 @@ struct LivePlayerControlsView: View {
         .onAppear(perform: handleAppear)
         //.onDisappear(perform: resetHideTimer)
         .onCompatibleChange(of: presentPlayPauseScreen) { _, newValue in
-            if !newValue { dismissTheControllers() }
+            print("*** onCompatibleChange presentPlayPauseScreen newValu=\(newValue)")
+            if !newValue {
+                dismissTheControllers()
+            }
         }
         
         .onCompatibleChange(of: focusedControl, perform: { oldValue , newValue in
@@ -296,6 +299,7 @@ struct LivePlayerControlsView: View {
 private extension LivePlayerControlsView {
     
     func handleAppear() {
+        print("*** LivePlayerControlsView handleAppear")
         isShowPlayPauseButton = true
 //        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
 //            focusedControl = .playPause

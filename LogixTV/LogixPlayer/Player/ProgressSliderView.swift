@@ -48,7 +48,9 @@ struct ProgressSliderView: View {
         .fixedSize(horizontal: false, vertical: true)
         .focusable(true)
         .focused($focusedSection, equals: .progressBar)
-        .onMoveCommand(perform: handleMove)
+        //.onMoveCommand(perform: handleMove)
+        // *** IMP : To remove above comment so that user can fast forward video
+        // Note: This feature conflicts when user focus chnage from progress bar ro bottom tab button due to,  isUserSeeking = true
     }
     
     private func handleMove(_ direction: MoveCommandDirection) {
