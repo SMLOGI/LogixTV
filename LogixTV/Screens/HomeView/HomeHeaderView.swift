@@ -58,7 +58,7 @@ struct HomeHeaderView: View {
                         globalNavState.bannerIndex = index
                         currentPage = index
                         globalNavState.contentItem = viewModel.contentList[index]
-                        globalNavState.activeScreen = .player
+                        globalNavState.activeScreen = .player(.home)
                     } label: {
                         Circle()
                             .fill(isSelected ? Color.white : Color.gray)

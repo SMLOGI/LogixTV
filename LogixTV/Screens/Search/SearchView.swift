@@ -42,7 +42,6 @@ struct SearchView: View {
     private func showPlayerView() -> some View {
         ZStack {
             Color.gray.ignoresSafeArea()
-                
 
             if let contentItem = globalNavigationState.contentItem,
                let videoUrlString = contentItem.video?.first?.contentUrl,

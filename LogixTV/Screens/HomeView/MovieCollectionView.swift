@@ -26,7 +26,7 @@ struct MovieCollectionView: View {
                             group: group,
                             focusedItem: $focusedItem
                         ) {
-                            globalNavState.activeScreen = .player
+                            globalNavState.activeScreen = .player(.home)
                         }
                     }
                 }

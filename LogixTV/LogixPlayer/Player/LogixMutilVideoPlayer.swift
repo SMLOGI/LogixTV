@@ -7,77 +7,83 @@
 
 import SwiftUI
 
-struct LogixMultiVideoPlayer: View {
+struct LogixMutilVideoPlayer: View {
     
     var category: String
-    @State var videoData: CarouselContent                // Full-screen video
-    @State var videoDataList: [CarouselContent]          // Mini players on the right
+    var triggerType: PlayerTriggerType
+    @Binding var videoData: CarouselContent?
+    @Binding var miniplayerConetnt: MiniPlayerContent?
     
     @Binding var isPresentingLogixPlayer: Bool
     @FocusState.Binding var focusedField: FocusTarget?
-    @EnvironmentObject var globalNavState: GlobalNavigationState
     
+    @EnvironmentObject var globalNavState: GlobalNavigationState
+    // @EnvironmentObject var mpManager: MultiPlayerManager
     
     let smallWidth: CGFloat = 300
     let smallHeight: CGFloat = 250
     
     var body: some View {
-        ZStack(alignment: .topLeading) {
+        ZStack(alignment: .topTrailing) {
             
-            // --------------------------------------------------
-            // MARK: MINI PLAYERS LIST
-            // --------------------------------------------------
-            HStack(spacing: 0.0) {
-                
-                if let video = makeVideoData(from: videoData) {
-                    LogixVideoPlayer(
-                        category: category,
-                        videoData: video,
-                        isPresentingLogixPlayer: $isPresentingLogixPlayer,
-                        mute: .constant(false),
-                        showAds: .constant(false),
-                        onDismiss: { }
-                    )
-                    .focusable(false)
+           // Mini Player
+            HStack(spacing: 10.0) {
+                if let miniContent = miniplayerConetnt, let video = makeVideoData(from: miniContent) {
+                    LogixVideoPlayer(category: category, videoData: video, isPresentingLogixPlayer: $isPresentingLogixPlayer, mute: .constant(false), showAds: .constant(false), onDismiss: { }) .focusable(false)
+                        .focusSection()
                 }
                 if globalNavState.isShowMutiplayerView {
-                    VStack(alignment: .center) {
-                            ForEach(videoDataList, id: \.id) { item in
-                                MiniPlayerCardButtonView(item: item, focusedItem: $focusedField) {
-                                    globalNavState.contentItem = item
-                                    isPresentingLogixPlayer = true
-                                }
-                                .frame(maxWidth: .infinity, alignment: .center)
-                            }
-                    }
-                    .frame(width: 356)
-                    .padding(.vertical, 20)
-                    .background(Color.black)
+                    Rectangle()
+                        .frame(width: 356)
+                        .padding(.vertical, 20)
+                        .background(Color.black)
+                        .focusSection()
                 }
             }
-        }
-    }
-    
-    func makeVideoData(from item: CarouselContent) -> VideoData? {
-        guard let urlString = item.video?.first?.contentUrl,
-              let _ = URL(string: urlString) else {
-            return nil
-        }
+            // Main Player
+            HStack(alignment: .top, spacing: 10.0) {
+                if globalNavState.isPiPMutiplayerView {
+                    Spacer()
+                }
+                VStack(alignment: .trailing) {
+                    if let videoData, let video = makeVideoData(from: videoData) {
+                        LogixVideoPlayer(category: category, videoData: video, isPresentingLogixPlayer: $isPresentingLogixPlayer, mute: .constant(false), showAds: .constant(false), onDismiss: { }) .focusable(false)
+                            .frame(
+                                width: globalNavState.isPiPMutiplayerView ? 400 : nil,
+                                height: globalNavState.isPiPMutiplayerView ? 250 : nil
+                            )
+                            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topTrailing)
+                        
+                    }
+                    if globalNavState.isPiPMutiplayerView {
+                        Spacer()
+                    }
 
-        return VideoData(
-            type: "vod",
-            profile: "pradip",
-            drmEnabled: false,
-            licenceUrl: "",
-            contentUrl: urlString,
-            protocol: "",
-            encryptionType: "hls",
-            adInfo: nil,
-            qualityGroup: .none
-        )
+                }
+                .frame(maxHeight: .infinity)
+                .background(Color.green)
+                
+                if globalNavState.isShowMutiplayerView {
+                    Rectangle()
+                        .frame(width: 356)
+                        .padding(.vertical, 20)
+                        .background(Color.black)
+                        .focusSection()
+                }
+                
+                
+            }
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+            .background(Color.yellow)
+        }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+    }
+    func makeVideoData(from item: CarouselContent) -> VideoData? {
+        guard let urlString = item.video?.first?.contentUrl, let _ = URL(string: urlString) else { return nil }
+        return VideoData( type: "vod", profile: "pradip", drmEnabled: false, licenceUrl: "", contentUrl: urlString, protocol: "", encryptionType: "hls", adInfo: nil, qualityGroup: .none)
+    }
+    func makeVideoData(from item: MiniPlayerContent) -> VideoData? {
+        guard let _ = URL(string: item.contentUrl) else { return nil }
+        return VideoData( type: "vod", profile: "pradip", drmEnabled: false, licenceUrl: "", contentUrl: item.contentUrl, protocol: "", encryptionType: "hls", adInfo: nil, qualityGroup: .none)
     }
 }
-
-
-
-

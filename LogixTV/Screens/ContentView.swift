@@ -51,10 +51,17 @@ enum FocusTarget: Hashable , Equatable  {
     }
 }
 
+enum PlayerTriggerType {
+    case home
+    case miniPlayerLive
+    case miniPlayerThumbnail
+}
+
 enum ActiveScreen: Identifiable, Equatable {
+    
     case none
     case search
-    case player
+    case player(PlayerTriggerType)
     
     var id: String {
         switch self {
@@ -146,8 +153,8 @@ struct ContentView: View {
                 switch screen {
                 case .search:
                     SearchView(focusedField: $focusedField)
-                case .player:
-                    showPlayerView()
+                case .player(let triggerType):
+                        showPlayerView(with: triggerType)
                 case .none:
                     EmptyView()
                 }
@@ -204,26 +211,19 @@ struct ContentView: View {
         }
     }
     @ViewBuilder
-    private func showPlayerView() -> some View {
+    private func showPlayerView(with triggerType: PlayerTriggerType) -> some View {
         ZStack {
             Color.black.ignoresSafeArea()
-
-            if let mainItem = globalNavigationState.contentItem {
-                
-                // Convert dummyList (contentItem list) → [VideoData]
-                let previewVideos =
-                (globalNavigationState.dummyList ?? [])
-                    .prefix(3)
-                    .map { $0 }
-                
-                LogixMultiVideoPlayer(
-                    category: "ccategory",
-                    videoData: mainItem,
-                    videoDataList: previewVideos,
-                    isPresentingLogixPlayer: $isPresentingLogixPlayer,
-                    focusedField: $focusedField
-                )
-            }
+            
+            let mainItem = globalNavigationState.contentItem
+            LogixMutilVideoPlayer(
+                category: "ccategory",
+                triggerType: triggerType,
+                videoData: .constant(mainItem),
+                miniplayerConetnt: .constant(nil),
+                isPresentingLogixPlayer: $isPresentingLogixPlayer,
+                focusedField: $focusedField
+            )
         }
     }
     private var sideTrappedView: some View {
