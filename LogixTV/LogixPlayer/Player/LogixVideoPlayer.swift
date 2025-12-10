@@ -70,7 +70,7 @@ struct LogixVideoPlayer: View {
             }
         }
         .onAppear {
-            print("**** loading LogixVideoPlayer")
+            print("**** loading LogixVideoPlayer = \(playbackViewModel.liveData?.contentUrl ?? "")")
             playbackViewModel.destroyPlayer()
             initializePlayerIfNeeded()
             DispatchQueue.main.async {
@@ -140,13 +140,20 @@ struct LogixVideoPlayer: View {
                     .edgesIgnoringSafeArea(.all)
                     .onCompatibleChange(of: globalNavState.isPiPMutiplayerView) { oldVlaue, newValue in
                         // *** IMP
-                        if newValue == true && isMainLivePlayer {
-                            playbackViewModel.pause()
-                            print("*** Transition of main player to pip player and playing side video")
-                        } else if newValue == false && !isMainLivePlayer {
-                            // cleanup()
-                            print("*** Transition of pip player to live again")
-                            playbackViewModel.play()
+                        print("*** Transition of pip player to live again newValue =\(newValue) && isMainLivePlayer = \(isMainLivePlayer) ***")
+                        if isMainLivePlayer {
+                            if newValue {
+                                playbackViewModel.mute()
+                                print("*** Transition of main player to pip player and playing side video")
+                            } else {
+                                // cleanup()
+                                print("*** Transition of pip player to live again")
+                                playbackViewModel.unMute()
+                            }
+                        } else {
+                            if newValue == false {
+                                playbackViewModel.destroyPlayer()
+                            }
                         }
                     }
             }

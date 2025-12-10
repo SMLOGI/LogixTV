@@ -161,7 +161,7 @@ extension PlaybackViewModel {
             self.mediaPlayer = mediaPlayer
             if let player = self.mediaPlayer {
                 player.setContentMode(mode: .scaleAspectFit)
-                self.mute()
+                    //self.mute()
             }
             self.addPlayerEventListener()
             self.addPlayerAdEventsListener()
