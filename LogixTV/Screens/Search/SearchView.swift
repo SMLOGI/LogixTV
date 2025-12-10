@@ -15,6 +15,7 @@ struct SearchView: View {
     @EnvironmentObject var globalNavigationState: GlobalNavigationState
     let columns = [GridItem(.adaptive(minimum: 267), spacing: 30)]
     @StateObject private var mainPlaybackViewModel = PlaybackViewModel()
+    let mainPlayerController = PlayerContainerViewController()
     var body: some View {
         ZStack {
             Color.black.ignoresSafeArea()
@@ -66,6 +67,7 @@ struct SearchView: View {
                     mute: .constant(false),
                     showAds: .constant(true),
                     playbackViewModel: mainPlaybackViewModel,
+                    playerController: mainPlayerController,
                     isMainLivePlayer: .constant(true),
                     onDismiss: { }
                 )

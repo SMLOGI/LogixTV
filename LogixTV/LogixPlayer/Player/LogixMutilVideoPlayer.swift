@@ -22,6 +22,9 @@ struct LogixMutilVideoPlayer: View {
     @StateObject private var mainPlaybackViewModel = PlaybackViewModel()
     @StateObject private var miniPlaybackViewModel = PlaybackViewModel()
     
+    let mainPlayerController = PlayerContainerViewController()
+    let miniPlayerController = PlayerContainerViewController()
+    
     let smallWidth: CGFloat = 300
     let smallHeight: CGFloat = 250
     
@@ -31,7 +34,7 @@ struct LogixMutilVideoPlayer: View {
                 // Mini Player
                 HStack(spacing: 0.0) {
                     if let miniContent = globalNavState.miniPlayerItem, let video = makeVideoData(from: miniContent) {
-                        LogixVideoPlayer(category: category, videoData: video, isPresentingLogixPlayer: $isPresentingLogixPlayer, mute: .constant(false), showAds: .constant(false), playbackViewModel: miniPlaybackViewModel, isMainLivePlayer: .constant(false), onDismiss: { })
+                        LogixVideoPlayer(category: category, videoData: video, isPresentingLogixPlayer: $isPresentingLogixPlayer, mute: .constant(false), showAds: .constant(false), playbackViewModel: miniPlaybackViewModel, playerController: miniPlayerController, isMainLivePlayer: .constant(false), onDismiss: { })
                             .focusable(false)
                             .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topTrailing)
                             .background(Color.purple)
@@ -52,11 +55,11 @@ struct LogixMutilVideoPlayer: View {
                 }
                 VStack(alignment: .trailing) {
                     if let videoData, let video = makeVideoData(from: videoData) {
-                        LogixVideoPlayer(category: category, videoData: video, isPresentingLogixPlayer: $isPresentingLogixPlayer, mute: .constant(false), showAds: .constant(false), playbackViewModel: mainPlaybackViewModel, isMainLivePlayer: .constant(true), onDismiss: { })
+                        LogixVideoPlayer(category: category, videoData: video, isPresentingLogixPlayer: $isPresentingLogixPlayer, mute: .constant(false), showAds: .constant(false), playbackViewModel: mainPlaybackViewModel,playerController: mainPlayerController, isMainLivePlayer: .constant(true), onDismiss: { })
                             .focusable(false)
                             .frame(
                                 width: globalNavState.isPiPMutiplayerView ? 400 : nil,
-                                height: globalNavState.isPiPMutiplayerView ? 250 : nil
+                                height: globalNavState.isPiPMutiplayerView ? 220 : nil
                             )
                             .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topTrailing)
                     }

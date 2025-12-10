@@ -26,7 +26,7 @@ struct LogixVideoPlayer: View {
     @FocusState private var focusedSection: TrapFocusSection?
     @EnvironmentObject var sideMenuViewModel: SideMenuViewModel
     @ObservedObject var playbackViewModel: PlaybackViewModel
-    @State private var playerController: PlayerContainerViewController?
+    var playerController: PlayerContainerViewController?
     @State private var hideTime = 5.0
     @State private var showTrackSelectionView = false // Controls the modal visibility
     var isLiveContent:Bool = false
@@ -142,6 +142,11 @@ struct LogixVideoPlayer: View {
                         // *** IMP
                         if newValue == true && isMainLivePlayer {
                             playbackViewModel.pause()
+                            print("*** Transition of main player to pip player and playing side video")
+                        } else if newValue == false && !isMainLivePlayer {
+                            // cleanup()
+                            print("*** Transition of pip player to live again")
+                            playbackViewModel.play()
                         }
                     }
             }
@@ -150,7 +155,7 @@ struct LogixVideoPlayer: View {
     
     private func initializePlayerIfNeeded() {
         if playerController == nil {
-            playerController = PlayerContainerViewController()
+            //playerController = PlayerContainerViewController()
         }
     }
 
@@ -201,7 +206,7 @@ struct LogixVideoPlayer: View {
         isPresentingLogixPlayer = false
         showControlls = false
         playbackViewModel.destroyPlayer()
-        playerController = nil
+      //  playerController = nil
         globalNavState.activeScreen = nil
         removeObservers()
     }
