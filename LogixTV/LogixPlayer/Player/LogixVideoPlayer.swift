@@ -25,7 +25,7 @@ struct LogixVideoPlayer: View {
     @Binding var showAds: Bool
     @FocusState private var focusedSection: TrapFocusSection?
     @EnvironmentObject var sideMenuViewModel: SideMenuViewModel
-    @StateObject private var playbackViewModel = PlaybackViewModel()
+    @ObservedObject var playbackViewModel: PlaybackViewModel
     @State private var playerController: PlayerContainerViewController?
     @State private var hideTime = 5.0
     @State private var showTrackSelectionView = false // Controls the modal visibility
@@ -36,7 +36,7 @@ struct LogixVideoPlayer: View {
     @State private var  hascontentstarted: Bool = true
     @State private var isContentStarted: Bool = true
     @State private var retryCount: Int = 0
-    @State private var isHomeLivePlayer: Bool = false
+    @Binding var isMainLivePlayer: Bool
     @State private var isAdPlaying: Bool = false
     
     @State private var showPlayer = false
@@ -92,7 +92,7 @@ struct LogixVideoPlayer: View {
             handleMoveCommand(direction)
         }
         .onDisappear {
-            cleanup()
+           // cleanup()
         }
         .onPlayPauseCommand(perform: togglePlayback)
         .onExitCommand {
@@ -138,6 +138,12 @@ struct LogixVideoPlayer: View {
             if let playerController {
                 PlayerView(playerController: playerController)
                     .edgesIgnoringSafeArea(.all)
+                    .onCompatibleChange(of: globalNavState.isPiPMutiplayerView) { oldVlaue, newValue in
+                        // *** IMP
+                        if newValue == true && isMainLivePlayer {
+                            playbackViewModel.pause()
+                        }
+                    }
             }
         }
     }

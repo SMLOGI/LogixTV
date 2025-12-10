@@ -19,25 +19,30 @@ struct LogixMutilVideoPlayer: View {
     
     @EnvironmentObject var globalNavState: GlobalNavigationState
     // @EnvironmentObject var mpManager: MultiPlayerManager
+    @StateObject private var mainPlaybackViewModel = PlaybackViewModel()
+    @StateObject private var miniPlaybackViewModel = PlaybackViewModel()
     
     let smallWidth: CGFloat = 300
     let smallHeight: CGFloat = 250
     
     var body: some View {
         ZStack(alignment: .topTrailing) {
-            
-           // Mini Player
-            HStack(spacing: 0.0) {
-                if let miniContent = miniplayerConetnt, let video = makeVideoData(from: miniContent) {
-                    LogixVideoPlayer(category: category, videoData: video, isPresentingLogixPlayer: $isPresentingLogixPlayer, mute: .constant(false), showAds: .constant(false), onDismiss: { }) .focusable(false)
-                        .focusSection()
-                }
-                if globalNavState.isShowMutiplayerView {
-                    Rectangle()
-                        .frame(width: 356)
-                        .padding(.vertical, 20)
-                        .background(Color.black)
-                        .focusSection()
+            if globalNavState.isPiPMutiplayerView {
+                // Mini Player
+                HStack(spacing: 0.0) {
+                    if let miniContent = globalNavState.miniPlayerItem, let video = makeVideoData(from: miniContent) {
+                        LogixVideoPlayer(category: category, videoData: video, isPresentingLogixPlayer: $isPresentingLogixPlayer, mute: .constant(false), showAds: .constant(false), playbackViewModel: miniPlaybackViewModel, isMainLivePlayer: .constant(false), onDismiss: { })
+                            .focusable(false)
+                            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topTrailing)
+                            .background(Color.purple)
+                    }
+                    if globalNavState.isShowMutiplayerView {
+                        Rectangle()
+                            .frame(width: 356)
+                            .padding(.vertical, 20)
+                            .background(Color.black)
+                            .focusSection()
+                    }
                 }
             }
             // Main Player
@@ -47,21 +52,21 @@ struct LogixMutilVideoPlayer: View {
                 }
                 VStack(alignment: .trailing) {
                     if let videoData, let video = makeVideoData(from: videoData) {
-                        LogixVideoPlayer(category: category, videoData: video, isPresentingLogixPlayer: $isPresentingLogixPlayer, mute: .constant(false), showAds: .constant(false), onDismiss: { }) .focusable(false)
+                        LogixVideoPlayer(category: category, videoData: video, isPresentingLogixPlayer: $isPresentingLogixPlayer, mute: .constant(false), showAds: .constant(false), playbackViewModel: mainPlaybackViewModel, isMainLivePlayer: .constant(true), onDismiss: { })
+                            .focusable(false)
                             .frame(
                                 width: globalNavState.isPiPMutiplayerView ? 400 : nil,
                                 height: globalNavState.isPiPMutiplayerView ? 250 : nil
                             )
                             .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topTrailing)
-                        
                     }
                     if globalNavState.isPiPMutiplayerView {
                         Spacer()
                     }
-
+                    
                 }
                 .frame(maxHeight: .infinity)
-                .background(Color.green)
+                .background(Color.clear)
                 
                 if globalNavState.isShowMutiplayerView {
                     Rectangle()
@@ -74,7 +79,7 @@ struct LogixMutilVideoPlayer: View {
                 
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
-            .background(Color.black)
+            .background(Color.clear)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
     }
