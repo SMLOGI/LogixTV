@@ -75,6 +75,7 @@ enum ActiveScreen: Identifiable, Equatable {
 class GlobalNavigationState: ObservableObject {
     @Published var showDetail: Bool = false
     @Published var contentItem: CarouselContent?
+    @Published var miniPlayerItem: MiniPlayerContent?
     @Published var bannerIndex: Int = 0
     @Published var lastFocus: FocusTarget?
     @Published var activeScreen: ActiveScreen? = nil

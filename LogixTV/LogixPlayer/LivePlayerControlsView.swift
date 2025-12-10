@@ -23,8 +23,9 @@ struct LivePlayerControlsView: View {
         case goLiveButton
         case  subtitles
         case settings
-        case  episodes
+        case episodes
         case next
+        case miniPlayer(Int)
     }
     
     // MARK: - ViewModel
@@ -43,6 +44,33 @@ struct LivePlayerControlsView: View {
     // MARK: - Callbacks
     let dismissTheControllers: () -> Void
     let settingsButtonTapped: () -> Void
+    
+    let dummyMiniPlayerContents: [MiniPlayerContent] = [
+        MiniPlayerContent(
+            id: 1,
+            contentUrl: "https://logix-cms-content.s3.ap-south-1.amazonaws.com/content/actual/cwjN0C42Z3/video/6d9a24901765e1d0abd6.mp4",
+            title: "Adventure Story",
+            imageUrl: "https://logix-cms-content.s3.ap-south-1.amazonaws.com/content/actual/cwjN0C42Z3/images/1.jpg",
+            description: "A fun and exciting mini adventure.",
+            duration: 120
+        ),
+        MiniPlayerContent(
+            id: 2,
+            contentUrl: "https://logix-cms-content.s3.ap-south-1.amazonaws.com/content/actual/1wkJWVGNfj/video/a758ef717ea30794c0c4.mp4",
+            title: "Learning Time",
+            imageUrl: "https://logix-cms-content.s3.ap-south-1.amazonaws.com/content/actual/1wkJWVGNfj/images/2.jpg",
+            description: "An engaging educational clip for kids.",
+            duration: 150
+        ),
+        MiniPlayerContent(
+            id: 3,
+            contentUrl: "https://logix-cms-content.s3.ap-south-1.amazonaws.com/content/actual/7ZFxIl7h81/video/133e62288e629f54990f.mp4",
+            title: "Fun With Friends",
+            imageUrl: "https://logix-cms-content.s3.ap-south-1.amazonaws.com/content/actual/7ZFxIl7h81/images/3.jpg",
+            description: "A joyful moment full of fun and laughter.",
+            duration: 180
+        )
+    ]
     
     // MARK: - Body
     var body: some View {
@@ -116,12 +144,37 @@ struct LivePlayerControlsView: View {
                                 }
                                 .padding(.bottom, 50)
                             }
-                            /*
-                            TVCardButton(title: "Keynote ON", selectedtitle: "Keynote OFF",  focusedSection: $focusedSection) {
-                                globalNavState.isShowMutiplayerView = !globalNavState.isShowMutiplayerView
-                            } */
                         }
                     }
+                    
+                    if globalNavState.isShowMutiplayerView {
+                        HStack(alignment: .top) {
+                            Spacer()
+                            
+                            VStack(alignment: .leading) {
+                                
+                                Spacer()
+                                    .frame(height: 200)
+                                
+                                ForEach(dummyMiniPlayerContents, id: \.id) { item in
+                                    MiniPlayerCardButtonView(item: item, focusedControl: $focusedControl)
+                                }
+                                Spacer()
+                            }
+                            .frame(width: 425)
+                            .padding(.leading, 10)
+                            .background(Color.black)
+                        }
+                        .frame(maxWidth: .infinity, maxHeight: .infinity)
+                        .onAppear {
+                            DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
+                            if let itemId = dummyMiniPlayerContents.first?.id {
+                                    focusedControl = .miniPlayer(itemId)
+                                }
+                            }
+                        }
+                    }
+
                 }
             }
         }
