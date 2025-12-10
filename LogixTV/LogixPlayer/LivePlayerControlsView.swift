@@ -140,6 +140,10 @@ struct LivePlayerControlsView: View {
                                         globalNavState.isPiPMutiplayerView = true
                                     }
                                 }
+                                
+                                showSideTabButtons
+                                    .frame(width: 356)
+                                
                                 Spacer()
                             }
                             .frame(width: 426)
@@ -239,6 +243,25 @@ struct LivePlayerControlsView: View {
             
         }
         .padding(.bottom, 50)
+    }
+    
+    private var showSideTabButtons: some View {
+        VStack(alignment: .leading, spacing: 40) {
+            if globalNavState.isPiPMutiplayerView {
+                controlButton(title: "Go Live", icon: "livephoto.play") {
+                    globalNavState.isPiPMutiplayerView = false
+                }
+                .tint(.green)
+                .focused($focusedControl, equals: .subtitles)
+            }
+            
+            controlButton(title: "Close", icon: "xmark.circle") {
+                globalNavState.isPiPMutiplayerView = false
+                globalNavState.isShowMutiplayerView = false
+            }
+            .focused($focusedControl, equals: .settings)
+        }
+        .padding(.top, 40)
     }
     
     // Reusable item box
