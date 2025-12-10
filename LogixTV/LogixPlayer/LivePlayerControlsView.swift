@@ -168,9 +168,9 @@ struct LivePlayerControlsView: View {
         .onCompatibleChange(of: presentPlayPauseScreen) { _, newValue in
             if !newValue { dismissTheControllers() }
         }
-        /*
-        .onCompatibleChange(of: focusedSection, perform: { oldValue , newValue in
-            if !isShowPlayPauseButton {
+        
+        .onCompatibleChange(of: focusedControl, perform: { oldValue , newValue in
+            /*if !isShowPlayPauseButton {
                 if oldValue == .trap {
                     if newValue == .trapTop || newValue == .trapBottom || newValue == .trapLeft || newValue == .trapRight {
                         handleAppear()
@@ -178,8 +178,14 @@ struct LivePlayerControlsView: View {
                 }
             }
             playBackViewModel.isUserSeeking = false
+             */
+            if oldValue == .progressBar {
+                if newValue == .subtitles || newValue == .settings || newValue == .episodes || newValue == .next {
+                    focusedControl = .subtitles
+                }
+            }
         })
-         */
+    
         .onExitCommand(perform: handleExitCommand)
         .ignoresSafeArea()
     }
@@ -219,30 +225,22 @@ struct LivePlayerControlsView: View {
     
     private var showBottomTabButtons: some View {
         HStack {
-            controlButton(title: "Subtitle & Audio", icon: "captions.bubble.fill") {
-                
-            }
-            .focused($focusedControl, equals: .subtitles)
-            
-            controlButton(title: "Settings", icon: "gearshape.fill") {
-                
-            }
-            .focused($focusedControl, equals: .settings)
-            
-            controlButton(title: "Episodes", icon: "list.bullet.rectangle") {
-                
-            }
-            .focused($focusedControl, equals: .episodes)
-            
+            controlButton(title: "Subtitle & Audio", icon: "captions.bubble.fill") { }
+                .focused($focusedControl, equals: .subtitles)
+
+            controlButton(title: "Settings", icon: "gearshape.fill") { }
+                .focused($focusedControl, equals: .settings)
+
+            controlButton(title: "Episodes", icon: "list.bullet.rectangle") { }
+                .focused($focusedControl, equals: .episodes)
+
             controlButton(title: "Key-Moments", icon: "forward.end.fill") {
-                
                 globalNavState.isShowMutiplayerView = true
-                
             }
             .focused($focusedControl, equals: .next)
-            
         }
         .padding(.bottom, 50)
+        .focusSection()
     }
     
     private var showSideTabButtons: some View {
