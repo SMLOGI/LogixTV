@@ -120,31 +120,7 @@ struct LivePlayerControlsView: View {
                             .frame(maxWidth: .infinity)
                             
                             if !globalNavState.isShowMutiplayerView {
-                                HStack {
-                                    controlButton(title: "Subtitle & Audio", icon: "captions.bubble.fill") {
-                                        
-                                    }
-                                    .focused($focusedControl, equals: .subtitles)
-                                    
-                                    controlButton(title: "Settings", icon: "gearshape.fill") {
-                                        
-                                    }
-                                    .focused($focusedControl, equals: .settings)
-                                    
-                                    controlButton(title: "Episodes", icon: "list.bullet.rectangle") {
-                                        
-                                    }
-                                    .focused($focusedControl, equals: .episodes)
-                                    
-                                    controlButton(title: "Key-Moments", icon: "forward.end.fill") {
-                                        
-                                        globalNavState.isShowMutiplayerView = true
-                                        
-                                    }
-                                    .focused($focusedControl, equals: .next)
-                                    
-                                }
-                                .padding(.bottom, 50)
+                                showBottomTabButtons
                             }
                         }
                     }
@@ -179,7 +155,6 @@ struct LivePlayerControlsView: View {
                             }
                         }
                     }
-
                 }
             }
         }
@@ -236,6 +211,34 @@ struct LivePlayerControlsView: View {
             // Bottom item
             focusBox(for: .trapBottom)
         }
+    }
+    
+    private var showBottomTabButtons: some View {
+        HStack {
+            controlButton(title: "Subtitle & Audio", icon: "captions.bubble.fill") {
+                
+            }
+            .focused($focusedControl, equals: .subtitles)
+            
+            controlButton(title: "Settings", icon: "gearshape.fill") {
+                
+            }
+            .focused($focusedControl, equals: .settings)
+            
+            controlButton(title: "Episodes", icon: "list.bullet.rectangle") {
+                
+            }
+            .focused($focusedControl, equals: .episodes)
+            
+            controlButton(title: "Key-Moments", icon: "forward.end.fill") {
+                
+                globalNavState.isShowMutiplayerView = true
+                
+            }
+            .focused($focusedControl, equals: .next)
+            
+        }
+        .padding(.bottom, 50)
     }
     
     // Reusable item box
