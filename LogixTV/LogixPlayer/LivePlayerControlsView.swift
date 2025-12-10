@@ -248,6 +248,7 @@ struct LivePlayerControlsView: View {
             if globalNavState.isPiPMutiplayerView {
                 controlButton(title: "Go Live", icon: "livephoto.play") {
                     globalNavState.isPiPMutiplayerView = false
+                    globalNavState.miniPlayerItem = nil
                 }
                 .tint(.green)
                 .focused($focusedControl, equals: .subtitles)

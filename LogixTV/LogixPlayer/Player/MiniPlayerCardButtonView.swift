@@ -13,26 +13,40 @@ struct MiniPlayerCardButtonView: View, Equatable {
         lhs.item.id == rhs.item.id &&
         lhs.focusedControl == rhs.focusedControl
     }
-
+    
     let item: MiniPlayerContent
     @FocusState.Binding var focusedControl: LivePlayerControlsView.ControlFocus?
     @State private var showDetails = false
     @EnvironmentObject var globalNavState: GlobalNavigationState
-    var completion: (()->Void)?
+    var completion: (() -> Void)?
+    
+    var isCurrentlyPlaying: Bool {
+        globalNavState.miniPlayerItem?.id == item.id
+    }
+    
     var body: some View {
         HStack {
             Button(action: { completion?() }) {
-                VStack {
-                    if let imageUrl = URL(string: item.imageUrl) {
-                        CachedAsyncImage(url: imageUrl)
-                            .aspectRatio(16/9, contentMode: .fill)
-                    } else {
-                        Rectangle()
-                            .fill(Color.gray)
+                ZStack(alignment: .topTrailing) {
+                    // Thumbnail image
+                    VStack {
+                        if let imageUrl = URL(string: item.imageUrl) {
+                            CachedAsyncImage(url: imageUrl)
+                                .aspectRatio(16/9, contentMode: .fill)
+                        } else {
+                            Rectangle()
+                                .fill(Color.gray)
+                        }
+                    }
+                    .frame(width: 356, height: 200)
+                    .cornerRadius(12)
+                    
+                    // ⭐ NOW PLAYING overlay
+                    if isCurrentlyPlaying {
+                        NowPlayingPill()
+                            .padding(10)
                     }
                 }
-                .frame(width: 356, height: 200)
-                .cornerRadius(12)
                 .overlay(
                     RoundedRectangle(cornerRadius: 12)
                         .stroke(.white, lineWidth: focusedControl == .miniPlayer(item.id) ? 10 : 0)
@@ -41,5 +55,23 @@ struct MiniPlayerCardButtonView: View, Equatable {
             .focused($focusedControl, equals: .miniPlayer(item.id))
             .buttonStyle(.card)
         }
+    }
+}
+
+struct NowPlayingPill: View {
+    @State private var scale: CGFloat = 1
+
+    var body: some View {
+        HStack {
+            Text("NOW PLAYING")
+                .font(.system(size: 20))
+                .fontWeight(.medium)
+                .foregroundColor(.white)
+        }
+        .padding(.horizontal, 10)
+        .padding(.vertical, 6)
+        .background(Color.red)
+        .cornerRadius(5)
+        .onAppear { scale = 1.6 }
     }
 }
