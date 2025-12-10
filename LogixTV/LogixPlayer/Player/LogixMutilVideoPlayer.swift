@@ -27,7 +27,7 @@ struct LogixMutilVideoPlayer: View {
         ZStack(alignment: .topTrailing) {
             
            // Mini Player
-            HStack(spacing: 10.0) {
+            HStack(spacing: 0.0) {
                 if let miniContent = miniplayerConetnt, let video = makeVideoData(from: miniContent) {
                     LogixVideoPlayer(category: category, videoData: video, isPresentingLogixPlayer: $isPresentingLogixPlayer, mute: .constant(false), showAds: .constant(false), onDismiss: { }) .focusable(false)
                         .focusSection()
@@ -41,7 +41,7 @@ struct LogixMutilVideoPlayer: View {
                 }
             }
             // Main Player
-            HStack(alignment: .top, spacing: 10.0) {
+            HStack(alignment: .top, spacing: 0.0) {
                 if globalNavState.isPiPMutiplayerView {
                     Spacer()
                 }
@@ -74,7 +74,7 @@ struct LogixMutilVideoPlayer: View {
                 
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
-            .background(Color.yellow)
+            .background(Color.black)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
     }

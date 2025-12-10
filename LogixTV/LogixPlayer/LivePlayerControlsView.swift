@@ -26,6 +26,8 @@ struct LivePlayerControlsView: View {
         case episodes
         case next
         case miniPlayer(Int)
+        case goLive
+        case Close
     }
     
     // MARK: - ViewModel
@@ -110,7 +112,7 @@ struct LivePlayerControlsView: View {
                                 )
                                 
                                 Spacer()
-                                    .frame(width:  globalNavState.isShowMutiplayerView ? 350 : 10)
+                                    .frame(width:  globalNavState.isShowMutiplayerView ? 380 : 10)
                                
                             }
                             .padding(.horizontal, 20)
@@ -164,7 +166,7 @@ struct LivePlayerControlsView: View {
                                 }
                                 Spacer()
                             }
-                            .frame(width: 425)
+                            .frame(width: 426)
                             .padding(.leading, 10)
                             .background(Color.black)
                         }
