@@ -149,6 +149,7 @@ struct LivePlayerControlsView: View {
                             .frame(width: 426)
                             .padding(.leading, 10)
                             .background(Color.black)
+                            .onMoveCommand(perform: moveNext)
                         }
                         .frame(maxWidth: .infinity, maxHeight: .infinity)
                         .onAppear {
@@ -191,6 +192,12 @@ struct LivePlayerControlsView: View {
     
         .onExitCommand(perform: handleExitCommand)
         .ignoresSafeArea()
+    }
+    
+    private func moveNext(_ direction: MoveCommandDirection) {
+        if direction == .left {
+            focusedControl = .progressBar
+        }
     }
     
     // MARK: - CONTROL-BUTTON UI

@@ -37,10 +37,9 @@ struct LogixMutilVideoPlayer: View {
                         LogixVideoPlayer(category: category, videoData: video, isPresentingLogixPlayer: $isPresentingLogixPlayer, mute: .constant(false), showAds: .constant(false), playbackViewModel: miniPlaybackViewModel, playerController: miniPlayerController, isMainLivePlayer: .constant(false), onDismiss: { })
                             .focusable(false)
                             .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topTrailing)
-                            .background(Color.purple)
                     }
                     if globalNavState.isShowMutiplayerView {
-                        Rectangle()
+                        Spacer()
                             .frame(width: 356)
                             .padding(.vertical, 20)
                             .background(Color.black)
@@ -77,7 +76,7 @@ struct LogixMutilVideoPlayer: View {
                 .background(Color.clear)
                 
                 if globalNavState.isShowMutiplayerView {
-                    Rectangle()
+                    Spacer()
                         .frame(width: 356)
                         .padding(.vertical, 20)
                         .background(Color.black)

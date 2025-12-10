@@ -15,7 +15,8 @@ struct ProgressSliderView: View {
     @Binding var isUserSeeking: Bool
     
     @State private var isFocused: Bool = false
-    
+    @EnvironmentObject var globalNavState: GlobalNavigationState
+
     var body: some View {
         HStack(spacing: 15.0) {
             Text(formatTime(currentTime))
@@ -48,15 +49,26 @@ struct ProgressSliderView: View {
         .fixedSize(horizontal: false, vertical: true)
         .focusable(true)
         .focused($focusedSection, equals: .progressBar)
+        .onMoveCommand(perform: moveNext)
         //.onMoveCommand(perform: handleMove)
         // *** IMP : To remove above comment so that user can fast forward video
         // Note: This feature conflicts when user focus chnage from progress bar ro bottom tab button due to,  isUserSeeking = true
     }
     
+    private func moveNext(_ direction: MoveCommandDirection) {
+        if globalNavState.isPiPMutiplayerView {
+            handleMove(direction)
+        } else {
+            if direction == .right {
+                focusedSection = .miniPlayer(1)
+            }
+        }
+    }
+    
     private func handleMove(_ direction: MoveCommandDirection) {
         print("ProgressSliderView handleMove direction =\(direction)")
         guard !isUserSeeking else { return }
-        isUserSeeking = true
+        //isUserSeeking = true
         let step = 10.0 // 10-second skip
         if direction == .left {
             currentTime = max(0, currentTime - step)
