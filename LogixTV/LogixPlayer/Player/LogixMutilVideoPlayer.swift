@@ -54,6 +54,9 @@ struct LogixMutilVideoPlayer: View {
                     Spacer()
                 }
                 VStack(alignment: .trailing) {
+                    if globalNavState.isPiPMutiplayerView {
+                        Spacer()
+                    }
                     if let videoData, let video = makeVideoData(from: videoData) {
                         LogixVideoPlayer(category: category, videoData: video, isPresentingLogixPlayer: $isPresentingLogixPlayer, mute: .constant(false), showAds: .constant(false), playbackViewModel: mainPlaybackViewModel,playerController: mainPlayerController, isMainLivePlayer: .constant(true), onDismiss: { })
                             .focusable(false)
@@ -61,12 +64,14 @@ struct LogixMutilVideoPlayer: View {
                                 width: globalNavState.isPiPMutiplayerView ? 400 : nil,
                                 height: globalNavState.isPiPMutiplayerView ? 220 : nil
                             )
-                            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topTrailing)
+                            .overlay(
+                                RoundedRectangle(cornerRadius: 2)
+                                    .stroke(.white, lineWidth: globalNavState.isPiPMutiplayerView ? 4 : 0)
+                            )
+                            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottomTrailing)
+                            .padding(.bottom, globalNavState.isPiPMutiplayerView ? 60: 0)
+                            .padding(.trailing, globalNavState.isPiPMutiplayerView ? 10: 0)
                     }
-                    if globalNavState.isPiPMutiplayerView {
-                        Spacer()
-                    }
-                    
                 }
                 .frame(maxHeight: .infinity)
                 .background(Color.clear)
