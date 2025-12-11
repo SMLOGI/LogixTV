@@ -29,6 +29,7 @@ struct VideoData: Decodable {
     let encryptionType: String
     let adInfo: AdInfo?
     let qualityGroup: QualityGroup?
+    var isLiveContent: Bool = false
 
     enum CodingKeys: String, CodingKey {
         case type, profile, licenceUrl, contentUrl, `protocol`, adInfo, encryptionType, qualityGroup

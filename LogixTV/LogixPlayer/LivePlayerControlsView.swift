@@ -42,6 +42,7 @@ struct LivePlayerControlsView: View {
     @State private var isShowPlayPauseButton = false
     @State private var isLoading = false
     @EnvironmentObject var globalNavState: GlobalNavigationState
+    var isLiveContent = false
     
     // MARK: - Callbacks
     let dismissTheControllers: () -> Void
@@ -119,8 +120,10 @@ struct LivePlayerControlsView: View {
                             .padding(.bottom, globalNavState.isShowMutiplayerView ? 60 : 10)
                             .frame(maxWidth: .infinity)
                             
-                            if !globalNavState.isShowMutiplayerView {
-                                showBottomTabButtons
+                            if isLiveContent {
+                                if !globalNavState.isShowMutiplayerView {
+                                    showBottomTabButtons
+                                }
                             }
                         }
                     }
@@ -241,10 +244,10 @@ struct LivePlayerControlsView: View {
             controlButton(title: "Settings", icon: "gearshape.fill") { }
                 .focused($focusedControl, equals: .settings)
 
-            controlButton(title: "Episodes", icon: "list.bullet.rectangle") { }
-                .focused($focusedControl, equals: .episodes)
+            //controlButton(title: "Episodes", icon: "list.bullet.rectangle") { }
+             //   .focused($focusedControl, equals: .episodes)
 
-            controlButton(title: "Key-Moments", icon: "forward.end.fill") {
+            controlButton(title: "Key Moments", icon: "forward.end.fill") {
                 globalNavState.isShowMutiplayerView = true
             }
             .focused($focusedControl, equals: .next)

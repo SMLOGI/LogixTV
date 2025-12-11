@@ -99,6 +99,10 @@ extension CarouselContent {
         }
         return nil
     }
+    
+    var isLiveContent: Bool {
+        contentType?.displayName == "Live"
+    }
 }
 
 // MARK: - ContentType

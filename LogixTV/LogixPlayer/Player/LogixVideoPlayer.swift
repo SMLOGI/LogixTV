@@ -91,17 +91,17 @@ struct LogixVideoPlayer: View {
             }
             handleMoveCommand(direction)
         }
-        .onDisappear {
-           // cleanup()
-        }
         .onPlayPauseCommand(perform: togglePlayback)
         .onExitCommand {
+            //cleanup()
             isPresentingLogixPlayer = false
         }
         .fullScreenCover(isPresented: $showControlls) {
-            LivePlayerControlsView(playBackViewModel: playbackViewModel, presentPlayPauseScreen: $showControlls,  dismissTheControllers: {
+            LivePlayerControlsView(playBackViewModel: playbackViewModel, presentPlayPauseScreen: $showControlls, isLiveContent: videoData.isLiveContent,  dismissTheControllers: {
                 //isPresentingLogixPlayer = false
                // globalNavState.activeScreen = nil
+                print("**** fullScreenCover LivePlayerControlsView  dismissTheControllers = \(videoData.contentUrl)")
+                cleanup()
             }, settingsButtonTapped: {
             })
         }

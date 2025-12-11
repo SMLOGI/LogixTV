@@ -30,14 +30,66 @@ struct LogixMutilVideoPlayer: View {
     
     var body: some View {
         ZStack(alignment: .topTrailing) {
-            if globalNavState.isPiPMutiplayerView {
-                // Mini Player
-                HStack(spacing: 0.0) {
-                    if let miniContent = globalNavState.miniPlayerItem, let video = makeVideoData(from: miniContent) {
-                        LogixVideoPlayer(category: category, videoData: video, isPresentingLogixPlayer: $isPresentingLogixPlayer, mute: .constant(false), showAds: .constant(false), playbackViewModel: miniPlaybackViewModel, playerController: miniPlayerController, isMainLivePlayer: .constant(false), onDismiss: { })
-                            .focusable(false)
-                            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topTrailing)
+            
+            if videoData?.isLiveContent == false {
+                if let videoData, let video = makeVideoData(from: videoData) {
+                    LogixVideoPlayer(category: category, videoData: video, isPresentingLogixPlayer: $isPresentingLogixPlayer, mute: .constant(false), showAds: .constant(true), playbackViewModel: mainPlaybackViewModel,playerController: mainPlayerController, isMainLivePlayer: .constant(true), onDismiss: {
+                        print("*** LogixMutilVideoPlayer non live content")
+                    })
+                        .focusable(false)
+                        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottomTrailing)
+                }
+                
+            } else {
+                if globalNavState.isPiPMutiplayerView {
+                    // Mini Player
+                    HStack(spacing: 0.0) {
+                        if let miniContent = globalNavState.miniPlayerItem, let video = makeVideoData(from: miniContent) {
+                            LogixVideoPlayer(category: category, videoData: video, isPresentingLogixPlayer: $isPresentingLogixPlayer, mute: .constant(false), showAds: .constant(false), playbackViewModel: miniPlaybackViewModel, playerController: miniPlayerController, isMainLivePlayer: .constant(false), onDismiss: {
+                                print("*** LogixMutilVideoPlayer live mini content")
+                            })
+                                .focusable(false)
+                                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topTrailing)
+                        }
+                        if globalNavState.isShowMutiplayerView {
+                            Spacer()
+                                .frame(width: 356)
+                                .padding(.vertical, 20)
+                                .background(Color.black)
+                                .focusSection()
+                        }
                     }
+                }
+                // Main Player
+                HStack(alignment: .top, spacing: 0.0) {
+                    if globalNavState.isPiPMutiplayerView {
+                        Spacer()
+                    }
+                    VStack(alignment: .trailing) {
+                        if globalNavState.isPiPMutiplayerView {
+                            Spacer()
+                        }
+                        if let videoData, let video = makeVideoData(from: videoData) {
+                            LogixVideoPlayer(category: category, videoData: video, isPresentingLogixPlayer: $isPresentingLogixPlayer, mute: .constant(false), showAds: .constant(false), playbackViewModel: mainPlaybackViewModel,playerController: mainPlayerController, isMainLivePlayer: .constant(true), onDismiss: {
+                                print("*** LogixMutilVideoPlayer live main content")
+                            })
+                                .focusable(false)
+                                .frame(
+                                    width: globalNavState.isPiPMutiplayerView ? 400 : nil,
+                                    height: globalNavState.isPiPMutiplayerView ? 220 : nil
+                                )
+                                .overlay(
+                                    RoundedRectangle(cornerRadius: 2)
+                                        .stroke(.white, lineWidth: globalNavState.isPiPMutiplayerView ? 4 : 0)
+                                )
+                                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottomTrailing)
+                                .padding(.bottom, globalNavState.isPiPMutiplayerView ? 60: 0)
+                                .padding(.trailing, globalNavState.isPiPMutiplayerView ? 10: 0)
+                        }
+                    }
+                    .frame(maxHeight: .infinity)
+                    .background(Color.clear)
+                    
                     if globalNavState.isShowMutiplayerView {
                         Spacer()
                             .frame(width: 356)
@@ -47,59 +99,20 @@ struct LogixMutilVideoPlayer: View {
                     }
                 }
             }
-            // Main Player
-            HStack(alignment: .top, spacing: 0.0) {
-                if globalNavState.isPiPMutiplayerView {
-                    Spacer()
-                }
-                VStack(alignment: .trailing) {
-                    if globalNavState.isPiPMutiplayerView {
-                        Spacer()
-                    }
-                    if let videoData, let video = makeVideoData(from: videoData) {
-                        LogixVideoPlayer(category: category, videoData: video, isPresentingLogixPlayer: $isPresentingLogixPlayer, mute: .constant(false), showAds: .constant(false), playbackViewModel: mainPlaybackViewModel,playerController: mainPlayerController, isMainLivePlayer: .constant(true), onDismiss: { })
-                            .focusable(false)
-                            .frame(
-                                width: globalNavState.isPiPMutiplayerView ? 400 : nil,
-                                height: globalNavState.isPiPMutiplayerView ? 220 : nil
-                            )
-                            .overlay(
-                                RoundedRectangle(cornerRadius: 2)
-                                    .stroke(.white, lineWidth: globalNavState.isPiPMutiplayerView ? 4 : 0)
-                            )
-                            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottomTrailing)
-                            .padding(.bottom, globalNavState.isPiPMutiplayerView ? 60: 0)
-                            .padding(.trailing, globalNavState.isPiPMutiplayerView ? 10: 0)
-                    }
-                }
-                .frame(maxHeight: .infinity)
-                .background(Color.clear)
-                
-                if globalNavState.isShowMutiplayerView {
-                    Spacer()
-                        .frame(width: 356)
-                        .padding(.vertical, 20)
-                        .background(Color.black)
-                        .focusSection()
-                }
-                
-                
-            }
-            .frame(maxWidth: .infinity, maxHeight: .infinity)
-            .background(Color.clear)
-            .onAppear {
-                print("*** LogixMutilVideoPlayer onAppear")
-                mainPlaybackViewModel.destroyPlayer()
-                miniPlaybackViewModel.destroyPlayer()
-                globalNavState.isShowMutiplayerView = false
-                globalNavState.isPiPMutiplayerView = false
-            }
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .background(Color.clear)
+        .onAppear {
+            print("*** LogixMutilVideoPlayer onAppear")
+            mainPlaybackViewModel.destroyPlayer()
+            miniPlaybackViewModel.destroyPlayer()
+            globalNavState.isShowMutiplayerView = false
+            globalNavState.isPiPMutiplayerView = false
+        }
     }
     func makeVideoData(from item: CarouselContent) -> VideoData? {
         guard let urlString = item.video?.first?.contentUrl, let _ = URL(string: urlString) else { return nil }
-        return VideoData( type: "vod", profile: "pradip", drmEnabled: false, licenceUrl: "", contentUrl: urlString, protocol: "", encryptionType: "hls", adInfo: nil, qualityGroup: .none)
+        return VideoData( type: "vod", profile: "pradip", drmEnabled: false, licenceUrl: "", contentUrl: urlString, protocol: "", encryptionType: "hls", adInfo: nil, qualityGroup: .none, isLiveContent: item.isLiveContent)
     }
     func makeVideoData(from item: MiniPlayerContent) -> VideoData? {
         guard let _ = URL(string: item.contentUrl) else { return nil }
