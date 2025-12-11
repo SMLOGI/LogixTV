@@ -87,6 +87,13 @@ struct LogixMutilVideoPlayer: View {
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .background(Color.clear)
+            .onAppear {
+                print("*** LogixMutilVideoPlayer onAppear")
+                mainPlaybackViewModel.destroyPlayer()
+                miniPlaybackViewModel.destroyPlayer()
+                globalNavState.isShowMutiplayerView = false
+                globalNavState.isPiPMutiplayerView = false
+            }
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
     }

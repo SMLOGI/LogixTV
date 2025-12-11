@@ -147,15 +147,13 @@ struct ContentView: View {
                 focusedField: $focusedField, viewModel: viewModel,
             )
             .focusSection()
-            
-            
             // Movie → play directly
             .fullScreenCover(item: $globalNavigationState.activeScreen) { screen in
                 switch screen {
                 case .search:
                     SearchView(focusedField: $focusedField)
                 case .player(let triggerType):
-                        showPlayerView(with: triggerType)
+                    showPlayerView(with: triggerType)
                 case .none:
                     EmptyView()
                 }
