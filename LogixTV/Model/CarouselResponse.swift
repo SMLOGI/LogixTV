@@ -26,6 +26,16 @@ enum CarouselImageType: String {
     case square1x1     = "square_1x1"
 }
 
+extension CarouselImageType {
+    var aspectRatio: CGFloat {
+        switch self {
+        case .landscape16x9: return 16/9
+        case .portrait3x4:   return 3/4
+        case .square1x1:     return 1
+        }
+    }
+}
+
 enum ContentTypeString: String {
     case video = "video"
     case vod   = "vod"
@@ -81,8 +91,11 @@ struct CarouselContent: Codable {
 extension CarouselContent {
     
     /// Preferred landscape 16:9 image
-    var landscape16x9URL: URL? {
-        imageURL(for: .landscape16x9)
+    var availableImageType: CarouselImageType {
+        if imageURL(for: .landscape16x9) != nil { return .landscape16x9 }
+        if imageURL(for: .portrait3x4)   != nil { return .portrait3x4 }
+        if imageURL(for: .square1x1)     != nil { return .square1x1 }
+        return .landscape16x9
     }
     
     /// Generic accessor by type

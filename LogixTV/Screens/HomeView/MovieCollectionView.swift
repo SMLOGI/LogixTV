@@ -51,6 +51,22 @@ private struct MovieRowView: View {
     @FocusState.Binding var focusedItem: FocusTarget?
     let onItemSelect: () -> Void
 
+    private var type: CarouselImageType {
+        items.first?.availableImageType ?? .landscape16x9
+    }
+
+    private var noOfCells: CGFloat {
+        switch type {
+        case .landscape16x9: return 4
+        case .portrait3x4:   return 5
+        case .square1x1:     return 6
+        }
+    }
+
+    private var cardSize: CGSize {
+        CarouselLayoutCalculator.cardSize(for: type, noOfCells: noOfCells)
+    }
+
     var body: some View {
         Section {
             ScrollView(.horizontal, showsIndicators: false) {
@@ -60,6 +76,7 @@ private struct MovieRowView: View {
                             item: item,
                             group: group,
                             focusedItem: $focusedItem,
+                            cardSize: cardSize,
                             completion: onItemSelect
                         )
                         .id(item.id)
@@ -70,11 +87,28 @@ private struct MovieRowView: View {
             }
             .id(group.name)
             .focusSection()
+
         } header: {
             Text(title)
                 .font(.headline)
                 .foregroundColor(.gray)
                 .padding(.leading, 40)
         }
+    }
+}
+struct CarouselLayoutCalculator {
+
+    static func cardSize(
+        for type: CarouselImageType,
+        noOfCells: CGFloat,
+        horizontalPadding: CGFloat = 40,
+        spacing: CGFloat = 40
+    ) -> CGSize {
+
+        let screenWidth = UIScreen.main.bounds.width
+        let totalSpacing = (noOfCells - 1) * spacing + (horizontalPadding * 2)
+        let width = (screenWidth - totalSpacing) / noOfCells
+        let height = width / type.aspectRatio
+        return CGSize(width: width, height: height)
     }
 }

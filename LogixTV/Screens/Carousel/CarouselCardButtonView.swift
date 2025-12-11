@@ -17,6 +17,8 @@ struct CarouselCardButtonView: View, Equatable {
     let item: CarouselContent
     let group: CarouselGroupData?
     @FocusState.Binding var focusedItem: FocusTarget?
+    let cardSize: CGSize
+    
     @State private var showDetails = false
     @EnvironmentObject var globalNavState: GlobalNavigationState
     var completion: (()->Void)?
@@ -28,15 +30,15 @@ struct CarouselCardButtonView: View, Equatable {
             }
         }) {
             VStack(alignment: .leading) {
-                if let imageUrl = item.imageURL(for: .landscape16x9) {
-                    CachedAsyncImage(url: imageUrl)
-                        .aspectRatio(16/9, contentMode: .fit)
+                if let url = item.bestImageURL {
+                    CachedAsyncImage(url: url)
+                        .scaledToFill()
+                        .clipped()
                 } else {
-                    Rectangle()
-                        .fill(Color.gray)
+                    Color.gray
                 }
             }
-            .frame(width: 267, height: 150)
+            .frame(width: cardSize.width, height: cardSize.height)
             .cornerRadius(12)
             .overlay(
                 RoundedRectangle(cornerRadius: 12)

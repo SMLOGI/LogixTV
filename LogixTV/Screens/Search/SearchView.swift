@@ -16,15 +16,19 @@ struct SearchView: View {
     let columns = [GridItem(.adaptive(minimum: 267), spacing: 30)]
     @StateObject private var mainPlaybackViewModel = PlaybackViewModel()
     let mainPlayerController = PlayerContainerViewController()
+
+    private var cardSize: CGSize {
+        CarouselLayoutCalculator.cardSize(for: .landscape16x9, noOfCells: 4)
+    }
+    
     var body: some View {
         ZStack {
             Color.black.ignoresSafeArea()
 
-
             ScrollView {
                 LazyVGrid(columns: columns, spacing: 30) {
                     ForEach(viewModel.filteredItems, id: \.id) { item in
-                        CarouselCardButtonView(item: item, group: nil, focusedItem: $focusedField) {
+                        CarouselCardButtonView(item: item, group: nil, focusedItem: $focusedField, cardSize: cardSize) {
                             globalNavigationState.contentItem = item
                             isPresentingLogixPlayer = true
                         }
