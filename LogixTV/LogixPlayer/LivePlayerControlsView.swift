@@ -144,8 +144,8 @@ struct LivePlayerControlsView: View {
                                     }
                                 }
                                 
-                                showSideTabButtons
-                                    .frame(width: 356)
+                               // showSideTabButtons
+                                //    .frame(width: 356)
                                 
                                 Spacer()
                             }
@@ -189,6 +189,12 @@ struct LivePlayerControlsView: View {
             if oldValue == .progressBar {
                 if newValue == .subtitles || newValue == .settings || newValue == .episodes || newValue == .next {
                     focusedControl = .subtitles
+                }
+            }
+            if case .miniPlayer = oldValue {
+                if newValue == .goLive || newValue == .progressBar {
+                    globalNavState.isPiPMutiplayerView = false
+                    globalNavState.isShowMutiplayerView = false
                 }
             }
         })

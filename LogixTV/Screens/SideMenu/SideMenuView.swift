@@ -78,7 +78,7 @@ struct SideMenuView: View {
             isFocused: focusedField == .searchOption,
             isExpanded: isSidebarExpanded,
             title: "Search",
-            icon: .system(name: "magnifyingglass", color: Color.appPurple),
+            icon: .system(name: "magnifyingglass", color: focusedField == .searchOption ? Color.appPurple: .white),
             width: sidebarWidth,
             padding: sidebarPadding,
             highlightColor: .white,
@@ -93,7 +93,7 @@ struct SideMenuView: View {
     private func menuButton(for index: Int) -> some View {
         let isFocused = focusedField == .menu(index)
         let menuItem = viewModel.menuList[index]
-        let imageURL = viewModel.menuItemURL(at: index)
+        let imageURL = viewModel.menuItemURL(at: index, isFocused: isFocused)
 
         return SideMenuItemView(
             isFocused: isFocused,
@@ -191,10 +191,13 @@ extension SideMenuViewModel {
         return URL(string: logoItem.details.unselectedImageLink)
     }
 
-    func menuItemURL(at index: Int) -> URL? {
+    func menuItemURL(at index: Int, isFocused: Bool = false) -> URL? {
         guard menuList.indices.contains(index) else { return nil }
         // print("***** Url for (\(index)) : \(menuList[index].details.focusImageLink)")
-        return URL(string: menuList[index].details.focusImageLink)
+        if isFocused {
+            return URL(string: menuList[index].details.focusImageLink)
+        }
+        return URL(string: menuList[index].details.selectedImageLink)
     }
 }
 
