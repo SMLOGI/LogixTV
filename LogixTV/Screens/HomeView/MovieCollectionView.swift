@@ -70,7 +70,7 @@ private struct MovieRowView: View {
     var body: some View {
         Section {
             ScrollView(.horizontal, showsIndicators: false) {
-                LazyHStack(spacing: 40) {
+                LazyHStack(spacing: 50) {
                     ForEach(items, id: \.id) { item in
                         CarouselCardButtonView(
                             item: item,
