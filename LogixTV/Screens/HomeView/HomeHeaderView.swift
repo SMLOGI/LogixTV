@@ -55,10 +55,17 @@ struct HomeHeaderView: View {
                     let isSelected = focusedItem == .pageDot(index)
                     let size = isSelected ? 25.0 : 20.0
                     Button {
-                        globalNavState.bannerIndex = index
-                        currentPage = index
-                        globalNavState.contentItem = viewModel.contentList[index]
-                        globalNavState.activeScreen = .player(.home)
+                        guard let item = viewModel.contentList[safe: index] else {
+                            print("Invalid index: \(index)")
+                            return
+                        }
+
+                        if item.contentTypeEnum != .collection {
+                            globalNavState.bannerIndex = index
+                            currentPage = index
+                            globalNavState.contentItem = item
+                            globalNavState.activeScreen = .player(.home)
+                        }
                     } label: {
                         Circle()
                             .fill(isSelected ? Color.white : Color.gray)

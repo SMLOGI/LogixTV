@@ -22,9 +22,10 @@ struct CarouselCardButtonView: View, Equatable {
     var completion: (()->Void)?
     var body: some View {
         Button(action: {
+            if item.contentTypeEnum != .collection {
                 globalNavState.contentItem = item
                 completion?()
-           // }
+            }
         }) {
             VStack(alignment: .leading) {
                 if let imageUrl = item.imageURL(for: .landscape16x9) {

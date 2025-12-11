@@ -25,6 +25,13 @@ enum CarouselImageType: String {
     case portrait3x4   = "portrait_3x4"
     case square1x1     = "square_1x1"
 }
+
+enum ContentTypeString: String {
+    case video = "video"
+    case vod   = "vod"
+    case collection = "collection"
+    case live = "live"
+}
 // MARK: - Content
 struct CarouselContent: Codable {
     let id: Int
@@ -101,7 +108,14 @@ extension CarouselContent {
     }
     
     var isLiveContent: Bool {
-        contentType?.displayName == "Live"
+        contentTypeEnum == .live
+    }
+    
+    var contentTypeEnum: ContentTypeString {
+        if let typeName = contentType?.name {
+            return ContentTypeString(rawValue: typeName) ?? .video
+        }
+        return .video
     }
 }
 
