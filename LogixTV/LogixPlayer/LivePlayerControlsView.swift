@@ -210,7 +210,8 @@ struct LivePlayerControlsView: View {
     
     private func moveNext(_ direction: MoveCommandDirection) {
         if direction == .left {
-            focusedControl = .progressBar
+            globalNavState.isShowMutiplayerView = false
+            focusedControl = .next
         }
     }
     private func moveBottomButtons(_ direction: MoveCommandDirection) {
@@ -226,6 +227,15 @@ struct LivePlayerControlsView: View {
         if direction == .right {
             if isLiveContent {
                     focusedControl = .subtitles
+            }
+        }
+    }
+    private func moveNextKeyMoments(_ direction: MoveCommandDirection) {
+        if direction == .right {
+            if isLiveContent {
+                if focusedControl == .next {
+                    focusedControl = .miniPlayer(1)
+                }
             }
         }
     }
@@ -287,6 +297,7 @@ struct LivePlayerControlsView: View {
                     globalNavState.isShowMutiplayerView = true
                 }
                 .focused($focusedControl, equals: .next)
+                .onMoveCommand(perform: moveNextKeyMoments)
                 
                 if globalNavState.isShowMutiplayerView {
                     VStack {
