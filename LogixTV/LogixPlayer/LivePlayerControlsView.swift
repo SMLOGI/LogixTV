@@ -267,11 +267,11 @@ struct LivePlayerControlsView: View {
         ZStack {
             // Gradient background
             LinearGradient(
-                colors: [.black.opacity(0.6), .black.opacity(0.0)],
+                colors: [.black.opacity(0.8), .black.opacity(0.0)],
                 startPoint: .bottom,
                 endPoint: .top
             )
-            .frame(height: 80)     // << fixed height for gradient
+            .frame(height: 80)
             .ignoresSafeArea(edges: .bottom)
             
             // Your buttons centered inside gradient
@@ -287,6 +287,14 @@ struct LivePlayerControlsView: View {
                     globalNavState.isShowMutiplayerView = true
                 }
                 .focused($focusedControl, equals: .next)
+                
+                if globalNavState.isShowMutiplayerView {
+                    VStack {
+                        Rectangle()
+                            .frame(width: 356, height: 80)
+                            .background(Color.black)
+                    }
+                }
             }
         }
         //.frame(maxWidth: .infinity)
