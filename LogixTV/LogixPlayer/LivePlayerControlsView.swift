@@ -43,7 +43,7 @@ struct LivePlayerControlsView: View {
     @State private var isLoading = false
     @EnvironmentObject var globalNavState: GlobalNavigationState
     var isLiveContent = false
-    
+        
     // MARK: - Callbacks
     let dismissTheControllers: () -> Void
     let settingsButtonTapped: () -> Void
@@ -51,7 +51,7 @@ struct LivePlayerControlsView: View {
     let dummyMiniPlayerContents: [MiniPlayerContent] = [
         MiniPlayerContent(
             id: 1,
-            contentUrl: "https://logix-cms-content.s3.ap-south-1.amazonaws.com/content/actual/cwjN0C42Z3/video/6d9a24901765e1d0abd6.mp4",
+            contentUrl: "https://logix-cms-content.s3.ap-south-1.amazonaws.com/content/transcoded/6d9a24901765e1d0abd6b38ehls/6d9a24901765e1d0abd6.m3u8",
             title: "Adventure Story",
             imageUrl: "https://logix-cms-content.s3.ap-south-1.amazonaws.com/content/actual/cwjN0C42Z3/images/1.jpg",
             description: "A fun and exciting mini adventure.",
@@ -59,7 +59,7 @@ struct LivePlayerControlsView: View {
         ),
         MiniPlayerContent(
             id: 2,
-            contentUrl: "https://logix-cms-content.s3.ap-south-1.amazonaws.com/content/actual/1wkJWVGNfj/video/a758ef717ea30794c0c4.mp4",
+            contentUrl: "https://logix-cms-content.s3.ap-south-1.amazonaws.com/content/transcoded/a758ef717ea30794c0c47eeahls/a758ef717ea30794c0c4.m3u8",
             title: "Learning Time",
             imageUrl: "https://logix-cms-content.s3.ap-south-1.amazonaws.com/content/actual/1wkJWVGNfj/images/2.jpg",
             description: "An engaging educational clip for kids.",
@@ -67,7 +67,7 @@ struct LivePlayerControlsView: View {
         ),
         MiniPlayerContent(
             id: 3,
-            contentUrl: "https://logix-cms-content.s3.ap-south-1.amazonaws.com/content/actual/7ZFxIl7h81/video/133e62288e629f54990f.mp4",
+            contentUrl: "https://logix-cms-content.s3.ap-south-1.amazonaws.com/content/transcoded/133e62288e629f54990f76d6hls/133e62288e629f54990f.m3u8",
             title: "Fun With Friends",
             imageUrl: "https://logix-cms-content.s3.ap-south-1.amazonaws.com/content/actual/7ZFxIl7h81/images/3.jpg",
             description: "A joyful moment full of fun and laughter.",
@@ -95,23 +95,26 @@ struct LivePlayerControlsView: View {
                                 }
                                 .focused($focusedControl, equals: .playPause)
                                 //.onAppear(perform: resetHideTimer)
+                                .onMoveCommand(perform: movePlayPause)
                                 
-                                
-                                ProgressSliderView(
-                                    currentTime: Binding(
-                                        get: { playBackViewModel.progress?.currentDuration ?? 0 },
-                                        set: { playBackViewModel.progress?.currentDuration = $0 }
-                                    ),
-                                    totalTime:  playBackViewModel.progress?.totalDuration ?? 0.0,
-                                    onSeek: { newTime in
-                                        playBackViewModel.seekToPosition(value: Float(newTime)) {
-                                            playBackViewModel.isUserSeeking = false
-                                        }
-                                    },
-                                    focusedSection: $focusedControl,
-                                    isUserSeeking: $playBackViewModel.isUserSeeking
-                                )
-                                
+                                if !isLiveContent {
+                                    ProgressSliderView(
+                                        currentTime: Binding(
+                                            get: { playBackViewModel.progress?.currentDuration ?? 0 },
+                                            set: { playBackViewModel.progress?.currentDuration = $0 }
+                                        ),
+                                        totalTime:  playBackViewModel.progress?.totalDuration ?? 0.0,
+                                        onSeek: { newTime in
+                                            playBackViewModel.seekToPosition(value: Float(newTime)) {
+                                                playBackViewModel.isUserSeeking = false
+                                            }
+                                        },
+                                        focusedSection: $focusedControl,
+                                        isUserSeeking: $playBackViewModel.isUserSeeking
+                                    )
+                                } else  {
+                                    Spacer()
+                                }
                                 Spacer()
                                     .frame(width:  globalNavState.isShowMutiplayerView ? 380 : 10)
                                
@@ -119,11 +122,12 @@ struct LivePlayerControlsView: View {
                             .padding(.horizontal, 20)
                             .padding(.bottom, globalNavState.isShowMutiplayerView ? 60 : 10)
                             .frame(maxWidth: .infinity)
+
                             
                             if isLiveContent {
-                                if !globalNavState.isShowMutiplayerView {
+                               // if !globalNavState.isShowMutiplayerView {
                                     showBottomTabButtons
-                                }
+                              //  }
                             }
                         }
                     }
@@ -140,12 +144,13 @@ struct LivePlayerControlsView: View {
                                 ForEach(dummyMiniPlayerContents, id: \.id) { item in
                                     MiniPlayerCardButtonView(item: item, focusedControl: $focusedControl) {
                                         globalNavState.isPiPMutiplayerView = true
+                                        globalNavState.isShowMutiplayerView = false
                                         globalNavState.miniPlayerItem = item
                                     }
                                 }
                                 
-                               // showSideTabButtons
-                                //    .frame(width: 356)
+                                showSideTabButtons
+                                    .frame(width: 356)
                                 
                                 Spacer()
                             }
@@ -208,6 +213,22 @@ struct LivePlayerControlsView: View {
             focusedControl = .progressBar
         }
     }
+    private func moveBottomButtons(_ direction: MoveCommandDirection) {
+        if direction == .left {
+            if isLiveContent {
+                if focusedControl == .subtitles {
+                    focusedControl = .playPause
+                }
+            }
+        }
+    }
+    private func movePlayPause(_ direction: MoveCommandDirection) {
+        if direction == .right {
+            if isLiveContent {
+                    focusedControl = .subtitles
+            }
+        }
+    }
     
     // MARK: - CONTROL-BUTTON UI
     @ViewBuilder
@@ -243,23 +264,32 @@ struct LivePlayerControlsView: View {
     }
     
     private var showBottomTabButtons: some View {
-        HStack {
-            controlButton(title: "Subtitle & Audio", icon: "captions.bubble.fill") { }
-                .focused($focusedControl, equals: .subtitles)
-
-            controlButton(title: "Settings", icon: "gearshape.fill") { }
-                .focused($focusedControl, equals: .settings)
-
-            //controlButton(title: "Episodes", icon: "list.bullet.rectangle") { }
-             //   .focused($focusedControl, equals: .episodes)
-
-            controlButton(title: "Key Moments", icon: "forward.end.fill") {
-                globalNavState.isShowMutiplayerView = true
+        ZStack {
+            // Gradient background
+            LinearGradient(
+                colors: [.black.opacity(0.6), .black.opacity(0.0)],
+                startPoint: .bottom,
+                endPoint: .top
+            )
+            .frame(height: 80)     // << fixed height for gradient
+            .ignoresSafeArea(edges: .bottom)
+            
+            // Your buttons centered inside gradient
+            HStack(spacing: 40) {
+                controlButton(title: "Subtitle & Audio", icon: "captions.bubble.fill") { }
+                    .focused($focusedControl, equals: .subtitles)
+                    .onMoveCommand(perform: moveBottomButtons)
+                
+                controlButton(title: "Settings", icon: "gearshape.fill") { }
+                    .focused($focusedControl, equals: .settings)
+                
+                controlButton(title: "Key Moments", icon: "forward.end.fill") {
+                    globalNavState.isShowMutiplayerView = true
+                }
+                .focused($focusedControl, equals: .next)
             }
-            .focused($focusedControl, equals: .next)
         }
-        .padding(.bottom, 50)
-        .focusSection()
+        //.frame(maxWidth: .infinity)
     }
     
     private var showSideTabButtons: some View {
