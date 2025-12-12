@@ -53,7 +53,7 @@ struct LogixMutilVideoPlayer: View {
                         }
                         if globalNavState.isShowMutiplayerView {
                             Spacer()
-                                .frame(width: 356)
+                                .frame(width: 356, height: 100)
                                 .padding(.vertical, 20)
                                 .background(Color.black)
                                 .focusSection()

@@ -43,7 +43,7 @@ struct LivePlayerControlsView: View {
     @State private var isLoading = false
     @EnvironmentObject var globalNavState: GlobalNavigationState
     var isLiveContent = false
-        
+    @Binding var isMainLivePlayer: Bool
     // MARK: - Callbacks
     let dismissTheControllers: () -> Void
     let settingsButtonTapped: () -> Void
@@ -114,6 +114,12 @@ struct LivePlayerControlsView: View {
                                     )
                                 } else  {
                                     Spacer()
+                                    
+                                    LiveNowButton(size: (isMainLivePlayer ? .regular :  .small))
+                                        .padding(.bottom, 5)
+                                        .padding(.trailing, 40)
+                                        .focusable(false)
+                                        
                                 }
                                 Spacer()
                                     .frame(width:  globalNavState.isShowMutiplayerView ? 380 : 10)
@@ -161,7 +167,7 @@ struct LivePlayerControlsView: View {
                         }
                         .frame(maxWidth: .infinity, maxHeight: .infinity)
                         .onAppear {
-                            DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
+                            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
                             if let itemId = dummyMiniPlayerContents.first?.id {
                                     focusedControl = .miniPlayer(itemId)
                                 }
