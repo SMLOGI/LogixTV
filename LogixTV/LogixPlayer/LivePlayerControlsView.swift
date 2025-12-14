@@ -118,18 +118,19 @@ struct LivePlayerControlsView: View {
                                     Spacer()
                                     
                                     LiveNowButton(size: (isMainLivePlayer ? .regular :  .small))
-                                        .padding(.bottom, isMainLivePlayer ? 5 : 35)
-                                        .padding(.trailing, isMainLivePlayer ? 5 : 30)
+                                        .padding(.bottom, isMainLivePlayer ? 5 : 65)
+                                        .padding(.trailing, isMainLivePlayer ? 5 : 80)
                                         .focusable(false)
                                         
                                 }
-                                Spacer()
-                                    .frame(width:  globalNavState.isShowMutiplayerView ? 380 : 10)
+                                
+                                //Spacer()
+                                  //  .frame(width:  globalNavState.isShowMutiplayerView ? 380 : 10)
                                
                             }
                             .padding(.horizontal, 20)
                            // .padding(.bottom, globalNavState.isShowMutiplayerView ? 60 : 10)
-                            .padding(.bottom, globalNavState.isShowMutiplayerView ? 0 : 10)
+                            .padding(.bottom, globalNavState.isShowMutiplayerView ? 10 : -10)
                             .frame(maxWidth: .infinity)
 
                             
