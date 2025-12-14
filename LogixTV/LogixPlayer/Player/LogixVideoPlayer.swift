@@ -221,7 +221,22 @@ struct LogixVideoPlayer: View {
     private func handlePlayerState() {
         print(" **** handlePlayerState = ", playbackViewModel.playerState)
         if playbackViewModel.playerState == .endedPlayback {
-            cleanup()
+            
+            if videoData.isLiveContent  && !isMainLivePlayer{
+                   let list = globalNavState.dummyMiniPlayerContents
+                   if let current = globalNavState.miniPlayerItem,
+                      let index = list.firstIndex(where: { $0.id == current.id }) {
+                       let newIndex = (index + 1) % list.count
+                       globalNavState.isPiPMutiplayerView = true
+                       globalNavState.miniPlayerItem = list[newIndex]
+                       globalNavState.isPiPMutiplayerView = true
+                       globalNavState.isShowMutiplayerView = false
+                   } else {
+                       cleanup()
+                   }
+            } else {
+                cleanup()
+            }
         }
         
         if isAdPlaying {
@@ -239,7 +254,6 @@ struct LogixVideoPlayer: View {
             showControlls = true
         }
     }
-    
 }
 // MARK: - App background state
 extension LogixVideoPlayer {

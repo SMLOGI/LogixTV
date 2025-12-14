@@ -82,7 +82,36 @@ class GlobalNavigationState: ObservableObject {
     @Published var dummyList: [CarouselContent]?
     @Published var isShowMutiplayerView  = false
     @Published var isPiPMutiplayerView = false
+    
+    @Published var dummyMiniPlayerContents: [MiniPlayerContent] = [
+        MiniPlayerContent(
+            id: 1,
+            contentUrl: "https://logix-cms-content.s3.ap-south-1.amazonaws.com/content/transcoded/e7b93c57f8b89568d09f_hls/e7b93c57f8b89568d09f.m3u8",
+            title: "Adventure Story",
+            imageUrl: "https://logix-cms-content.s3.ap-south-1.amazonaws.com/content/actual/cwjN0C42Z3/images/1.jpg",
+            description: "A fun and exciting mini adventure.",
+            duration: 120
+        ),
+        MiniPlayerContent(
+            id: 2,
+            contentUrl: "https://logix-cms-content.s3.ap-south-1.amazonaws.com/content/transcoded/a758ef717ea30794c0c47eeahls/a758ef717ea30794c0c4.m3u8",
+            title: "Learning Time",
+            imageUrl: "https://logix-cms-content.s3.ap-south-1.amazonaws.com/content/actual/1wkJWVGNfj/images/2.jpg",
+            description: "An engaging educational clip for kids.",
+            duration: 150
+        ),
+        MiniPlayerContent(
+            id: 3,
+            contentUrl: "https://logix-cms-content.s3.ap-south-1.amazonaws.com/content/transcoded/133e62288e629f54990f76d6hls/133e62288e629f54990f.m3u8",
+            title: "Fun With Friends",
+            imageUrl: "https://logix-cms-content.s3.ap-south-1.amazonaws.com/content/actual/7ZFxIl7h81/images/3.jpg",
+            description: "A joyful moment full of fun and laughter.",
+            duration: 180
+        )
+    ]
 }
+
+// https://logix-cms-content.s3.ap-south-1.amazonaws.com/content/transcoded/e7b93c57f8b89568d09f_hls/e7b93c57f8b89568d09f.m3u8
 
 struct ContentView: View {
     @State private var selectedIndex: Int = 0
@@ -98,7 +127,7 @@ struct ContentView: View {
     @State var isContentLoaded: Bool = false
     @State var isPresentingLogixPlayer: Bool = false
     @State private var showExitAlert = false
-    
+
     init() {
         // Placeholder; replaced later in body where we have $focusedField
     }

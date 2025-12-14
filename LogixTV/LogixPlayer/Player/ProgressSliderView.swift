@@ -18,13 +18,21 @@ struct ProgressSliderView: View {
     @EnvironmentObject var globalNavState: GlobalNavigationState
 
     var body: some View {
-        HStack(spacing: 15.0) {
-            Text(formatTime(currentTime))
-            showProgressBar()
-            Text(formatTime(totalTime))
+        ZStack {
+            RoundedRectangle(cornerRadius: 20)
+                .fill(Color.black.opacity(0.2))
+                .frame(height: 40)
+                .frame(maxWidth: .infinity)
+
+            HStack(spacing: 15) {
+                Text(formatTime(currentTime))
+                showProgressBar()
+                Text(formatTime(totalTime))
+            }
+            .padding(.horizontal, 20)
+            .font(.caption2)
+            .foregroundColor(.white.opacity(0.7))
         }
-        .font(.caption2)
-        .foregroundColor(.white.opacity(0.7))
     }
     
     private func showProgressBar() -> some View {
@@ -34,7 +42,7 @@ struct ProgressSliderView: View {
                     Capsule()
                         .fill(Color.white.opacity(0.2))
                         .frame(height: isFocused ? 12 : 10)
-
+                    
                     Capsule()
                         .fill(focusedSection == .progressBar ? Color.green : Color.white)
                         .frame(

@@ -84,8 +84,8 @@ struct LivePlayerControlsView: View {
                     VStack() {
                         Spacer()
                         
-                        VStack(spacing: 20.0) {
-                            HStack(spacing: 40.0) {
+                        VStack(spacing: 0.0) {
+                            HStack(alignment: .bottom, spacing: 40.0) {
                                 TVPlayPauseIcon(
                                     icon: playBackViewModel.isPlaying() ? "pause.fill" : "play.fill",
                                     size: 38,
@@ -97,7 +97,7 @@ struct LivePlayerControlsView: View {
                                 //.onAppear(perform: resetHideTimer)
                                 .onMoveCommand(perform: movePlayPause)
                                 
-                                if !isLiveContent {
+                                if !isMainLivePlayer {
                                     ProgressSliderView(
                                         currentTime: Binding(
                                             get: { playBackViewModel.progress?.currentDuration ?? 0 },
@@ -112,7 +112,9 @@ struct LivePlayerControlsView: View {
                                         focusedSection: $focusedControl,
                                         isUserSeeking: $playBackViewModel.isUserSeeking
                                     )
-                                } else  {
+                                }
+                                
+                                if !isLiveContent  {
                                     Spacer()
                                     
                                     LiveNowButton(size: (isMainLivePlayer ? .regular :  .small))
@@ -126,7 +128,8 @@ struct LivePlayerControlsView: View {
                                
                             }
                             .padding(.horizontal, 20)
-                            .padding(.bottom, globalNavState.isShowMutiplayerView ? 60 : 10)
+                           // .padding(.bottom, globalNavState.isShowMutiplayerView ? 60 : 10)
+                            .padding(.bottom, globalNavState.isShowMutiplayerView ? 0 : 10)
                             .frame(maxWidth: .infinity)
 
                             
