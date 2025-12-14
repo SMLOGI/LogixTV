@@ -84,7 +84,7 @@ struct LivePlayerControlsView: View {
                     VStack() {
                         Spacer()
                         
-                        VStack(spacing: 0.0) {
+                        VStack(alignment: .leading, spacing: 0.0) {
                             HStack(alignment: .bottom, spacing: 40.0) {
                                 TVPlayPauseIcon(
                                     icon: playBackViewModel.isPlaying() ? "pause.fill" : "play.fill",
@@ -112,31 +112,27 @@ struct LivePlayerControlsView: View {
                                         focusedSection: $focusedControl,
                                         isUserSeeking: $playBackViewModel.isUserSeeking
                                     )
-                                }
-                                
-                                if isLiveContent  {
-                                    Spacer()
                                     
-                                    LiveNowButton(size: (isMainLivePlayer ? .regular :  .small))
-                                        .padding(.bottom, isMainLivePlayer ? 5 : 65)
-                                        .padding(.trailing, isMainLivePlayer ? 5 : 80)
-                                        .focusable(false)
-                                        
+                                    if globalNavState.isShowMutiplayerView {
+                                        VStack {
+                                            Rectangle()
+                                                .frame(width: 356, height: 80)
+                                                .background(Color.black)
+                                        }
+                                    }
+                                } else {
+                                    Spacer()
+                                     //   .frame(width:  globalNavState.isShowMutiplayerView ? 380 : 10)
                                 }
-                                
-                                //Spacer()
-                                  //  .frame(width:  globalNavState.isShowMutiplayerView ? 380 : 10)
-                               
                             }
                             .padding(.horizontal, 20)
                            // .padding(.bottom, globalNavState.isShowMutiplayerView ? 60 : 10)
-                            .padding(.bottom, globalNavState.isShowMutiplayerView ? 10 : -10)
+                            .padding(.bottom, -10)
                             .frame(maxWidth: .infinity)
-
                             
                             if isLiveContent {
                                // if !globalNavState.isShowMutiplayerView {
-                                    showBottomTabButtons
+                                showBottomTabButtons
                               //  }
                             }
                         }
@@ -175,6 +171,23 @@ struct LivePlayerControlsView: View {
                             }
                         }
                     }
+                }
+
+                if isLiveContent  {
+                    HStack(alignment: .top) {
+                        Spacer()
+                        
+                        VStack(alignment: .leading) {
+                            
+                            Spacer()
+                            LiveNowButton(size: (isMainLivePlayer ? .regular :  .small))
+                                .padding(.bottom, isMainLivePlayer ? 80 : 130)
+                                .padding(.trailing, isMainLivePlayer ? 50 : 110)
+                                .focusable(false)
+                        }
+                    }
+                    .padding(.trailing, globalNavState.isShowMutiplayerView ? 380 : 0)
+
                 }
             }
         }
