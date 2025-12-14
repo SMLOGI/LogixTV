@@ -20,7 +20,7 @@ struct ProgressSliderView: View {
     var body: some View {
         ZStack {
             RoundedRectangle(cornerRadius: 20)
-                .fill(Color.black.opacity(0.2))
+                .fill(Color.black.opacity(0.1))
                 .frame(height: 40)
                 .frame(maxWidth: .infinity)
 

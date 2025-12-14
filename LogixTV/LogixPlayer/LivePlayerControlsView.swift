@@ -114,12 +114,12 @@ struct LivePlayerControlsView: View {
                                     )
                                 }
                                 
-                                if !isLiveContent  {
+                                if isLiveContent  {
                                     Spacer()
                                     
                                     LiveNowButton(size: (isMainLivePlayer ? .regular :  .small))
-                                        .padding(.bottom, 5)
-                                        .padding(.trailing, 40)
+                                        .padding(.bottom, isMainLivePlayer ? 5 : 35)
+                                        .padding(.trailing, isMainLivePlayer ? 5 : 30)
                                         .focusable(false)
                                         
                                 }
@@ -157,9 +157,6 @@ struct LivePlayerControlsView: View {
                                         globalNavState.miniPlayerItem = item
                                     }
                                 }
-                                
-                                showSideTabButtons
-                                    .frame(width: 356)
                                 
                                 Spacer()
                             }
