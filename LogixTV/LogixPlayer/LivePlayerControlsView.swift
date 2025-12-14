@@ -46,7 +46,7 @@ struct LivePlayerControlsView: View {
     @Binding var isMainLivePlayer: Bool
     // MARK: - Callbacks
     let dismissTheControllers: () -> Void
-    let settingsButtonTapped: () -> Void
+    let destroyTapped: () -> Void
     
     let dummyMiniPlayerContents: [MiniPlayerContent] = [
         MiniPlayerContent(
@@ -97,7 +97,7 @@ struct LivePlayerControlsView: View {
                                 //.onAppear(perform: resetHideTimer)
                                 .onMoveCommand(perform: movePlayPause)
                                 
-                                if !isMainLivePlayer {
+                                if !isMainLivePlayer || !isLiveContent {
                                     ProgressSliderView(
                                         currentTime: Binding(
                                             get: { playBackViewModel.progress?.currentDuration ?? 0 },
@@ -127,7 +127,7 @@ struct LivePlayerControlsView: View {
                             }
                             .padding(.horizontal, 20)
                            // .padding(.bottom, globalNavState.isShowMutiplayerView ? 60 : 10)
-                            .padding(.bottom, -10)
+                            .padding(.bottom, !isLiveContent ? 40: -10)
                             .frame(maxWidth: .infinity)
                             
                             if isLiveContent {
@@ -176,9 +176,7 @@ struct LivePlayerControlsView: View {
                 if isLiveContent  {
                     HStack(alignment: .top) {
                         Spacer()
-                        
                         VStack(alignment: .leading) {
-                            
                             Spacer()
                             LiveNowButton(size: (isMainLivePlayer ? .regular :  .small))
                                 .padding(.bottom, isMainLivePlayer ? 80 : 130)
@@ -409,8 +407,10 @@ private extension LivePlayerControlsView {
     }
     
     func handleExitCommand() {
-        dismissTheControllers()
+        destroyTapped()
         presentPlayPauseScreen = false
         globalNavState.activeScreen = nil
+        
+        print("**** onExitCommand LivePlayerControlsView")
     }
 }

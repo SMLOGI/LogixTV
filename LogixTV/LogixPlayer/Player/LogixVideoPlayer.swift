@@ -77,6 +77,7 @@ struct LogixVideoPlayer: View {
                 setupView()
             }
             showPlayer = false
+            isAdPlaying = showAds
             DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
                 withAnimation(.easeIn(duration: 0.2)) {
                     showPlayer = true
@@ -94,6 +95,7 @@ struct LogixVideoPlayer: View {
         .onPlayPauseCommand(perform: togglePlayback)
         .onExitCommand {
             //cleanup()
+            print("**** onExitCommand LogixVideoPlayer")
             isPresentingLogixPlayer = false
         }
         .fullScreenCover(isPresented: $showControlls) {
@@ -101,8 +103,9 @@ struct LogixVideoPlayer: View {
                 //isPresentingLogixPlayer = false
                 // globalNavState.activeScreen = nil
                 print("**** fullScreenCover LivePlayerControlsView  dismissTheControllers = \(videoData.contentUrl)")
+               // cleanup()
+            }, destroyTapped: {
                 cleanup()
-            }, settingsButtonTapped: {
             })
         }
         .onCompatibleChange(of: playbackViewModel.playerState) { oldValue, newValue in
@@ -241,14 +244,10 @@ struct LogixVideoPlayer: View {
         
         if isAdPlaying {
             if playbackViewModel.playerState ==  .showingAds {
-                isAdPlaying = true
-                showControlls = !isAdPlaying
+                showControlls = false
             } else  if playbackViewModel.playerState == .hiddenAds {
                 // Ad ended
-                if isAdPlaying {
-                    isAdPlaying = false
-                    showControlls = !isAdPlaying
-                }
+                    showControlls = true
             }
         } else {
             showControlls = true
