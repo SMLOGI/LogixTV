@@ -106,7 +106,9 @@ struct LogixVideoPlayer: View {
                // cleanup()
             }, destroyTapped: {
                 cleanup()
-            })
+            }) {
+                
+            }
         }
         .onCompatibleChange(of: playbackViewModel.playerState) { oldValue, newValue in
             if oldValue != newValue {
@@ -219,6 +221,13 @@ struct LogixVideoPlayer: View {
       //  playerController = nil
         globalNavState.activeScreen = nil
         removeObservers()
+    }
+    
+    private func refresh() {
+        print("LogixVideoPlayer onDisappear")
+        playbackViewModel.destroyPlayer()
+        removeObservers()
+        setupView()
     }
     
     private func handlePlayerState() {

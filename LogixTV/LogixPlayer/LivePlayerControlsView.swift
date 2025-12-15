@@ -20,7 +20,7 @@ struct LivePlayerControlsView: View {
         case trapTop
         case trapBottom
         case progressBar
-        case goLiveButton
+        //case goLiveButton
         case  subtitles
         case settings
         case episodes
@@ -47,33 +47,51 @@ struct LivePlayerControlsView: View {
     // MARK: - Callbacks
     let dismissTheControllers: () -> Void
     let destroyTapped: () -> Void
+    let refreshTapped: () -> Void
     
     let dummyMiniPlayerContents: [MiniPlayerContent] = [
         MiniPlayerContent(
             id: 1,
-            contentUrl: "https://logix-cms-content.s3.ap-south-1.amazonaws.com/content/transcoded/6d9a24901765e1d0abd6b38ehls/6d9a24901765e1d0abd6.m3u8",
-            title: "Adventure Story",
-            imageUrl: "https://logix-cms-content.s3.ap-south-1.amazonaws.com/content/actual/cwjN0C42Z3/images/1.jpg",
-            description: "A fun and exciting mini adventure.",
-            duration: 120
+            contentUrl: "https://logix-cms-content.s3.ap-south-1.amazonaws.com/content/transcoded/f7338b9d8ef7f45e09e350ebhls/f7338b9d8ef7f45e09e3.m3u8",
+            title: "Video 1",
+            imageUrl: "https://logix-cms-content.s3.ap-south-1.amazonaws.com/content/actual/OG46p5YXZd/image/63e4a9452fb121ddcc0f.jpg",
+            description: nil,
+            duration: 10
         ),
         MiniPlayerContent(
             id: 2,
-            contentUrl: "https://logix-cms-content.s3.ap-south-1.amazonaws.com/content/transcoded/a758ef717ea30794c0c47eeahls/a758ef717ea30794c0c4.m3u8",
-            title: "Learning Time",
-            imageUrl: "https://logix-cms-content.s3.ap-south-1.amazonaws.com/content/actual/1wkJWVGNfj/images/2.jpg",
-            description: "An engaging educational clip for kids.",
-            duration: 150
+            contentUrl: "https://logix-cms-content.s3.ap-south-1.amazonaws.com/content/transcoded/d29b5a4f23d3950a482c9942hls/d29b5a4f23d3950a482c.m3u8",
+            title: "Video 2",
+            imageUrl: "https://logix-cms-content.s3.ap-south-1.amazonaws.com/content/actual/zOFl4OAAfE/image/7b4ab07864c341145c06.jpg",
+            description: nil,
+            duration: 20
         ),
         MiniPlayerContent(
             id: 3,
-            contentUrl: "https://logix-cms-content.s3.ap-south-1.amazonaws.com/content/transcoded/133e62288e629f54990f76d6hls/133e62288e629f54990f.m3u8",
-            title: "Fun With Friends",
-            imageUrl: "https://logix-cms-content.s3.ap-south-1.amazonaws.com/content/actual/7ZFxIl7h81/images/3.jpg",
-            description: "A joyful moment full of fun and laughter.",
-            duration: 180
+            contentUrl: "https://logix-cms-content.s3.ap-south-1.amazonaws.com/content/transcoded/700014a448283ef854f9968dhls/700014a448283ef854f9.m3u8",
+            title: "Video 3",
+            imageUrl: "https://logix-cms-content.s3.ap-south-1.amazonaws.com/content/actual/6fuHEXFIK7/image/4aced505662191ef0a69.jpg",
+            description: nil,
+            duration: 30
+        ),
+        MiniPlayerContent(
+            id: 4,
+            contentUrl: "https://logix-cms-content.s3.ap-south-1.amazonaws.com/content/transcoded/374d9ebaf2582919daf9353ehls/374d9ebaf2582919daf9.m3u8",
+            title: "Video 4",
+            imageUrl: "https://logix-cms-content.s3.ap-south-1.amazonaws.com/content/actual/ojM19JAoRS/image/7ae5b58d947ec9f003bc.jpg",
+            description: nil,
+            duration: 40
+        ),
+        MiniPlayerContent(
+            id: 5,
+            contentUrl: "https://logix-cms-content.s3.ap-south-1.amazonaws.com/content/transcoded/11571f6a6f8ac08363912223hls/11571f6a6f8ac0836391.m3u8",
+            title: "Video 5",
+            imageUrl: "https://logix-cms-content.s3.ap-south-1.amazonaws.com/content/actual/4EtxSY8vR6/image/56087addee29137531ba.jpg",
+            description: nil,
+            duration: 50
         )
     ]
+
     
     // MARK: - Body
     var body: some View {
@@ -146,12 +164,20 @@ struct LivePlayerControlsView: View {
                                 
                                 Spacer()
                                     .frame(height: 200)
-                                
-                                ForEach(dummyMiniPlayerContents, id: \.id) { item in
-                                    MiniPlayerCardButtonView(item: item, focusedControl: $focusedControl) {
+                                ForEach(dummyMiniPlayerContents.indices, id: \.self) { index in
+                                    let item = dummyMiniPlayerContents[index]
+
+                                    MiniPlayerCardButtonView(
+                                        item: item,
+                                        focusedControl: $focusedControl
+                                    ) {
+                                        refreshTapped()
+                                        globalNavState.miniPlayerItemIndex = index   // ✅ index
+                                        globalNavState.miniPlayerItem = item         // ✅ item
+
                                         globalNavState.isPiPMutiplayerView = true
                                         globalNavState.isShowMutiplayerView = false
-                                        globalNavState.miniPlayerItem = item
+
                                         DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
                                             focusedControl = .goLive
                                         }
@@ -408,10 +434,10 @@ private extension LivePlayerControlsView {
         hideWorkItem?.cancel()
         let task = DispatchWorkItem {
             isShowPlayPauseButton = false
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-                focusedControl = .goLiveButton
+           /* DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                focusedControl = .go
 
-            }
+            }*/
         }
         hideWorkItem = task
         DispatchQueue.main.asyncAfter(deadline: .now() + 5, execute: task)

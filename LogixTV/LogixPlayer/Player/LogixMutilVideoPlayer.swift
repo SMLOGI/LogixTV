@@ -80,7 +80,7 @@ struct LogixMutilVideoPlayer: View {
                                 )
                                 .overlay(
                                     RoundedRectangle(cornerRadius: 2)
-                                        .stroke(.white, lineWidth: globalNavState.isGoLiveFocused ? 8 :( globalNavState.isPiPMutiplayerView ? 2 : 0))
+                                        .stroke( globalNavState.isGoLiveFocused ? .green : .white, lineWidth: globalNavState.isGoLiveFocused ? 4 :( globalNavState.isPiPMutiplayerView ? 2 : 0))
                                 )
                                 .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottomTrailing)
                                 .padding(.bottom, globalNavState.isPiPMutiplayerView ? 60: 0)
@@ -105,7 +105,7 @@ struct LogixMutilVideoPlayer: View {
         .onAppear {
             print("*** LogixMutilVideoPlayer onAppear")
             mainPlaybackViewModel.destroyPlayer()
-            miniPlaybackViewModel.destroyPlayer()
+           // miniPlaybackViewModel.destroyPlayer()
             globalNavState.isShowMutiplayerView = false
             globalNavState.isPiPMutiplayerView = false
         }
