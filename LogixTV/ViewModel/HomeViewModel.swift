@@ -29,7 +29,9 @@ final class HomeViewModel: ObservableObject {
                 method: .GET
             ) as CarouselGroupModel
             
-            carouselGroups = carouselGroupResponse.data
+            let groupData = carouselGroupResponse.data
+            
+            carouselGroups = groupData.filter { $0.carouselType.name != "masthead" }
             
             print("✅ carouselGroupResponse:", carouselDisplayNameList)
         } catch {
