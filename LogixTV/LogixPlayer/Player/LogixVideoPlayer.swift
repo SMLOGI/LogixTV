@@ -85,6 +85,8 @@ struct LogixVideoPlayer: View {
         .onAppear {
             print("**** loading LogixVideoPlayer = \(videoData.contentUrl)")
             playbackViewModel.destroyPlayer()
+            playerController = nil
+            removeObservers()
             initializePlayerIfNeeded()
             DispatchQueue.main.async {
                 setupView()
@@ -265,11 +267,12 @@ struct LogixVideoPlayer: View {
                 let list = globalNavState.dummyMiniPlayerContents
                 let index = globalNavState.miniPlayerItemIndex
                 let newIndex = (index + 1) % list.count
-                globalNavState.miniPlayerItemIndex = newIndex
-                globalNavState.miniPlayerItem = list[newIndex]
-                refresh()
+                globalNavState.miniPlayerItem = nil
                 globalNavState.isPiPMutiplayerView = true
                 globalNavState.isShowMutiplayerView = false
+                globalNavState.miniPlayerItemIndex = newIndex   // ✅ index
+                globalNavState.miniPlayerItem = globalNavState.dummyMiniPlayerContents[newIndex]
+                // ✅ item
             } else {
                 cleanup()
             }

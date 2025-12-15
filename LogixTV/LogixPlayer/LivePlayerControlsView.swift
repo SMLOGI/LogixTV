@@ -240,7 +240,8 @@ struct LivePlayerControlsView: View {
                             Spacer()
                             LiveNowButton(size: (isMainLivePlayer ? .regular :  .small)) {
                                 globalNavState.isPiPMutiplayerView = false
-                               // globalNavState.miniPlayerItem = nil
+                                globalNavState.miniPlayerItem = nil
+                                globalNavState.miniPlayerItemIndex = -1
                                 focusedControl = .goLive
                             }
                             .padding(.bottom, isMainLivePlayer ? 80 : 130)
