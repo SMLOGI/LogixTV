@@ -159,35 +159,36 @@ struct LivePlayerControlsView: View {
                     if globalNavState.isShowMutiplayerView {
                         HStack(alignment: .top) {
                             Spacer()
-                            
-                            VStack(alignment: .leading) {
-                                
-                                Spacer()
-                                    .frame(height: 200)
-                                ForEach(dummyMiniPlayerContents.indices, id: \.self) { index in
-                                    let item = dummyMiniPlayerContents[index]
-
-                                    MiniPlayerCardButtonView(
-                                        item: item,
-                                        focusedControl: $focusedControl
-                                    ) {
-                                        refreshTapped()
-                                        globalNavState.miniPlayerItemIndex = index   // ✅ index
-                                        globalNavState.miniPlayerItem = item         // ✅ item
-
-                                        globalNavState.isPiPMutiplayerView = true
-                                        globalNavState.isShowMutiplayerView = false
-
-                                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-                                            focusedControl = .goLive
+                            ScrollView {
+                                VStack(alignment: .leading) {
+                                    Spacer()
+                                        .frame(height: 200)
+                                    ForEach(dummyMiniPlayerContents.indices, id: \.self) { index in
+                                        let item = dummyMiniPlayerContents[index]
+                                        
+                                        MiniPlayerCardButtonView(
+                                            item: item,
+                                            focusedControl: $focusedControl
+                                        ) {
+                                            refreshTapped()
+                                            globalNavState.miniPlayerItemIndex = index   // ✅ index
+                                            globalNavState.miniPlayerItem = item         // ✅ item
+                                            
+                                            globalNavState.isPiPMutiplayerView = true
+                                            globalNavState.isShowMutiplayerView = false
+                                            
+                                            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                                                focusedControl = .goLive
+                                            }
                                         }
                                     }
+                                    Spacer()
+                                        .frame(height: 100)
                                 }
-                                
-                                Spacer()
+                                .frame(width: 426)
                             }
                             .frame(width: 426)
-                            .padding(.leading, 10)
+                            .padding(.leading, 0)
                             .background(Color.black)
                             .onMoveCommand(perform: moveNext)
                         }
