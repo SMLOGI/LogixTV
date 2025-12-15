@@ -59,10 +59,12 @@ struct LogixVideoPlayer: View {
     var body: some View {
         ZStack {
             Color.black.ignoresSafeArea()
-            Image("background")
-                .resizable()
-                .scaledToFill()
-                .ignoresSafeArea()
+            if isLiveContent {
+                Image("background")
+                    .resizable()
+                    .scaledToFill()
+                    .ignoresSafeArea()
+            }
             
             videoPlayerView
 

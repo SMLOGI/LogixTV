@@ -112,7 +112,7 @@ struct LogixMutilVideoPlayer: View {
     }
     func makeVideoData(from item: CarouselContent) -> VideoData? {
         guard let urlString = item.video?.first?.contentUrl, let _ = URL(string: urlString) else { return nil }
-        return VideoData( type: "vod", profile: "pradip", drmEnabled: false, licenceUrl: "", contentUrl: urlString, protocol: "", encryptionType: "hls", adInfo: nil, qualityGroup: .none, isLiveContent: item.isLiveContent)
+        return VideoData( type: "vod", profile: "pradip", drmEnabled: false, licenceUrl: item.bestImageURL?.absoluteString ?? "", contentUrl: urlString, protocol: "", encryptionType: "hls", adInfo: nil, qualityGroup: .none, isLiveContent: item.isLiveContent)
     }
     func makeVideoData(from item: MiniPlayerContent) -> VideoData? {
         guard let _ = URL(string: item.contentUrl) else { return nil }
