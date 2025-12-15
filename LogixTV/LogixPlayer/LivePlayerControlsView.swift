@@ -48,7 +48,7 @@ struct LivePlayerControlsView: View {
     let dismissTheControllers: () -> Void
     let destroyTapped: () -> Void
     let refreshTapped: () -> Void
-    /*
+    
     let dummyMiniPlayerContents: [MiniPlayerContent] = [
         MiniPlayerContent(
             id: 1,
@@ -91,8 +91,8 @@ struct LivePlayerControlsView: View {
             duration: 50
         )
     ]
-*/
-    
+
+    /*
     let dummyMiniPlayerContents: [MiniPlayerContent] = [
         MiniPlayerContent(
             id: 1,
@@ -119,6 +119,7 @@ struct LivePlayerControlsView: View {
             duration: 180
         )
     ]
+     */
     
     // MARK: - Body
     var body: some View {
@@ -189,7 +190,7 @@ struct LivePlayerControlsView: View {
                             ScrollView {
                                 VStack(alignment: .leading) {
                                     Spacer()
-                                        .frame(height: 200)
+                                        .frame(height: 100)
                                     ForEach(dummyMiniPlayerContents.indices, id: \.self) { index in
                                         let item = dummyMiniPlayerContents[index]
                                         

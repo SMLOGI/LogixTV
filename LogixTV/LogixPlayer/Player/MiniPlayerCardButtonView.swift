@@ -46,6 +46,20 @@ struct MiniPlayerCardButtonView: View, Equatable {
                         NowPlayingPill()
                             .padding(10)
                     }
+                    
+                    // 🔹 Bottom-center "Key Moments"
+                    Text("Key Moments: \(item.id)")
+                        .padding(.horizontal, 10)
+                        .padding(.vertical, 2)
+                        .font(.caption2)
+                        .foregroundColor(.white)
+                        .background(
+                            RoundedRectangle(cornerRadius: 5)
+                                .fill(Color.black.opacity(0.25))
+                        )
+                        .padding(.top, 160) // distance from bottom
+                        .padding(.trailing, 70)
+                    
                 }
                 .overlay(
                     RoundedRectangle(cornerRadius: 12)
