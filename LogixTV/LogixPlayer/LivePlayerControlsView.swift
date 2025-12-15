@@ -335,20 +335,29 @@ struct LivePlayerControlsView: View {
     
     // MARK: - CONTROL-BUTTON UI
     @ViewBuilder
-    private func controlButton(title: String, icon: String, completion: @escaping (()->Void)) -> some View {
-        ZStack {
-            Button(action: completion) {
-                HStack(spacing: 12) {
-                    Image(systemName: icon)
-                        .font(.system(size: 25, weight: .regular))
-                    Text(title)
-                        .font(.system(size: 25, weight: .regular))
-                }
+    private func controlButton(
+        title: String,
+        icon: String,
+        isFocused: Bool,
+        completion: @escaping () -> Void
+    ) -> some View {
+
+        Button(action: completion) {
+            HStack(spacing: 12) {
+                Image(systemName: icon)
+                    .font(.system(size: 25, weight: isFocused ? .medium: .regular))
+                    .foregroundColor(isFocused ? .green : .white)
+
+                Text(title)
+                    .font(.system(size: 25, weight:  isFocused ? .medium: .regular))
+                    .foregroundColor(isFocused ? .green : .white)
             }
-            .buttonStyle(.plain)
+            .animation(.easeInOut(duration: 0.2), value: isFocused)
         }
+        .buttonStyle(.borderless)
         .frame(maxWidth: .infinity)
     }
+
     
     private var shaddowTrappedView: some View {
         VStack(spacing: 20) {
@@ -379,14 +388,14 @@ struct LivePlayerControlsView: View {
             
             // Your buttons centered inside gradient
             HStack(spacing: 40) {
-                controlButton(title: "Subtitle & Audio", icon: "captions.bubble.fill") { }
+                controlButton(title: "Subtitle & Audio", icon: "captions.bubble.fill", isFocused: focusedControl == .subtitles) { }
                     .focused($focusedControl, equals: .subtitles)
                     .onMoveCommand(perform: moveBottomButtons)
                 
-                controlButton(title: "Settings", icon: "gearshape.fill") { }
+                controlButton(title: "Settings", icon: "gearshape.fill", isFocused: focusedControl == .settings) { }
                     .focused($focusedControl, equals: .settings)
                 
-                controlButton(title: "Key Moments", icon: "forward.end.fill") {
+                controlButton(title: "Key Moments", icon: "forward.end.fill", isFocused: focusedControl == .next) {
                     globalNavState.isShowMutiplayerView = true
                 }
                 .focused($focusedControl, equals: .next)
@@ -402,26 +411,6 @@ struct LivePlayerControlsView: View {
             }
         }
         //.frame(maxWidth: .infinity)
-    }
-    
-    private var showSideTabButtons: some View {
-        VStack(alignment: .leading, spacing: 40) {
-            if globalNavState.isPiPMutiplayerView {
-                controlButton(title: "Go Live", icon: "livephoto.play") {
-                    globalNavState.isPiPMutiplayerView = false
-                    globalNavState.miniPlayerItem = nil
-                }
-                .tint(.green)
-                .focused($focusedControl, equals: .subtitles)
-            }
-            
-            controlButton(title: "Close", icon: "xmark.circle") {
-                globalNavState.isPiPMutiplayerView = false
-                globalNavState.isShowMutiplayerView = false
-            }
-            .focused($focusedControl, equals: .settings)
-        }
-        .padding(.top, 40)
     }
     
     // Reusable item box
