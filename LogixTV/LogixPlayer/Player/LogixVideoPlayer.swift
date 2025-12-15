@@ -59,12 +59,23 @@ struct LogixVideoPlayer: View {
     var body: some View {
         ZStack {
             Color.black.ignoresSafeArea()
+            Image("background")
+                .resizable()
+                .scaledToFill()
+                .ignoresSafeArea()
+            
             videoPlayerView
 
             // Make base player view non-focusable when track selection is shown
             if !showPlayer {
-                Color.black.ignoresSafeArea()
-                 .transition(.opacity)
+                if let url = URL(string: videoData.licenceUrl) {
+                    CachedAsyncImage(url: url)
+                        .scaledToFill()
+                        .clipped()
+                        .ignoresSafeArea()
+                } else {
+                    //Color.gray
+                }
                 
                 LoadingView()
             }
@@ -235,17 +246,15 @@ struct LogixVideoPlayer: View {
         if playbackViewModel.playerState == .endedPlayback {
             
             if videoData.isLiveContent  && !isMainLivePlayer{
-                   let list = globalNavState.dummyMiniPlayerContents
-                   if let current = globalNavState.miniPlayerItem,
-                      let index = list.firstIndex(where: { $0.id == current.id }) {
-                       let newIndex = (index + 1) % list.count
-                       globalNavState.isPiPMutiplayerView = true
-                       globalNavState.miniPlayerItem = list[newIndex]
-                       globalNavState.isPiPMutiplayerView = true
-                       globalNavState.isShowMutiplayerView = false
-                   } else {
-                       cleanup()
-                   }
+                let list = globalNavState.dummyMiniPlayerContents
+                let index = globalNavState.miniPlayerItemIndex
+                let newIndex = (index + 1) % list.count
+                refresh()
+                globalNavState.miniPlayerItemIndex = newIndex
+                globalNavState.miniPlayerItem = list[newIndex]
+                refresh()
+                globalNavState.isPiPMutiplayerView = true
+                globalNavState.isShowMutiplayerView = false
             } else {
                 cleanup()
             }

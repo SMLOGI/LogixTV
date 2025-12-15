@@ -170,6 +170,7 @@ struct LivePlayerControlsView: View {
                                             item: item,
                                             focusedControl: $focusedControl
                                         ) {
+                                            // guard if index != globalNavState.miniPlayerItemIndex else { return }
                                             refreshTapped()
                                             globalNavState.miniPlayerItemIndex = index   // ✅ index
                                             globalNavState.miniPlayerItem = item         // ✅ item
@@ -216,6 +217,7 @@ struct LivePlayerControlsView: View {
                             .padding(.bottom, isMainLivePlayer ? 80 : 130)
                             .padding(.trailing, isMainLivePlayer ? 50 : 110)
                             .focused($focusedControl, equals: .goLive)
+                            .onMoveCommand(perform: moveLivePlayer)
                             //.focusable(!isMainLivePlayer)
                         }
                     }
@@ -293,6 +295,11 @@ struct LivePlayerControlsView: View {
                     focusedControl = .miniPlayer(1)
                 }
             }
+        }
+    }
+    private func moveLivePlayer(_ direction: MoveCommandDirection) {
+        if direction == .down || direction == .left {
+            focusedControl = .progressBar
         }
     }
     
