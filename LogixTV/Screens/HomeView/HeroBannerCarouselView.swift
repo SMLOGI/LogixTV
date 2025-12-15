@@ -43,8 +43,8 @@ struct HeroBannerCarouselView: View {
                     .ignoresSafeArea()
             }
             BannerDetailView(content: content, focusedItem: $focusedItem, viewModel: viewModel, homeViewModel: homeViewModel, currentPage: $currentPage)
-                .frame(height: 400)
-                .padding(.bottom, 200)
+                .frame(height: 600)
+                .padding(.bottom, 300)
         }
         //.focused($focusedItem, equals: .mainContent)
         //.focusSection()
