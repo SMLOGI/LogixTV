@@ -21,7 +21,7 @@ struct TVPlayPauseIcon: View {
                 .frame(width: size * 1.8, height: size * 1.8)
                 .overlay(
                     RoundedRectangle(cornerRadius: cornerRadius)
-                        .stroke(Color.white, lineWidth: isFocused ? 10 : 6)   // thin border
+                        .stroke(isFocused ? Color.green :Color.white, lineWidth: 6)   // thin border
                 )
                 .cornerRadius(cornerRadius)
                 .focusable(true)

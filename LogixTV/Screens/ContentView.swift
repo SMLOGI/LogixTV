@@ -76,7 +76,7 @@ class GlobalNavigationState: ObservableObject {
     @Published var showDetail: Bool = false
     @Published var contentItem: CarouselContent?
     @Published var miniPlayerItem: MiniPlayerContent?
-    @Published var miniPlayerItemIndex: Int = 0
+    @Published var miniPlayerItemIndex: Int = -1
     @Published var bannerIndex: Int = 0
     @Published var lastFocus: FocusTarget?
     @Published var activeScreen: ActiveScreen? = nil

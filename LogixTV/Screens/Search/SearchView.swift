@@ -71,7 +71,6 @@ struct SearchView: View {
                     mute: .constant(false),
                     showAds: .constant(true),
                     playbackViewModel: mainPlaybackViewModel,
-                    playerController: mainPlayerController,
                     isMainLivePlayer: .constant(true),
                     onDismiss: { }
                 )

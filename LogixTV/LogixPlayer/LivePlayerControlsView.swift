@@ -48,7 +48,7 @@ struct LivePlayerControlsView: View {
     let dismissTheControllers: () -> Void
     let destroyTapped: () -> Void
     let refreshTapped: () -> Void
-    
+    /*
     let dummyMiniPlayerContents: [MiniPlayerContent] = [
         MiniPlayerContent(
             id: 1,
@@ -91,7 +91,34 @@ struct LivePlayerControlsView: View {
             duration: 50
         )
     ]
-
+*/
+    
+    let dummyMiniPlayerContents: [MiniPlayerContent] = [
+        MiniPlayerContent(
+            id: 1,
+            contentUrl: "https://logix-cms-content.s3.ap-south-1.amazonaws.com/content/transcoded/6d9a24901765e1d0abd6b38ehls/6d9a24901765e1d0abd6.m3u8",
+            title: "Adventure Story",
+            imageUrl: "https://logix-cms-content.s3.ap-south-1.amazonaws.com/content/actual/cwjN0C42Z3/images/1.jpg",
+            description: "A fun and exciting mini adventure.",
+            duration: 120
+        ),
+        MiniPlayerContent(
+            id: 2,
+            contentUrl: "https://logix-cms-content.s3.ap-south-1.amazonaws.com/content/transcoded/a758ef717ea30794c0c47eeahls/a758ef717ea30794c0c4.m3u8",
+            title: "Learning Time",
+            imageUrl: "https://logix-cms-content.s3.ap-south-1.amazonaws.com/content/actual/1wkJWVGNfj/images/2.jpg",
+            description: "An engaging educational clip for kids.",
+            duration: 150
+        ),
+        MiniPlayerContent(
+            id: 3,
+            contentUrl: "https://logix-cms-content.s3.ap-south-1.amazonaws.com/content/transcoded/133e62288e629f54990f76d6hls/133e62288e629f54990f.m3u8",
+            title: "Fun With Friends",
+            imageUrl: "https://logix-cms-content.s3.ap-south-1.amazonaws.com/content/actual/7ZFxIl7h81/images/3.jpg",
+            description: "A joyful moment full of fun and laughter.",
+            duration: 180
+        )
+    ]
     
     // MARK: - Body
     var body: some View {
@@ -170,13 +197,15 @@ struct LivePlayerControlsView: View {
                                             item: item,
                                             focusedControl: $focusedControl
                                         ) {
-                                            // guard if index != globalNavState.miniPlayerItemIndex else { return }
-                                            refreshTapped()
-                                            globalNavState.miniPlayerItemIndex = index   // ✅ index
-                                            globalNavState.miniPlayerItem = item         // ✅ item
-                                            
+                                            // ignore same item click twice
+                                            guard globalNavState.miniPlayerItemIndex != index else { return }
+                                            globalNavState.miniPlayerItem = nil
                                             globalNavState.isPiPMutiplayerView = true
                                             globalNavState.isShowMutiplayerView = false
+                                            globalNavState.miniPlayerItemIndex = index   // ✅ index
+                                            globalNavState.miniPlayerItem = item         // ✅ item
+                                            print("*** MiniPlayerCardButtonView clicked for index = \(index) and item =\(item.contentUrl)")
+                                            refreshTapped()
                                             
                                             DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
                                                 focusedControl = .goLive
@@ -428,6 +457,7 @@ private extension LivePlayerControlsView {
     
     func handleAppear() {
         print("*** LivePlayerControlsView handleAppear")
+        print("*** ------------- END -----------------------")
         isShowPlayPauseButton = true
 //        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
 //            focusedControl = .playPause

@@ -26,7 +26,7 @@ struct LogixVideoPlayer: View {
     @FocusState private var focusedSection: TrapFocusSection?
     @EnvironmentObject var sideMenuViewModel: SideMenuViewModel
     @ObservedObject var playbackViewModel: PlaybackViewModel
-    var playerController: PlayerContainerViewController?
+    @State private var playerController: PlayerContainerViewController?
     @State private var hideTime = 5.0
     @State private var showTrackSelectionView = false // Controls the modal visibility
     var isLiveContent:Bool = false
@@ -84,7 +84,7 @@ struct LogixVideoPlayer: View {
         }
         .onAppear {
             print("**** loading LogixVideoPlayer = \(videoData.contentUrl)")
-            //playbackViewModel.destroyPlayer()
+            playbackViewModel.destroyPlayer()
             initializePlayerIfNeeded()
             DispatchQueue.main.async {
                 setupView()
@@ -116,12 +116,13 @@ struct LogixVideoPlayer: View {
                 //isPresentingLogixPlayer = false
                 // globalNavState.activeScreen = nil
                 print("**** fullScreenCover LivePlayerControlsView  dismissTheControllers = \(videoData.contentUrl)")
-               // cleanup()
+                // cleanup()
             }, destroyTapped: {
                 cleanup()
-            }) {
-                
+            }, refreshTapped: {
+               // refresh()
             }
+            )
         }
         .onCompatibleChange(of: playbackViewModel.playerState) { oldValue, newValue in
             if oldValue != newValue {
@@ -171,6 +172,7 @@ struct LogixVideoPlayer: View {
                         } else {
                             if newValue == false {
                                 playbackViewModel.destroyPlayer()
+                                removeObservers()
                             }
                         }
                     }
@@ -180,7 +182,8 @@ struct LogixVideoPlayer: View {
     
     private func initializePlayerIfNeeded() {
         if playerController == nil {
-            //playerController = PlayerContainerViewController()
+            playerController = PlayerContainerViewController()
+            print("*** PlayerContainerViewController()")
         }
     }
 
@@ -215,7 +218,11 @@ struct LogixVideoPlayer: View {
     }
     
     private func initializePlayer(vid:VideoData) {
+        print("*** LogixVideoPlayer initializePlayer")
+
         if let playerController {
+            print("*** playerController.videoView \(playerController.videoView)")
+
             hascontentstarted = true
             isContentStarted = true
             playbackViewModel
@@ -231,16 +238,23 @@ struct LogixVideoPlayer: View {
         isPresentingLogixPlayer = false
         showControlls = false
         playbackViewModel.destroyPlayer()
-      //  playerController = nil
+        playerController = nil
         globalNavState.activeScreen = nil
         removeObservers()
     }
     
     private func refresh() {
-        print("LogixVideoPlayer onDisappear")
-        playbackViewModel.destroyPlayer()
-        removeObservers()
-        setupView()
+        print(" **** LogixVideoPlayer refresh=", videoData.contentUrl)
+        if videoData.isLiveContent && !isMainLivePlayer{
+            playbackViewModel.destroyPlayer()
+            removeObservers()
+            playerController = nil
+            initializePlayerIfNeeded()
+            DispatchQueue.main.async {
+                initializePlayer(vid: videoData)
+            }
+            addObservers()
+        }
     }
     
     private func handlePlayerState() {
@@ -251,7 +265,6 @@ struct LogixVideoPlayer: View {
                 let list = globalNavState.dummyMiniPlayerContents
                 let index = globalNavState.miniPlayerItemIndex
                 let newIndex = (index + 1) % list.count
-                refresh()
                 globalNavState.miniPlayerItemIndex = newIndex
                 globalNavState.miniPlayerItem = list[newIndex]
                 refresh()
@@ -270,7 +283,9 @@ struct LogixVideoPlayer: View {
                     showControlls = true
             }
         } else {
-            showControlls = true
+            if playbackViewModel.playerState == .readyPlayback || playbackViewModel.playerState ==  .resumedPlayback {
+                showControlls = true
+            }
         }
     }
 }

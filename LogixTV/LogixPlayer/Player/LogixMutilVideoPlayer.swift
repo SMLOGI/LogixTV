@@ -33,7 +33,7 @@ struct LogixMutilVideoPlayer: View {
             
             if videoData?.isLiveContent == false {
                 if let videoData, let video = makeVideoData(from: videoData) {
-                    LogixVideoPlayer(category: category, videoData: video, isPresentingLogixPlayer: $isPresentingLogixPlayer, mute: .constant(false), showAds: .constant(true), playbackViewModel: mainPlaybackViewModel,playerController: mainPlayerController, isMainLivePlayer: .constant(true), onDismiss: {
+                    LogixVideoPlayer(category: category, videoData: video, isPresentingLogixPlayer: $isPresentingLogixPlayer, mute: .constant(false), showAds: .constant(true), playbackViewModel: mainPlaybackViewModel, isMainLivePlayer: .constant(true), onDismiss: {
                         print("*** LogixMutilVideoPlayer non live content")
                     })
                         .focusable(false)
@@ -45,11 +45,12 @@ struct LogixMutilVideoPlayer: View {
                     // Mini Player
                     HStack(spacing: 0.0) {
                         if let miniContent = globalNavState.miniPlayerItem, let video = makeVideoData(from: miniContent) {
-                            LogixVideoPlayer(category: category, videoData: video, isPresentingLogixPlayer: $isPresentingLogixPlayer, mute: .constant(false), showAds: .constant(false), playbackViewModel: miniPlaybackViewModel, playerController: miniPlayerController, isMainLivePlayer: .constant(false), onDismiss: {
+                            LogixVideoPlayer(category: category, videoData: video, isPresentingLogixPlayer: $isPresentingLogixPlayer, mute: .constant(false), showAds: .constant(false), playbackViewModel: miniPlaybackViewModel, isMainLivePlayer: .constant(false), onDismiss: {
                                 print("*** LogixMutilVideoPlayer live mini content")
                             })
-                                .focusable(false)
-                                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topTrailing)
+                            .id(globalNavState.miniPlayerItem?.id)
+                            .focusable(false)
+                            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topTrailing)
                         }
                         if globalNavState.isShowMutiplayerView {
                             Spacer()
@@ -70,7 +71,7 @@ struct LogixMutilVideoPlayer: View {
                             Spacer()
                         }
                         if let videoData, let video = makeVideoData(from: videoData) {
-                            LogixVideoPlayer(category: category, videoData: video, isPresentingLogixPlayer: $isPresentingLogixPlayer, mute: .constant(false), showAds: .constant(false), playbackViewModel: mainPlaybackViewModel,playerController: mainPlayerController, isMainLivePlayer: .constant(true), onDismiss: {
+                            LogixVideoPlayer(category: category, videoData: video, isPresentingLogixPlayer: $isPresentingLogixPlayer, mute: .constant(false), showAds: .constant(false), playbackViewModel: mainPlaybackViewModel, isMainLivePlayer: .constant(true), onDismiss: {
                                 print("*** LogixMutilVideoPlayer live main content")
                             })
                                 .focusable(false)
