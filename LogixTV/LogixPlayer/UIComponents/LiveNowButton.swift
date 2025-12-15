@@ -70,6 +70,6 @@ struct LiveNowButton: View {
             .background(Color.red)
             .clipShape(RoundedRectangle(cornerRadius: size.cornerRadius))
         }
-        .buttonStyle(.plain)
+        .buttonStyle(.borderless)
     }
 }

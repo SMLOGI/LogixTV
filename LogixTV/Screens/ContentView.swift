@@ -82,6 +82,7 @@ class GlobalNavigationState: ObservableObject {
     @Published var dummyList: [CarouselContent]?
     @Published var isShowMutiplayerView  = false
     @Published var isPiPMutiplayerView = false
+    @Published var isGoLiveFocused = false
     
     @Published var dummyMiniPlayerContents: [MiniPlayerContent] = [
         MiniPlayerContent(

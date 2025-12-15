@@ -152,6 +152,9 @@ struct LivePlayerControlsView: View {
                                         globalNavState.isPiPMutiplayerView = true
                                         globalNavState.isShowMutiplayerView = false
                                         globalNavState.miniPlayerItem = item
+                                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                                            focusedControl = .goLive
+                                        }
                                     }
                                 }
                                 
@@ -178,10 +181,15 @@ struct LivePlayerControlsView: View {
                         Spacer()
                         VStack(alignment: .leading) {
                             Spacer()
-                            LiveNowButton(size: (isMainLivePlayer ? .regular :  .small))
-                                .padding(.bottom, isMainLivePlayer ? 80 : 130)
-                                .padding(.trailing, isMainLivePlayer ? 50 : 110)
-                                .focusable(false)
+                            LiveNowButton(size: (isMainLivePlayer ? .regular :  .small)) {
+                                globalNavState.isPiPMutiplayerView = false
+                               // globalNavState.miniPlayerItem = nil
+                                focusedControl = .goLive
+                            }
+                            .padding(.bottom, isMainLivePlayer ? 80 : 130)
+                            .padding(.trailing, isMainLivePlayer ? 50 : 110)
+                            .focused($focusedControl, equals: .goLive)
+                            //.focusable(!isMainLivePlayer)
                         }
                     }
                     .padding(.trailing, globalNavState.isShowMutiplayerView ? 380 : 0)
@@ -209,17 +217,20 @@ struct LivePlayerControlsView: View {
             }
             playBackViewModel.isUserSeeking = false
              */
+            globalNavState.isGoLiveFocused = newValue == .goLive
             if oldValue == .progressBar {
                 if newValue == .subtitles || newValue == .settings || newValue == .episodes || newValue == .next {
                     focusedControl = .subtitles
                 }
             }
+            /*
             if case .miniPlayer = oldValue {
                 if newValue == .goLive || newValue == .progressBar {
                     globalNavState.isPiPMutiplayerView = false
                     globalNavState.isShowMutiplayerView = false
                 }
             }
+             */
         })
     
         .onExitCommand(perform: handleExitCommand)
