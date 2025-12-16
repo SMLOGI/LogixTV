@@ -34,8 +34,11 @@ struct SideMenuView: View {
         .background(
             .regularMaterial // or .thinMaterial, .regularMaterial, etc.
         )
-       // .animation(.easeInOut(duration: 0.3), value: isSidebarExpanded)
         .focusSection()
+        .animation(
+            .easeInOut(duration: 0.3),
+            value: isSidebarExpanded
+        )
         .onCompatibleChange(of: focusedField, perform: handleFocusChange)
         .onAppear { setupInitialState() }
 
