@@ -81,31 +81,20 @@ struct LogixVideoPlayer: View {
                 
                 LoadingView()
             } else {
-                if !globalNavState.isPiPMutiplayerView || !isMainLivePlayer {
-                    HStack(alignment: .top) {
-                        VStack(alignment: .leading) {
-                            if showControlls {
-                                Text(videoData.title)
-                                    .padding(.horizontal, 10)
-                                    .padding(.vertical, 2)
-                                    .font(.system(size: 35, weight: .regular))
-                                    .foregroundColor(.white)
-                                    .background(
-                                        RoundedRectangle(cornerRadius: 5)
-                                            .fill(Color.black.opacity(0.25))
-                                    )
-                                    .padding(.top, 40) // distance from bottom
-                                    .padding(.leading, 20)
+                if showControlls {
+                    if !globalNavState.isPiPMutiplayerView || !isMainLivePlayer {
+                        HStack(alignment: .top) {
+                            VStack(alignment: .leading) {
                                 
+                                playerTitleView
                                 Spacer()
                             }
+                            .ignoresSafeArea()
+                            
                             Spacer()
                         }
                         .ignoresSafeArea()
-                        Spacer()
-                        
                     }
-                    .ignoresSafeArea()
                 }
             }
         }
@@ -317,6 +306,19 @@ struct LogixVideoPlayer: View {
                 showControlls = true
             }
         }
+    }
+    private var playerTitleView: some View {
+        Text(videoData.title)
+            .padding(.horizontal, 10)
+            .padding(.vertical, 4)
+            .font(.system(size: 35, weight: .regular))
+            .foregroundColor(.white)
+            .background(
+                RoundedRectangle(cornerRadius: 5)
+                    .fill(Color.black.opacity(0.25))
+            )
+            .padding(.top, 20)
+            .padding(.leading, 20)
     }
 }
 // MARK: - App background state
