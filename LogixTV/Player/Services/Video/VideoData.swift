@@ -21,6 +21,7 @@ struct VideoAPIResponse: Decodable {
 
 struct VideoData: Decodable {
     let type: String
+    let title: String
     let profile: String
     let drmEnabled: Bool
     let licenceUrl: String
@@ -32,7 +33,7 @@ struct VideoData: Decodable {
     var isLiveContent: Bool = false
 
     enum CodingKeys: String, CodingKey {
-        case type, profile, licenceUrl, contentUrl, `protocol`, adInfo, encryptionType, qualityGroup
+        case type, title, profile, licenceUrl, contentUrl, `protocol`, adInfo, encryptionType, qualityGroup
         case drmEnabled = "drm_enabled"
     }
 }

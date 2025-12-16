@@ -201,8 +201,10 @@ struct LivePlayerControlsView: View {
                                             // ignore same item click twice
                                             guard globalNavState.miniPlayerItemIndex != index else { return }
                                             globalNavState.miniPlayerItem = nil
-                                            globalNavState.isPiPMutiplayerView = true
-                                            globalNavState.isShowMutiplayerView = false
+                                            withAnimation(.easeInOut(duration: 0.3)) {
+                                                globalNavState.isPiPMutiplayerView = true
+                                                globalNavState.isShowMutiplayerView = false
+                                            }
                                             globalNavState.miniPlayerItemIndex = index   // ✅ index
                                             globalNavState.miniPlayerItem = item         // ✅ item
                                             print("*** MiniPlayerCardButtonView clicked for index = \(index) and item =\(item.contentUrl)")
@@ -299,8 +301,10 @@ struct LivePlayerControlsView: View {
     
     private func moveNext(_ direction: MoveCommandDirection) {
         if direction == .left {
-            globalNavState.isShowMutiplayerView = false
-            focusedControl = .next
+            withAnimation(.easeInOut(duration: 0.3)) {
+                globalNavState.isShowMutiplayerView = false
+                focusedControl = .next
+            }
         }
     }
     private func moveBottomButtons(_ direction: MoveCommandDirection) {
@@ -313,7 +317,7 @@ struct LivePlayerControlsView: View {
         }
     }
     private func movePlayPause(_ direction: MoveCommandDirection) {
-        if direction == .right {
+        if direction == .right || direction == .down {
             if isLiveContent {
                     focusedControl = .subtitles
             }
@@ -397,7 +401,9 @@ struct LivePlayerControlsView: View {
                     .focused($focusedControl, equals: .settings)
                 
                 controlButton(title: "Key Moments", icon: "forward.end.fill", isFocused: focusedControl == .next) {
-                    globalNavState.isShowMutiplayerView = true
+                    withAnimation(.easeInOut(duration: 0.3)) {
+                        globalNavState.isShowMutiplayerView = true
+                    }
                 }
                 .focused($focusedControl, equals: .next)
                 .onMoveCommand(perform: moveNextKeyMoments)
@@ -422,25 +428,6 @@ struct LivePlayerControlsView: View {
             .focusable(true)
             .focused($focusedControl, equals: section)
     }
-    func map (from item: CarouselContent) -> VideoData? {
-        guard let urlString = item.video?.first?.contentUrl,
-              let _ = URL(string: urlString) else {
-            return nil
-        }
-
-        return VideoData(
-            type: "vod",
-            profile: "pradip",
-            drmEnabled: false,
-            licenceUrl: "",
-            contentUrl: urlString,
-            protocol: "",
-            encryptionType: "hls",
-            adInfo: nil,
-            qualityGroup: .none
-        )
-    }
-    
 }
 
 // MARK: - Private Methods

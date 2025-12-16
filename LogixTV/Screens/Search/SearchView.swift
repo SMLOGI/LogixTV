@@ -54,6 +54,7 @@ struct SearchView: View {
 
                 let videoData = VideoData(
                     type: "vod",
+                    title: contentItem.title ?? "",
                     profile: "pradip",
                     drmEnabled: false,
                     licenceUrl: "",

@@ -80,6 +80,33 @@ struct LogixVideoPlayer: View {
                 }
                 
                 LoadingView()
+            } else {
+                if !globalNavState.isPiPMutiplayerView || !isMainLivePlayer {
+                    HStack(alignment: .top) {
+                        VStack(alignment: .leading) {
+                            if showControlls {
+                                Text(videoData.title)
+                                    .padding(.horizontal, 10)
+                                    .padding(.vertical, 2)
+                                    .font(.system(size: 35, weight: .regular))
+                                    .foregroundColor(.white)
+                                    .background(
+                                        RoundedRectangle(cornerRadius: 5)
+                                            .fill(Color.black.opacity(0.25))
+                                    )
+                                    .padding(.top, 40) // distance from bottom
+                                    .padding(.leading, 20)
+                                
+                                Spacer()
+                            }
+                            Spacer()
+                        }
+                        .ignoresSafeArea()
+                        Spacer()
+                        
+                    }
+                    .ignoresSafeArea()
+                }
             }
         }
         .onAppear {
