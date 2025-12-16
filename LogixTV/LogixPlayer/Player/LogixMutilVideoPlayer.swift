@@ -86,6 +86,7 @@ struct LogixMutilVideoPlayer: View {
                                 .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottomTrailing)
                                 .padding(.bottom, globalNavState.isPiPMutiplayerView ? 60: 0)
                                 .padding(.trailing, globalNavState.isPiPMutiplayerView ? 10: 0)
+                                .animation(.easeInOut(duration: 0.35), value: globalNavState.isPiPMutiplayerView)
                         }
                     }
                     .frame(maxHeight: .infinity)
